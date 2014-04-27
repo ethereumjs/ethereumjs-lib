@@ -5,5 +5,6 @@ module.exports = {
     convert: require('./convert'),
     CryptoJS: require('./cryptojs'),
     BigInteger: require('./jsbn/jsbn'),
-    ecdsa: require('./ecdsa')
+    ecdsa: require('./ecdsa'),
+    serpent: require('./serpent/serpent')
 }
