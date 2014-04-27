@@ -89,6 +89,10 @@ var util = (function() {
         return BigInteger(''+n)
     }
 
+    function bigIntFromHex(n) {
+        return new BigInteger(n,16);
+    }
+
     var isArray = Array.isArray || function(o)
     {
         return Object.prototype.toString.call(o) === '[object Array]';
@@ -105,6 +109,7 @@ var util = (function() {
         encodeHex: encodeHex,
         coerce_addr_to_bin: coerce_addr_to_bin,
         bigInt: bigInt,
+        bigIntFromHex: bigIntFromHex,
         intToBigEndian: intToBigEndian,
         bigEndianToInt: bigEndianToInt,
         isArray: isArray,

@@ -76,6 +76,30 @@ var ECDSA = {
     return [ i.add(BigInteger("27")), r, s ]
   },
 
+  verify: function(sig, hash, pub){
+    pub.validate();
+    var r = sig[1],
+        s = sig[2];
+    var n = ecparams.getN();
+    var G = ecparams.getG();
+    var e = BigInteger.fromByteArrayUnsigned(hash);
+    var s_inv = s.modInverse(n).subtract(n);
+    var u1 = s_inv.multiply(e).mod(n);
+    var u1G = G.multiply(u1);
+    var u2 = r.multiply(s_inv).mod(n);
+    var u2Q = pub.multiply(u2);
+    var sum = u1G.add(u2Q); // can use ShamirsTrick instead ...
+    var x = sum.getX()['x'];
+    return r.equals(x);
+  },
+
+  privToPub: function(priv){
+    var d = BigInteger.fromByteArrayUnsigned(priv);
+    var G = ecparams.getG();
+    var Q = G.multiply(priv);
+    return Q;
+  },
+
   /**
    * Recover a public key from a signature.
    *
