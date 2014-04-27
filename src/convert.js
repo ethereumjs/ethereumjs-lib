@@ -71,4 +71,10 @@ module.exports.stringToBytes = function(string) {
     return string.split('').map(function(x) { return x.charCodeAt(0) });
 }
 
+// NOTE: modulus is concat at end, unlike BitcoinJS.convert.numToBytes()
+module.exports.numToBytes = function numToBytes(num, bytes) {
+    if (bytes === undefined) bytes = 8
+    if (bytes === 0) return []
+    return numToBytes(Math.floor(num / 256), bytes - 1).concat([num % 256]);
+}
 // utf8
