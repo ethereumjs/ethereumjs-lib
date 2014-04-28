@@ -30,7 +30,7 @@
     "files": "test/*.js"
   },
   "scripts": {
-    "test": "istanbul test ./node_modules/.bin/_mocha -- --reporter list test/*",
+    "test": "istanbul test ./node_modules/.bin/_mocha -- --reporter list test/*.js test/**/*.js",
     "compile": "browserify src/index.js -s Ethereum | uglifyjs > ethereum-min.js"
   },
   "author": {

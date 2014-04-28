@@ -22,6 +22,19 @@ var transaction = (function() {
                 serialize(makeTransaction(opts), false));
     }
 
+    function mkContract(nonce, value, data) {
+        var opts = {
+            nonce: nonce,
+            gasprice: util.bigInt(Math.pow(10, 12)),
+            startgas: util.bigInt(10000),
+            value: value,
+            data: util.decodeHex(data)
+        }
+
+        return util.encodeHex(
+                serialize(makeContract(opts), false));
+    }
+
     function serialize(tx, isSigned) {
         var arr = [encode_int(tx.nonce),
                            encode_int(tx.gasprice),
@@ -50,11 +63,29 @@ var transaction = (function() {
             value: opts.value,
             data: opts.data,
 
-            v: BigInteger.ZERO || opts.v,
+            v: BigInteger.ZERO || opts.v,  // TODO
             r: BigInteger.ZERO || opts.r,
             s: BigInteger.ZERO || opts.s,
             sender: 0
         }
+    }
+
+    // 'constructor'
+    function makeContract(opts) {
+        var tx = makeTransaction({
+                nonce: opts.nonce,
+                gasprice: opts.gasprice,
+                startgas: opts.startgas,
+                to: '',
+                value: opts.value,
+                data: opts.data
+            });
+
+        tx.v = opts.v || BigInteger.ZERO;
+        tx.r = opts.r || BigInteger.ZERO;
+        tx.s = opts.s || BigInteger.ZERO;
+
+        return tx;
     }
 
     function sign(tx, key) {
@@ -100,6 +131,7 @@ var transaction = (function() {
 
     return {
         mktx: mktx,
+        mkContract: mkContract,
         sign: sign,
         parse: parse,
         serialize: serialize
