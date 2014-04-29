@@ -72,12 +72,15 @@ describe('rlp', function(){
     })
 
     it('should decode namecoin', function(){
-      // good test since first byte is >247
-      var namecoinRlp = "\xf88\x80\x85\xe8\xd4\xa5\x10\x00\x82'\x10\x80\x80\xab`\x005Vc\x00\x00\x00!Y` 5`\x005W`\x01[R[T` R\xf2c\x00\x00\x00+X`\x00[R[T` R\xf2";
+      var namecoinBinaryRlp = "\xb8:\xf88\x80\x85\xe8\xd4\xa5\x10\x00\x82'\x10\x80\x80\xab`\x005Vc\x00\x00\x00!Y` 5`\x005W`\x01[R[T` R\xf2c\x00\x00\x00+X`\x00[R[T` R\xf2";
       var namecoinHex = 'f8388085e8d4a510008227108080ab600035566300000021596020356000355760015b525b54602052f2630000002b5860005b525b54602052f2';
-      var exp = ['', '\xe8\xd4\xa5\x10\x00', "'\x10", '', '', '`\x005Vc\x00\x00\x00!Y` 5`\x005W`\x01[R[T` R\xf2c\x00\x00\x00+X`\x00[R[T` R\xf2'];
+      var namecoinRlp = "\xf88\x80\x85\xe8\xd4\xa5\x10\x00\x82'\x10\x80\x80\xab`\x005Vc\x00\x00\x00!Y` 5`\x005W`\x01[R[T` R\xf2c\x00\x00\x00+X`\x00[R[T` R\xf2";
 
-      var res = rlp.decode(namecoinRlp);
+      var res = rlp.decode(namecoinBinaryRlp);
+      res.should.eql(namecoinRlp);
+
+      var exp = ['', '\xe8\xd4\xa5\x10\x00', "'\x10", '', '', '`\x005Vc\x00\x00\x00!Y` 5`\x005W`\x01[R[T` R\xf2c\x00\x00\x00+X`\x00[R[T` R\xf2'];
+      res = rlp.decode(namecoinRlp);  // good test since first byte is >247
       res.should.eql(exp);
     })
   })

@@ -30,13 +30,15 @@ describe('transaction', function(){
       var namecoin = '600035566300000021596020356000355760015b525b54602052f2630000002b5860005b525b54602052f2';
       var key = 'c85ef7d79691fe79573b1a7064c19c1a9819ebdbd1faaab1a8ec92344438aaf4'; // cow's
 
-      var expParsed = 'f8388085e8d4a510008227108080ab600035566300000021596020356000355760015b525b54602052f2630000002b5860005b525b54602052f2';
+      var expContract = 'f8388085e8d4a510008227108080ab600035566300000021596020356000355760015b525b54602052f2630000002b5860005b525b54602052f2';
       var exp = 'f87b8085e8d4a510008227108080ab600035566300000021596020356000355760015b525b54602052f2630000002b5860005b525b54602052f21ca0eb64cfe9c4960e6a029929fc315850b8b6d54d9171bcb36275ba1cae89f6c17ca0e2e160b168c8795d27fef5074bcd20cba51ff1c13f3d4c46f9dae1b649c9ca3f';
 
       var contract = transaction.mkContract(util.bigInt(0), util.bigInt(0), namecoin);
-      contract.should.equal(expParsed);
+      contract.should.equal(expContract);
 
       var parsedTx = transaction.parse(util.decodeHex(contract));
+      parsedTx.data.should.eql(util.decodeHex(namecoin));
+
       transaction.sign(parsedTx, key).should.equal(exp);
     })
   })
