@@ -21,7 +21,9 @@ var rlp = (function() {
         else if (fchar < 192) {
             b = fchar - 183;
             b2 = util.bigEndianToInt(s.slice(pos + 1,pos + 1 + b));
-            return [s.slice(pos + 1 + b,pos + 1 + b + b2), pos + 1 + b + b2];
+            // TODO: may need to AVOID intValue() and also rewrite slice()
+            var p1bb2 = util.bigInt(pos+1+b).add(b2).intValue();
+            return [s.slice(pos + 1 + b, p1bb2), p1bb2];
         }
         else if (fchar < 248) {
             o = [];
@@ -41,7 +43,7 @@ var rlp = (function() {
             b2 = util.bigEndianToInt(s.slice(pos + 1,pos + 1 + b));
             o = [];
             pos += 1 + b;
-            pos_end = pos + b2;
+            pos_end = b2.add(util.bigInt(pos)).intValue();  // TODO: may need to AVOID intValue()
             while (pos < pos_end) {
                 res = __decode(s, pos);
                 obj = res[0]; pos = res[1];
