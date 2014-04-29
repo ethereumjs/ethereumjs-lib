@@ -3,7 +3,7 @@ var BigInteger = require('./jsbn/jsbn'),
     CryptoJS = require('./cryptojs'),
     sec = require('./jsbn/sec'),
     ecparams = sec("secp256k1");
-    
+
 // depends on CryptoJS and BitcoinJS
 
 var util = (function() {
@@ -58,6 +58,9 @@ var util = (function() {
         }
         else if (x.length === 40 || x.length === 0) {
             return decodeHex(x);
+        }
+        else if (_.isNumber(x)) {
+            throw new Error('coerce addr should be BigInteger');
         }
         else {
             return zpad(x, 20).slice(-20);
