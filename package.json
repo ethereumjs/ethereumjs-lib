@@ -36,5 +36,8 @@
   "author": {
     "name": "Ethereum",
     "url": "http://ethereum.org"
+  },
+  "dependencies": {
+    "jshint": "~2.5.0"
   }
 }
