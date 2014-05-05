@@ -14,6 +14,7 @@
     "library"
   ],
   "devDependencies": {
+    "jshint": "~2.5.0",
     "mocha": "1.8.1",
     "chai": "~1.9.1",
     "istanbul": "0.1.30",
@@ -36,8 +37,5 @@
   "author": {
     "name": "Ethereum",
     "url": "http://ethereum.org"
-  },
-  "dependencies": {
-    "jshint": "~2.5.0"
   }
 }
