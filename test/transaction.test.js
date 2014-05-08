@@ -11,16 +11,16 @@ describe('transaction', function(){
       var exp = 'f8640185e8d4a5100082271094da7ce79725418f4f6e13bf5f520c89cec5f6a974822710b840000000000000000000000000000000000000000000000000000067656f726765000000000000000000000000000000000000000000000000000000000000002d';
       var res = transaction.mktx(util.bigInt(1), contractAddr, util.bigInt(10000), data);
       res.should.equal(exp);
-    });     
+    });
   });
-  
+
   describe('#mkContract', function(){
     it('should make namecoin', function(){
       var code = '600035566300000021596020356000355760015b525b54602052f2630000002b5860005b525b54602052f2';
       var exp = 'f8388085e8d4a510008227108080ab600035566300000021596020356000355760015b525b54602052f2630000002b5860005b525b54602052f2';
       var res = transaction.mkContract(util.bigInt(0), util.bigInt(0), code);
       res.should.equal(exp);
-    }); 
+    });
   });
 
   describe('#sign', function(){
@@ -49,6 +49,16 @@ describe('transaction', function(){
       var parsedTx = transaction.parse(util.decodeHex(contract));
       parsedTx.data.should.eql(util.decodeHex(namecoin));
 
+      transaction.sign(parsedTx, key).should.equal(exp);
+    });
+
+    it('should sign transaction with data [george,45]', function(){
+      // from earlier test (above)
+      var tx = 'f8640185e8d4a5100082271094da7ce79725418f4f6e13bf5f520c89cec5f6a974822710b840000000000000000000000000000000000000000000000000000067656f726765000000000000000000000000000000000000000000000000000000000000002d';
+      var key = 'c85ef7d79691fe79573b1a7064c19c1a9819ebdbd1faaab1a8ec92344438aaf4'; // cow's
+      var exp = 'f8a70185e8d4a5100082271094da7ce79725418f4f6e13bf5f520c89cec5f6a974822710b840000000000000000000000000000000000000000000000000000067656f726765000000000000000000000000000000000000000000000000000000000000002d1ba039fd06d7dc1acf6cfcf78ca2c659965a156f0bc9f92bd8441ddddd9562fec7c4a011648e1f351a856032622819751aa6dce6b3a4bf97bf51386adf3aa0cee571ac';
+
+      var parsedTx = transaction.parse(util.decodeHex(tx));
       transaction.sign(parsedTx, key).should.equal(exp);
     });
   });
