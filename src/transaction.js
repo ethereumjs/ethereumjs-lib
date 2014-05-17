@@ -94,7 +94,7 @@ var transaction = (function() {
 
     function __sign(tx, key) {
         var rawData = serialize(tx, false);
-        var rawhash = convert.hexToBytes(util.sha3(rawData).toString());
+        var rawhash = convert.stringToBytes(util.sha3(rawData));
 
         // false flag important since key is uncompressed
         var ecKey = BigInteger(key, 16);

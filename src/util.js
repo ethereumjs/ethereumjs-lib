@@ -16,7 +16,7 @@ var util = (function() {
         else {
             x = CryptoJS.enc.Latin1.parse(x);
         }
-        return CryptoJS.SHA3(x, { outputLength: 256 });
+        return CryptoJS.SHA3(x, { outputLength: 256 }).toString(CryptoJS.enc.Latin1);
     }
 
     //Takes arrays and outputs arrays
@@ -30,7 +30,7 @@ var util = (function() {
         // false flag important since key is uncompressed
         var pub = ecparams.getG().multiply(BigInteger(x,16));
         var bytes = pub.getEncoded().slice(1);
-        var addr = util.sha3(bytes).toString();
+        var addr = encodeHex(sha3(bytes));
         return addr.substr(24);
     }
 
