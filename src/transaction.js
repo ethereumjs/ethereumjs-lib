@@ -11,8 +11,8 @@ var transaction = (function() {
     function mktx(nonce, to, value, data) {
         var opts = {
             nonce: nonce,
-            gasprice: util.bigInt(Math.pow(10, 12)),
-            startgas: util.bigInt(10000),
+            gasprice: BigInteger('10').pow(12),
+            startgas: BigInteger('10000'),
             to: to,
             value: value,
             data: util.decodeHex(data)
@@ -25,8 +25,8 @@ var transaction = (function() {
     function mkContract(nonce, value, data) {
         var opts = {
             nonce: nonce,
-            gasprice: util.bigInt(Math.pow(10, 12)),
-            startgas: util.bigInt(10000),
+            gasprice: BigInteger('10').pow(12),
+            startgas: BigInteger('10000'),
             value: value,
             data: util.decodeHex(data)
         };

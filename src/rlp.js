@@ -3,7 +3,7 @@ var util = require('./util'),
 
 var rlp = (function() {
     var INPUT_LIMIT = BigInteger('2').pow(BigInteger('64'));
-    var BI_56 = util.bigInt(56);
+    var BI_56 = BigInteger('56');
 
     function __decode(s, pos) {
         pos = pos || 0;
@@ -22,7 +22,7 @@ var rlp = (function() {
             b = fchar - 183;
             b2 = util.bigEndianToInt(s.slice(pos + 1,pos + 1 + b));
             // TODO: may need to AVOID intValue() and also rewrite slice()
-            var p1bb2 = util.bigInt(pos+1+b).add(b2).intValue();
+            var p1bb2 = BigInteger(''+pos+1+b).add(b2).intValue();
             return [s.slice(pos + 1 + b, p1bb2), p1bb2];
         }
         else if (fchar < 248) {
@@ -43,7 +43,7 @@ var rlp = (function() {
             b2 = util.bigEndianToInt(s.slice(pos + 1,pos + 1 + b));
             o = [];
             pos += 1 + b;
-            pos_end = b2.add(util.bigInt(pos)).intValue();  // TODO: may need to AVOID intValue()
+            pos_end = b2.add(BigInteger(''+pos)).intValue();  // TODO: may need to AVOID intValue()
             while (pos < pos_end) {
                 res = __decode(s, pos);
                 obj = res[0]; pos = res[1];
@@ -80,14 +80,14 @@ var rlp = (function() {
                 return s;
             }
             else {
-                return encodeLength(util.bigInt(s.length), 128) + s;
+                return encodeLength(BigInteger(''+s.length), 128) + s;
             }
         }
         else if (util.isArray(s)) {
             var output = s.reduce(function(output, item) {
                 return output += encode(item);
             }, '');
-            return encodeLength(util.bigInt(output.length), 192) + output
+            return encodeLength(BigInteger(''+output.length), 192) + output;
         }
         else {
             throw new Error("input must be string or array");
@@ -97,7 +97,7 @@ var rlp = (function() {
     return {
         decode: decode,
         encode: encode
-    }
+    };
 })();
 
 module.exports = rlp;
