@@ -4,32 +4,33 @@ var BigInteger = require('./jsbn/jsbn'),
     sec = require('./jsbn/sec'),
     ecparams = sec("secp256k1");
 
-// depends on CryptoJS and BitcoinJS
+// Ethereum Numbers are in range [0, 2^256)
+var LARGEST_NUM_PLUS_ONE = BigInteger('2').pow(256);
 
 var util = (function() {
 
     function sha3(x) {
         if (typeof x != "string") {
-            x = CryptoJS.enc.Latin1.parse(convert.bytesToString(x))
+            x = CryptoJS.enc.Latin1.parse(convert.bytesToString(x));
         }
         else {
-            x = CryptoJS.enc.Latin1.parse(x)
+            x = CryptoJS.enc.Latin1.parse(x);
         }
-        return CryptoJS.SHA3(x, { outputLength: 256 }).toString();
+        return CryptoJS.SHA3(x, { outputLength: 256 });
     }
 
     //Takes arrays and outputs arrays
     function hmacSha256(v, k) {
         var v2 = CryptoJS.enc.Latin1.parse(convert.bytesToString(v)),
-            k2 = CryptoJS.enc.Latin1.parse(convert.bytesToString(k))
-        return convert.hexToBytes(CryptoJS.HmacSHA256(v2,k2).toString())
+            k2 = CryptoJS.enc.Latin1.parse(convert.bytesToString(k));
+        return convert.hexToBytes(CryptoJS.HmacSHA256(v2,k2).toString());
     }
 
     function privToAddr(x) {
         // false flag important since key is uncompressed
-        var pub = ecparams.getG().multiply(BigInteger(x,16))
+        var pub = ecparams.getG().multiply(BigInteger(x,16));
         var bytes = pub.getEncoded().slice(1);
-        var addr = util.sha3(bytes);
+        var addr = util.sha3(bytes).toString();
         return addr.substr(24);
     }
 
@@ -89,20 +90,66 @@ var util = (function() {
     }
 
     function bigInt(n) {
-        return BigInteger(''+n)
+        return BigInteger(''+n);
     }
 
     function bigIntFromHex(n) {
         return new BigInteger(n,16);
     }
 
+
+
+    // encodes a bytearray into serialization
+    function encode_bin(v) {
+        var key = sha3(v);
+        console.log('******************** TODO encode_bin dbput');
+        // dbput(key, v);
+        return key;
+    }
+
+    // encodes a trie root into serialization
+    function encode_root(v) {
+        return v;
+    }
+
+    // encodes an address into serialization
+    function encode_addr(v) {
+        if (!isString(v) ||
+                v.length !== 0 ||
+                v.length !== 40) {
+            throw new Error("Address must be empty or 40 chars long");
+        }
+        return decodeHex(v);
+    }
+
+    // encodes an integer into serialization
+    function encode_int(v) {
+        if (!(v instanceof BigInteger) ||
+                v.compareTo(BigInteger.ZERO) < 0 ||
+                v.compareTo(LARGEST_NUM_PLUS_ONE) >= 0) {
+            throw new Error("BigInteger invalid or out of range");
+        }
+        return intToBigEndian(v);
+    }
+
+    var encoders = {
+        "bin": encode_bin,
+        "addr": encode_addr,
+        "int": encode_int,
+        "trie_root": encode_root,
+    };
+
     var isArray = Array.isArray || function(o)
     {
         return Object.prototype.toString.call(o) === '[object Array]';
-    }
+    };
 
     function isString(x) {
         return toString.call(x) == '[object String]';
+    }
+
+    function repeat(string, n) {
+        return Array(n+1).join(string);
     }
 
     return {
@@ -117,8 +164,11 @@ var util = (function() {
         bigEndianToInt: bigEndianToInt,
         isArray: isArray,
         isString: isString,
-        hmacSha256: hmacSha256
-    }
+        hmacSha256: hmacSha256,
+        encode_int: encode_int,
+        encoders: encoders,
+        repeat: repeat
+    };
 })();
 
 module.exports = util;

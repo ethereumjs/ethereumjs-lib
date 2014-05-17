@@ -29,7 +29,7 @@ var transaction = (function() {
             startgas: util.bigInt(10000),
             value: value,
             data: util.decodeHex(data)
-        }
+        };
 
         return util.encodeHex(
                 serialize(makeContract(opts), false));
@@ -45,7 +45,7 @@ var transaction = (function() {
                            encode_int(tx.v),
                            encode_int(tx.r),
                            encode_int(tx.s)];
-        var forRlp = isSigned ? arr.slice(0,9) : arr.slice(0,6)
+        var forRlp = isSigned ? arr.slice(0,9) : arr.slice(0,6);
         return rlp.encode(forRlp);
     }
 
@@ -67,7 +67,7 @@ var transaction = (function() {
             r: BigInteger.ZERO || opts.r,
             s: BigInteger.ZERO || opts.s,
             sender: 0
-        }
+        };
     }
 
     // 'constructor'
@@ -94,7 +94,7 @@ var transaction = (function() {
 
     function __sign(tx, key) {
         var rawData = serialize(tx, false);
-        var rawhash = convert.hexToBytes(util.sha3(rawData));
+        var rawhash = convert.hexToBytes(util.sha3(rawData).toString());
 
         // false flag important since key is uncompressed
         var ecKey = BigInteger(key, 16);
@@ -135,7 +135,7 @@ var transaction = (function() {
         sign: sign,
         parse: parse,
         serialize: serialize
-    }
+    };
 })();
 
 module.exports = transaction;
