@@ -99,6 +99,49 @@ var util = (function() {
 
 
 
+
+    //
+    // Format encoders/decoders for bin, addr, int
+    //
+
+    // decodes a bytearray into serialization
+    function decode_bin(v) {
+        if (!isString(v)) {
+            throw new Error('Value must be binary, not RLP array');
+        }
+        return dbget(v);  // TODO?
+    }
+
+    // decodes a trie root into serialization
+    function decode_root(root) {
+        if (isArray(root)) {
+            if (rlp.encode(root).length >= 32) {
+                throw new Error("Direct RLP roots must have length <32");
+            }
+        } else if (isString(root)) {
+            if (root.length !== 0 && root.length !== 32) {
+                throw new Error("String roots must be empty or length32");
+            }
+        } else {
+            throw new Error("Invalid root");
+        }
+        return root;
+    }
+
+    // decodes an address into serialization
+    function decode_addr(v) {
+        if (v.length !== 0 || v.length !== 20) {
+            throw new Error("Serialized addresses must be empty or 20 bytes long!");
+        }
+        return encodeHex(v);
+    }
+
+    // decodes an integer into serialization
+    function decode_int(v) {
+        return bigEndianToInt(v);
+    }
+
+
     // encodes a bytearray into serialization
     function encode_bin(v) {
         var key = sha3(v);
@@ -131,6 +174,13 @@ var util = (function() {
         }
         return intToBigEndian(v);
     }
+
+    var decoders = {
+        "bin": decode_bin,
+        "addr": decode_addr,
+        "int": decode_int,
+        "trie_root": decode_root,
+    };
 
     var encoders = {
         "bin": encode_bin,
@@ -166,6 +216,7 @@ var util = (function() {
         isString: isString,
         hmacSha256: hmacSha256,
         encode_int: encode_int,
+        decoders: decoders,
         encoders: encoders,
         repeat: repeat
     };

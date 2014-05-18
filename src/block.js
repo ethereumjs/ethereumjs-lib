@@ -147,8 +147,26 @@ Block.prototype._add_transaction_to_list = function(tx_serialized, state_root, g
 };
 */
 
+Block.prototype.get_balance = function(address) {
+    return this._get_acct_item(address, 'balance');
+};
+
 Block.prototype.set_balance = function(address, value) {
     this._set_acct_item(address, 'balance', value);
+};
+
+// _get_acct_item(bin or hex, int) -> bin
+Block.prototype._get_acct_item = function(address, param) {
+    /* get account item
+    :param address: account address, can be binary or hex string
+        :param param: parameter to get
+    */
+    if (address.length === 40) {
+        address = util.decodeHex(address);
+    }
+    var acct = rlp.decode(this.state.get(address)) || mk_blank_acct();
+    var decoder = util.decoders[acct_structure_rev[param][1]];
+    return decoder(acct[acct_structure_rev[param][0]]);
 };
 
 // _set_acct_item(bin or hex, int, bin)
@@ -161,7 +179,7 @@ Block.prototype._set_acct_item = function(address, param, value) {
     if (address.length === 40) {
         address = util.decodeHex(address);
     }
-    var acct = this.state.get(address) || mk_blank_acct();
+    var acct = rlp.decode(this.state.get(address)) || mk_blank_acct();
     var encoder = util.encoders[acct_structure_rev[param][1]];
     acct[acct_structure_rev[param][0]] = encoder(value);
     this.state.update(address, rlp.encode(acct));
