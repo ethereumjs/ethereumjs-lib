@@ -17,8 +17,6 @@ var tx_structure = [
 ];
 
 var transaction = (function() {
-    var decode_int = util.bigEndianToInt;
-
     function mktx(nonce, to, value, data) {
         var opts = {
             nonce: nonce,
@@ -56,6 +54,29 @@ var transaction = (function() {
         });
         var forRlp = isSigned ? o : o.slice(0, o.length-3);
         return rlp.encode(forRlp);
+    }
+
+    function deserialize(rlpdata) {
+        var opts = {};
+        var args = rlp.decode(rlpdata);
+        //assert len(args) in (len(tx_structure), len(tx_structure) - 3)
+        // Deserialize all properties
+        tx_structure.forEach(function(v, i) {
+            var name = v[0];
+            var typ = v[1];
+            var defaul = v[2];
+            if (i < args.length) {
+                opts[name] = util.decoders[typ](args[i]);
+            } else {
+                opts[name] = defaul;
+            }
+        });
+
+        return makeTransaction(opts);
+    }
+
+    function hex_deserialize(hexrlpdata) {
+        return deserialize(util.decodeHex(hexrlpdata));
     }
 
     // 'constructor'
@@ -105,7 +126,6 @@ var transaction = (function() {
         var rawData = serialize(tx, false);
         var rawhash = convert.stringToBytes(util.sha3(rawData));
 
-        // false flag important since key is uncompressed
         var ecKey = BigInteger(key, 16);
         var sig = ecdsa.sign(rawhash, ecKey);
         tx.v = sig[0];
@@ -116,34 +136,12 @@ var transaction = (function() {
         return tx;
     }
 
-    function parse(data) {
-        if (data.match(/^[0-9a-fA-F]*$/)) {
-            data = util.decodeHex(data);
-        }
-
-        var o = rlp.decode(data).concat(['','','']);
-
-        var opts = {
-            nonce: decode_int(o[0]),
-            gasprice: decode_int(o[1]),
-            startgas: decode_int(o[2]),
-            to: decode_addr(o[3]),
-            value: decode_int(o[4]),
-            data: o[5],
-            v: decode_int(o[6]),
-            r: decode_int(o[7]),
-            s: decode_int(o[8])
-        };
-
-        return makeTransaction(opts);
-    }
-
     return {
         mktx: mktx,
         mkContract: mkContract,
         sign: sign,
-        parse: parse,
-        serialize: serialize
+        serialize: serialize,
+        hex_deserialize: hex_deserialize
     };
 })();
 
