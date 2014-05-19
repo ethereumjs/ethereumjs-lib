@@ -4,8 +4,19 @@ var util = require('./util'),
     convert = require('./convert'),
     ecdsa = require('./ecdsa');
 
+var tx_structure = [
+    ["nonce", "int", 0],
+    ["gasprice", "int", 0],
+    ["startgas", "int", 0],
+    ["to", "addr", ''],
+    ["value", "int", 0],
+    ["data", "bin", ''],
+    ["v", "int", 0],
+    ["r", "int", 0],
+    ["s", "int", 0],
+];
+
 var transaction = (function() {
-    var encode_int = util.intToBigEndian;
     var decode_int = util.bigEndianToInt;
 
     function mktx(nonce, to, value, data) {
@@ -36,16 +47,14 @@ var transaction = (function() {
     }
 
     function serialize(tx, isSigned) {
-        var arr = [encode_int(tx.nonce),
-                           encode_int(tx.gasprice),
-                           encode_int(tx.startgas),
-                           util.coerce_addr_to_bin(tx.to),
-                           encode_int(tx.value),
-                           tx.data,
-                           encode_int(tx.v),
-                           encode_int(tx.r),
-                           encode_int(tx.s)];
-        var forRlp = isSigned ? arr.slice(0,9) : arr.slice(0,6);
+        var o = [];
+        tx_structure.forEach(function(v, i) {
+            var name = v[0];
+            var typ = v[1];
+            var defaul = v[2];
+            o.push(util.encoders[typ](tx[name]));
+        });
+        var forRlp = isSigned ? o : o.slice(0, o.length-3);
         return rlp.encode(forRlp);
     }
 
@@ -118,7 +127,7 @@ var transaction = (function() {
             nonce: decode_int(o[0]),
             gasprice: decode_int(o[1]),
             startgas: decode_int(o[2]),
-            to: util.encodeHex(o[3]),
+            to: decode_addr(o[3]),
             value: decode_int(o[4]),
             data: o[5],
             v: decode_int(o[6]),

@@ -100,7 +100,7 @@ var util = (function() {
         if (!isString(v)) {
             throw new Error('Value must be binary, not RLP array');
         }
-        return dbget(v);  // TODO?
+        return v;
     }
 
     // decodes a trie root into serialization
@@ -121,7 +121,7 @@ var util = (function() {
 
     // decodes an address into serialization
     function decode_addr(v) {
-        if (v.length !== 0 || v.length !== 20) {
+        if (!(v.length === 0 || v.length === 20)) {
             throw new Error("Serialized addresses must be empty or 20 bytes long!");
         }
         return encodeHex(v);
@@ -135,10 +135,7 @@ var util = (function() {
 
     // encodes a bytearray into serialization
     function encode_bin(v) {
-        var key = sha3(v);
-        console.log('******************** TODO encode_bin dbput');
-        // dbput(key, v);
-        return key;
+        return v;
     }
 
     // encodes a trie root into serialization
@@ -149,8 +146,7 @@ var util = (function() {
     // encodes an address into serialization
     function encode_addr(v) {
         if (!isString(v) ||
-                v.length !== 0 ||
-                v.length !== 40) {
+                !(v.length === 0 || v.length === 40)) {
             throw new Error("Address must be empty or 40 chars long");
         }
         return decodeHex(v);
