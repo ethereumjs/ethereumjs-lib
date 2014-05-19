@@ -89,15 +89,6 @@ var util = (function() {
         return BigInteger(s,16);
     }
 
-    function bigInt(n) {
-        return BigInteger(''+n);
-    }
-
-    function bigIntFromHex(n) {
-        return new BigInteger(n,16);
-    }
-
-
 
 
     //
@@ -208,8 +199,6 @@ var util = (function() {
         decodeHex: decodeHex,
         encodeHex: encodeHex,
         coerce_addr_to_bin: coerce_addr_to_bin,
-        bigInt: bigInt,
-        bigIntFromHex: bigIntFromHex,
         intToBigEndian: intToBigEndian,
         bigEndianToInt: bigEndianToInt,
         isArray: isArray,

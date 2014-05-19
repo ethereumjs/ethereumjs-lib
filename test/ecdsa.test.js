@@ -3,11 +3,12 @@ require('chai').should();
 var util=require('../src/util');
 var ec=require('../src/ecdsa');
 var conv=require('../src/convert');
+var BigInteger = require('../src/jsbn/jsbn');
 
 describe('ecdsa', function(){
     describe('verify', function(){
         it('should verify an ecdsa signature', function(){
-            var priv = util.bigInt(util.sha3('private key brainiac'));
+            var priv = BigInteger(util.sha3('private key brainiac'));
             var msg = util.sha3('this is a message to sign');
             
             var sig = ec.sign(msg, priv);
@@ -19,12 +20,12 @@ describe('ecdsa', function(){
             res.should.equal(true);
         });
         it('should detect an invalid ecdsa signature', function(){
-            var priv = util.bigInt(util.sha3('private key brainiac'));
+            var priv = BigInteger(util.sha3('private key brainiac'));
             var msg = util.sha3('this is a message to sign');
 
             var sig = ec.sign(msg, priv);
 
-            priv = util.bigInt(util.sha3('a different key muahaha'));
+            priv = BigInteger(util.sha3('a different key muahaha'));
             var pub = ec.privToPub(priv);
 
             var res  = ec.verify(sig, msg, pub, console); 
