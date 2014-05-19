@@ -44,7 +44,8 @@ var transaction = (function() {
                 serialize(makeContract(opts), false));
     }
 
-    function serialize(tx, isSigned) {
+    function serialize(tx, signed) {
+        var isSigned = (typeof signed === "undefined") ? true : signed;
         var o = [];
         tx_structure.forEach(function(v, i) {
             var name = v[0];
@@ -54,6 +55,11 @@ var transaction = (function() {
         });
         var forRlp = isSigned ? o : o.slice(0, o.length-3);
         return rlp.encode(forRlp);
+    }
+
+    function hex_serialize(tx, signed) {
+        var isSigned = (typeof signed === "undefined") ? true : signed;
+        return util.encodeHex(serialize(tx, isSigned));
     }
 
     function deserialize(rlpdata) {
@@ -119,10 +125,6 @@ var transaction = (function() {
     }
 
     function sign(tx, key) {
-        return util.encodeHex(serialize(__sign(tx, key), true));
-    }
-
-    function __sign(tx, key) {
         var rawData = serialize(tx, false);
         var rawhash = convert.stringToBytes(util.sha3(rawData));
 
@@ -141,6 +143,7 @@ var transaction = (function() {
         mkContract: mkContract,
         sign: sign,
         serialize: serialize,
+        hex_serialize: hex_serialize,
         hex_deserialize: hex_deserialize
     };
 })();

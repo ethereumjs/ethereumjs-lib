@@ -34,7 +34,8 @@ describe('transaction', function(){
       var tx = transaction.mktx(BigInteger.ZERO, to, BigInteger('13'), '');
       tx.should.equal(expTx);
       var parsedTx = transaction.hex_deserialize(tx);
-      transaction.sign(parsedTx, key).should.equal(exp);
+      var signedTx = transaction.sign(parsedTx, key);
+      transaction.hex_serialize(signedTx).should.equal(exp);
     });
 
     it('should sign namecoin contract', function(){
@@ -50,7 +51,8 @@ describe('transaction', function(){
       var parsedTx = transaction.hex_deserialize(contract);
       parsedTx.data.should.eql(util.decodeHex(namecoin));
 
-      transaction.sign(parsedTx, key).should.equal(exp);
+      var signedTx = transaction.sign(parsedTx, key);
+      transaction.hex_serialize(signedTx, true).should.equal(exp);
     });
 
     it('should sign transaction with data [george,45]', function(){
@@ -60,7 +62,8 @@ describe('transaction', function(){
       var exp = 'f8a70185e8d4a5100082271094da7ce79725418f4f6e13bf5f520c89cec5f6a974822710b840000000000000000000000000000000000000000000000000000067656f726765000000000000000000000000000000000000000000000000000000000000002d1ba039fd06d7dc1acf6cfcf78ca2c659965a156f0bc9f92bd8441ddddd9562fec7c4a011648e1f351a856032622819751aa6dce6b3a4bf97bf51386adf3aa0cee571ac';
 
       var parsedTx = transaction.hex_deserialize(tx);
-      transaction.sign(parsedTx, key).should.equal(exp);
+      var signedTx = transaction.sign(parsedTx, key);
+      transaction.hex_serialize(signedTx).should.equal(exp);
     });
   });
 });
