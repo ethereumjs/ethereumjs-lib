@@ -2,7 +2,7 @@ var convert = require('./convert'),
     util = require('./util'),
     rlp = require('./rlp');
 
-var BLANK = '';
+var BLANK_NODE = '';
 var BLANK_ROOT = '';
 
 var BasicDB = function() {
@@ -17,19 +17,19 @@ var BasicDB = function() {
 };
 
 var Trie = function(db, node) {
-    this.root = node || BLANK;
+    this.root = node || BLANK_NODE;
     this.db = db || new BasicDB();
 };
 
 Trie.prototype._dbget = function(v) {
-    if (!v) return BLANK;
+    if (!v) return BLANK_NODE;
     if (!util.isString(v) || v.length < 32) return v.slice();
     var n = this.db.get(v);
     return n ? rlp.decode(n) : null;
 };
 
 Trie.prototype._dbset = function(v) {
-    if (!v) return BLANK;
+    if (!v) return BLANK_NODE;
     var rlp_node = rlp.encode(v);
     if (rlp_node.length < 32) return v.slice(0);
     var h = util.sha3(rlp_node);
@@ -52,7 +52,7 @@ Trie.prototype._get = function(node, path) {
         while (shared < oldkey.length && shared < path.length && oldkey[shared] === path[shared]) {
             shared++;
         }
-        if (shared < oldkey.length) return BLANK;
+        if (shared < oldkey.length) return BLANK_NODE;
         else return this._get(node[1], path.slice(shared));
     }
 };
@@ -85,7 +85,7 @@ Trie.prototype._update = function(node, path, value) {
             node = new_node;
         }
         else {
-            sub_node = this._update(BLANK, oldkey.slice(shared), node[1]);
+            sub_node = this._update(BLANK_NODE, oldkey.slice(shared), node[1]);
             sub_node = this._update(sub_node, path.slice(shared), value);
             node =[compactEncode(oldkey.slice(0, shared)), sub_node];
         }
@@ -100,13 +100,13 @@ Trie.prototype._update = function(node, path, value) {
                 else if (posOfSingle > 0) posOfSingle = -2;
             }
         }
-        if (posOfSingle === -1) return BLANK;
+        if (posOfSingle === -1) return BLANK_NODE;
         else if (posOfSingle > 0) {
             node =[compactEncode([posOfSingle]), node[posOfSingle]];
         }
     }
     if (node.length === 2) {
-        if (node[1] === BLANK) return BLANK;
+        if (node[1] === BLANK_NODE) return BLANK_NODE;
         sub_node = this._dbget(node[1]);
         if (sub_node && sub_node.length == 2) {
             new_path = compactDecode(node[0]).concat(compactDecode(sub_node[0]));
@@ -166,7 +166,7 @@ var compactEncode = function (dataArr) {
     } else {
       dataArr.unshift(flags, 0);
     }
-    var o = BLANK;
+    var o = BLANK_NODE;
     for (var i = 0; i < dataArr.length; i += 2) {
       o += String.fromCharCode(16 * dataArr[i] + dataArr[i + 1]);
     }
@@ -216,7 +216,7 @@ var compactDecode = function (str) {
 
 module.exports = {
     Trie: Trie,
-    BLANK: BLANK,
+    BLANK_NODE: BLANK_NODE,
     BLANK_ROOT: BLANK_ROOT,
     BasicDB: BasicDB,
     compactDecode: compactDecode,
