@@ -3,7 +3,7 @@ var convert = require('./convert'),
     rlp = require('./rlp');
 
 var BLANK = '';
-var BLANK_ROOT = util.repeat('\x00', 32);
+var BLANK_ROOT = '';
 
 var BasicDB = function() {
     this.map = {};

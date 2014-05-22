@@ -4,7 +4,7 @@ var trie = require('./trie');
 var BigInteger = require('./jsbn/jsbn');
 
 var INITIAL_DIFFICULTY = BigInteger('2').pow(22);
-var GENESIS_PREVHASH = trie.BLANK_ROOT;
+var GENESIS_PREVHASH = util.repeat('\x00', 32);
 var GENESIS_COINBASE = util.repeat('0', 40);
 var GENESIS_NONCE = util.sha3(String.fromCharCode(42));
 var GENESIS_GAS_LIMIT = BigInteger('10').pow(6);
@@ -24,7 +24,7 @@ var GENESIS_INITIAL_ALLOC = {
 };
 
 var block_structure = [
-    ["prevhash", "bin", ""],
+    ["prevhash", "bin", GENESIS_PREVHASH],
     ["uncles_hash", "bin", util.sha3(rlp.encode([]))],
     ["coinbase", "addr", GENESIS_COINBASE],
     ["state_root", "trie_root", ''],
@@ -71,7 +71,7 @@ acct_structure.forEach(function(v, i) {
 
 var Block = function(opts) {
     opts = opts || {};
-    this.prevhash = opts.prevhash || '';
+    this.prevhash = opts.prevhash || GENESIS_PREVHASH;
     this.uncles_hash = opts.uncles_hash || block_structure_rev.uncles_hash[2];
     this.coinbase = opts.coinbase || block_structure_rev.coinbase[2];
     this.difficulty = opts.difficulty || block_structure_rev.difficulty[2];
