@@ -159,6 +159,18 @@ Block.prototype.set_balance = function(address, value) {
     this._set_acct_item(address, 'balance', value);
 };
 
+Block.prototype.delta_balance = function(address, value) {
+    return this._delta_item(address, 'balance', value);
+};
+
+Block.prototype.transfer_value = function(from_addr, to_addr, value) {
+    //assert value >= 0
+    if (this.delta_balance(from_addr, value.negate())) {
+        return this.delta_balance(to_addr, value);
+    }
+    return false;
+};
+
 // _get_acct_item(bin or hex, int) -> bin
 Block.prototype._get_acct_item = function(address, param) {
     /* get account item
@@ -187,6 +199,20 @@ Block.prototype._set_acct_item = function(address, param, value) {
     var encoder = util.encoders[acct_structure_rev[param][1]];
     acct[acct_structure_rev[param][0]] = encoder(value);
     this.state.update(address, rlp.encode(acct));
+};
+
+Block.prototype._delta_item = function(address, param, value) {
+    /* add value to account item
+    :param address: account address, can be binary or hex string
+    :param param: parameter to increase/decrease
+    :param value: can be positive or negative
+    */
+    value = this._get_acct_item(address, param).add(value);
+    if (value.compareTo(BigInteger.ZERO) < 0) {  // ie value < 0
+        return false;
+    }
+    this._set_acct_item(address, param, value);
+    return true;
 };
 
 function genesis(initial_alloc) {
