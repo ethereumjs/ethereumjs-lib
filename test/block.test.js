@@ -22,7 +22,7 @@ describe('block', function(){
   });
 
   describe('#transfer_value', function(){
-    it('should transfer correctly', function(){
+    it('should transfer correctly when balance is sufficient', function(){
       var b = block.genesis();
       var value = BigInteger('42');
       var fromAddr = '8a40bfaa73256b60764c1bf40675a99083efb075';
@@ -35,6 +35,19 @@ describe('block', function(){
       bSuccess.should.equal(true);
       b.get_balance(fromAddr).compareTo(expFromBalance).should.equal(0);
       b.get_balance(toAddr).compareTo(expToBalance).should.equal(0);
+    });
+
+    it('should not transfer when value is larger than balance', function(){
+      var b = block.genesis();
+      var fromAddr = '8a40bfaa73256b60764c1bf40675a99083efb075';
+      var toAddr = 'e4157b34ea9615cfbde6b4fda419828124b70c78';
+      var balance = BigInteger('2').pow(200);
+      var value = balance.add(BigInteger('13'));
+
+      var bSuccess = b.transfer_value(fromAddr, toAddr, value);
+      bSuccess.should.equal(false);
+      b.get_balance(fromAddr).compareTo(balance).should.equal(0);
+      b.get_balance(toAddr).compareTo(balance).should.equal(0);
     });
   });
 });
