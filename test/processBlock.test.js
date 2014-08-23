@@ -18,10 +18,12 @@ describe('process block', function(){
 
     (function() {
         processBlock.apply_transaction(b, tx);
-    }).should.throw(processBlock.UnsignedTransaction);
+    }).should.throw().property('name', 'UnsignedTransaction');
+//    NB: bunch of time spent and
+//    should.throw(processBlock.UnsignedTransaction) was not actually verifying the type of UnsignedTransaction
   });
 
-  it('should transfer ether', function(){
+  it('should transfer ether and validate nonce', function(){
     var cow1alloc = {
     "7986b3df570230288501eea3d890bd66948c9b79": BigInteger("1606938044258990275541962092341162602522202993782792835301376")
     };
@@ -39,9 +41,12 @@ describe('process block', function(){
     var signedTx = transaction.sign(parsedTx, key);
     transaction.hex_serialize(signedTx).should.equal(exp);
 
-    //// processBlock(b, signedTx)
-
     var result = processBlock.apply_transaction(b, signedTx);
     result.success.should.equal(true);
+
+    // validate that replaying tx throws
+    (function() {
+        processBlock.apply_transaction(b, signedTx);
+    }).should.throw().property('name', 'InvalidNonce');
   });
 });

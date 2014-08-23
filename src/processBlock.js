@@ -17,9 +17,28 @@ var OUT_OF_GAS = -1;
 var CREATE_CONTRACT_ADDRESS = '0000000000000000000000000000000000000000';
 
 
-function UnsignedTransaction() {
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+function InvalidTransaction(message) {
+    this.name = 'InvalidTransaction';
+    this.message = message;
 }
-UnsignedTransaction.prototype = Error.prototype;
+InvalidTransaction.prototype = new Error();
+InvalidTransaction.prototype.constructor = InvalidTransaction;
+
+function UnsignedTransaction(message) {
+    this.name = 'UnsignedTransaction';
+    this.message = message;
+}
+UnsignedTransaction.prototype = InvalidTransaction.prototype;
+UnsignedTransaction.prototype.constructor = UnsignedTransaction;
+
+function InvalidNonce(message) {
+    this.name = 'InvalidNonce';
+    this.message = message;
+}
+InvalidNonce.prototype = InvalidTransaction.prototype;
+InvalidNonce.prototype.constructor = InvalidNonce;
+
 
 function Message(sender, to, value, gas, data) {
     return {
@@ -34,7 +53,7 @@ function Message(sender, to, value, gas, data) {
 function apply_transaction(block, tx) {
 
     function rp(actual, target) {
-        return tx + ', actual:'+actual + ' target:'+target;
+        return JSON.stringify(tx) + ', actual:'+actual + ' target:'+target;
         //return '%r, actual:%r target:%r' % (tx, actual, target)
     }
 
@@ -77,9 +96,9 @@ function apply_transaction(block, tx) {
     }
 
     // start transacting //////////////////////////////////
-//    if (tx.to) {
-//        block.increment_nonce(tx.sender);
-//    }
+    if (tx.to) {
+        block.increment_nonce(tx.sender);
+    }
 
     // buy startgas
     var success = block.transfer_value(tx.sender, block.coinbase,
