@@ -165,10 +165,14 @@ Block.prototype.delta_balance = function(address, value) {
 
 Block.prototype.transfer_value = function(from_addr, to_addr, value) {
     //assert value >= 0
-    if (this.delta_balance(from_addr, value.negate())) {
+    if (this.delta_balance(from_addr, BigInteger(value+'').negate())) {
         return this.delta_balance(to_addr, value);
     }
     return false;
+};
+
+Block.prototype.get_code = function(address) {
+    return this._get_acct_item(address, 'code');
 };
 
 // _get_acct_item(bin or hex, int) -> bin

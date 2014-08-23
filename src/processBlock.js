@@ -1,7 +1,33 @@
+GSTEP = 1
+GSTOP = 0
+GSHA3 = 20
+GSLOAD = 20
+GSSTORE = 100
+GBALANCE = 20
+GCREATE = 100
+GCALL = 20
+GMEMORY = 1
+GTXDATA = 5
+GTXCOST = 500
+
+OUT_OF_GAS = -1
+
+CREATE_CONTRACT_ADDRESS = '0000000000000000000000000000000000000000'
+
 
 function UnsignedTransaction() {
 }
 UnsignedTransaction.prototype = Error.prototype;
+
+function Message(sender, to, value, gas, data) {
+    return {
+        sender: sender,
+        to: to,
+        value: value,
+        gas: gas,
+        data: data
+    };
+}
 
 function apply_transaction(block, tx) {
 
@@ -15,14 +41,14 @@ function apply_transaction(block, tx) {
 
     // (2) the transaction nonce is valid (equivalent to the
     //     sender account's current nonce);
-    var acctnonce = block.get_nonce(tx.sender);
-    if (acctnonce != tx.nonce) {
-        throw new InvalidNonce(rp(tx.nonce, acctnonce));
-    }
+//    var acctnonce = block.get_nonce(tx.sender);
+//    if (acctnonce != tx.nonce) {
+//        throw new InvalidNonce(rp(tx.nonce, acctnonce));
+//    }
 
     // (3) the gas limit is no smaller than the intrinsic gas,
     // g0, used by the transaction;
-    var intrinsic_gas_used = GTXDATA * len(tx.data) + GTXCOST;
+    var intrinsic_gas_used = GTXDATA * tx.data.length + GTXCOST;
     if (tx.startgas < intrinsic_gas_used) {
         throw new InsufficientStartGas(rp(tx.startgas, intrinsic_gas_used));
     }
@@ -43,54 +69,106 @@ function apply_transaction(block, tx) {
     // check block gas limit
     if (block.gas_used + tx.startgas > block.gas_limit) {  // todo?
         throw new BlockGasLimitReached(
-            rp(block.gas_used + tx.startgas, block.gas_limit))
+            rp(block.gas_used + tx.startgas, block.gas_limit));
     }
 
     // start transacting //////////////////////////////////
-    if (tx.to) {
-        block.increment_nonce(tx.sender);
-    }
+//    if (tx.to) {
+//        block.increment_nonce(tx.sender);
+//    }
 
     // buy startgas
     var success = block.transfer_value(tx.sender, block.coinbase,
-                                   tx.gasprice * tx.startgas)
+                                   tx.gasprice * tx.startgas);
     //assert success
 
     /* todo
     blocks:
-    getnonce, incrnonce
+    getnonce, incrnonce, get_code
     add_transaction_to_list
     snapshot
-    Message
-    
+    */
 
-    snapshot = block.snapshot()
-    message_gas = tx.startgas - intrinsic_gas_used
-    message = Message(tx.sender, tx.to, tx.value, message_gas, tx.data)
+    //snapshot = block.snapshot()
+
+    var message_gas = tx.startgas - intrinsic_gas_used;
+    var message = Message(tx.sender, tx.to, tx.value, message_gas, tx.data)
     // MESSAGE
-    if tx.to and tx.to != '0000000000000000000000000000000000000000':
-        result, gas_remained, data = apply_msg(block, tx, message)
-    else:  // CREATE
-        result, gas_remained, data = create_contract(block, tx, message)
-    assert gas_remained >= 0
-    logger.debug(
-        'applied tx, result %s gas remained %s data/code %s', result, gas_remained,
-        ''.join(map(chr, data)).encode('hex'))
-    if not result:  // 0 = OOG failure in both cases
-        block.revert(snapshot)
-        block.gas_used += tx.startgas
-        output = OUT_OF_GAS
-    else:
-        gas_used = tx.startgas - gas_remained
+    var res;
+    if (tx.to && tx.to !== '0000000000000000000000000000000000000000') {
+        res = apply_msg_send(block, tx, message)
+    }
+    else {  // CREATE
+        // TODO
+    }
+
+    var output;
+    if (!res.result) {
+    }
+    else {
+        var gas_used = tx.startgas - res.gas_remained;
         // sell remaining gas
         block.transfer_value(
-            block.coinbase, tx.sender, tx.gasprice * gas_remained)
-        block.gas_used += gas_used
-        output = ''.join(map(chr, data)) if tx.to else result.encode('hex')
-    block.add_transaction_to_list(tx)
-    success = output is not OUT_OF_GAS
-    return success, output if success else ''
+            block.coinbase, tx.sender, tx.gasprice * res.gas_remained);
+        block.gas_used += gas_used;
+        if (tx.to) {
+            //console.log('dd: ', res.data);
+            output = 'TODO';  //''.join(map(chr, res.data))
+        }
+        else {
+            output = res.result;
+        }
+    }
+    if (success) {
+        return {
+            success: success,
+            output: output
+        }
+    }
+    else {
+        return '';
+    }
+}
+
+function apply_msg(block, tx, msg, code) {
+    //pblogger.log("MSG APPLY", tx=tx.hex_hash(), to=msg.to, gas=msg.gas)
+    // Transfer value, instaquit if not enough
+    var o = block.transfer_value(msg.sender, msg.to, msg.value);
+    if (!o) {
+        return {
+            result: 1,
+            gas_remained: msg.gas,
+            data: []
+        };
+    }
+
+    // TODO this is hardcoded until we implement Compustate
+    return {
+        result: 1,
+        gas_remained: msg.gas,
+        data: []
+    };
+
+    /* TODO
+    snapshot = block.snapshot()
+    compustate = Compustate(gas=msg.gas)
+    t, ops = time.time(), 0
+    // Main loop
+    while 1:
+        o = apply_op(block, tx, msg, code, compustate)
+        ops += 1
+        if o is not None:
+            pblogger.log('PERFORMAMCE', ops=ops, time_per_op=(time.time() - t) / ops)
+            pblogger.log('MSG APPLIED', result=o)
+            if o == OUT_OF_GAS:
+                block.revert(snapshot)
+                return 0, compustate.gas, []
+            else:
+                return 1, compustate.gas, o
     */
+}
+function apply_msg_send(block, tx, msg) {
+    return apply_msg(block, tx, msg, block.get_code(msg.to));
 }
 
 module.exports = {

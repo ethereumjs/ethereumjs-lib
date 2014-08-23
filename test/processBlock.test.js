@@ -20,9 +20,13 @@ describe('process block', function(){
         processBlock.apply_transaction(b, tx)
     }).should.throw(processBlock.UnsignedTransaction);
   });
-    
-  it.skip('should transfer ether', function(){
-    var b = block.genesis();
+
+  it('should transfer ether', function(){
+    var cow1alloc = {
+    "7986b3df570230288501eea3d890bd66948c9b79": BigInteger("1606938044258990275541962092341162602522202993782792835301376")
+    };
+
+    var b = block.genesis(cow1alloc);
 
     var to = 'cd2a3d9f938e13cd947ec05abc7fe734df8dd826'; // cow
     var key = '0c06818f82e04c564290b32ab86b25676731fc34e9a546108bf109194c8e3aae'; // cow1
@@ -38,6 +42,6 @@ describe('process block', function(){
     //// processBlock(b, signedTx)
 
     var result = processBlock.apply_transaction(b, signedTx);
-
+    result.success.should.be.true;
   });
 });
