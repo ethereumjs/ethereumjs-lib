@@ -17,7 +17,7 @@ describe('process block', function(){
     tx.should.equal(expTx);
 
     (function() {
-        processBlock.apply_transaction(b, tx)
+        processBlock.apply_transaction(b, tx);
     }).should.throw(processBlock.UnsignedTransaction);
   });
 
@@ -42,6 +42,6 @@ describe('process block', function(){
     //// processBlock(b, signedTx)
 
     var result = processBlock.apply_transaction(b, signedTx);
-    result.success.should.be.true;
+    result.success.should.equal(true);
   });
 });

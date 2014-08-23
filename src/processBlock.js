@@ -1,18 +1,18 @@
-GSTEP = 1
-GSTOP = 0
-GSHA3 = 20
-GSLOAD = 20
-GSSTORE = 100
-GBALANCE = 20
-GCREATE = 100
-GCALL = 20
-GMEMORY = 1
-GTXDATA = 5
-GTXCOST = 500
+var GSTEP = 1;
+var GSTOP = 0;
+var GSHA3 = 20;
+var GSLOAD = 20;
+var GSSTORE = 100;
+var GBALANCE = 20;
+var GCREATE = 100;
+var GCALL = 20;
+var GMEMORY = 1;
+var GTXDATA = 5;
+var GTXCOST = 500;
 
-OUT_OF_GAS = -1
+var OUT_OF_GAS = -1;
 
-CREATE_CONTRACT_ADDRESS = '0000000000000000000000000000000000000000'
+var CREATE_CONTRACT_ADDRESS = '0000000000000000000000000000000000000000';
 
 
 function UnsignedTransaction() {
@@ -92,11 +92,11 @@ function apply_transaction(block, tx) {
     //snapshot = block.snapshot()
 
     var message_gas = tx.startgas - intrinsic_gas_used;
-    var message = Message(tx.sender, tx.to, tx.value, message_gas, tx.data)
+    var message = Message(tx.sender, tx.to, tx.value, message_gas, tx.data);
     // MESSAGE
     var res;
     if (tx.to && tx.to !== '0000000000000000000000000000000000000000') {
-        res = apply_msg_send(block, tx, message)
+        res = apply_msg_send(block, tx, message);
     }
     else {  // CREATE
         // TODO
@@ -123,7 +123,7 @@ function apply_transaction(block, tx) {
         return {
             success: success,
             output: output
-        }
+        };
     }
     else {
         return '';
@@ -174,4 +174,4 @@ function apply_msg_send(block, tx, msg) {
 module.exports = {
     apply_transaction: apply_transaction,
     UnsignedTransaction: UnsignedTransaction
-}
+};
