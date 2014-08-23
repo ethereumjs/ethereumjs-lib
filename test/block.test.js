@@ -15,7 +15,7 @@ describe('block', function(){
   describe('#get_balance', function(){
     it('should be correct for a genesis block', function(){
       var b = block.genesis();
-      var bal = b.get_balance('8a40bfaa73256b60764c1bf40675a99083efb075');
+      var bal = b.get_balance('51ba59315b3a95761d0863b05ccc7a7f54703d99');
       var exp = BigInteger('2').pow(200);
       bal.compareTo(exp).should.equal(0);
     });
@@ -25,7 +25,7 @@ describe('block', function(){
     it('should transfer correctly when balance is sufficient', function(){
       var b = block.genesis();
       var value = BigInteger('42');
-      var fromAddr = '8a40bfaa73256b60764c1bf40675a99083efb075';
+      var fromAddr = '51ba59315b3a95761d0863b05ccc7a7f54703d99';
       var toAddr = 'e4157b34ea9615cfbde6b4fda419828124b70c78';
       var balance = BigInteger('2').pow(200);
       var expFromBalance = balance.subtract(value);
@@ -39,7 +39,7 @@ describe('block', function(){
 
     it('should not transfer when value is larger than balance', function(){
       var b = block.genesis();
-      var fromAddr = '8a40bfaa73256b60764c1bf40675a99083efb075';
+      var fromAddr = '51ba59315b3a95761d0863b05ccc7a7f54703d99';
       var toAddr = 'e4157b34ea9615cfbde6b4fda419828124b70c78';
       var balance = BigInteger('2').pow(200);
       var value = balance.add(BigInteger('13'));
