@@ -151,6 +151,22 @@ Block.prototype._add_transaction_to_list = function(tx_serialized, state_root, g
 };
 */
 
+Block.prototype.get_nonce = function(address) {
+    return this._get_acct_item(address, 'nonce');
+};
+
+Block.prototype.set_nonce = function(address, value) {
+    this._set_acct_item(address, 'nonce', value);
+};
+
+Block.prototype.increment_nonce = function(address) {
+    return this._delta_item(address, 'nonce', BigInteger.ONE);
+};
+
+Block.prototype.decrement_nonce = function(address) {
+    this._delta_item(address, 'nonce', BigInteger.ONE.negate());
+};
+
 Block.prototype.get_balance = function(address) {
     return this._get_acct_item(address, 'balance');
 };

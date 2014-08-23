@@ -1,3 +1,5 @@
+var _ = require('./lodash/lodash.min');
+
 var GSTEP = 1;
 var GSTOP = 0;
 var GSHA3 = 20;
@@ -31,8 +33,10 @@ function Message(sender, to, value, gas, data) {
 
 function apply_transaction(block, tx) {
 
-    // def rp(actual, target):
-    //     return '%r, actual:%r target:%r' % (tx, actual, target)
+    function rp(actual, target) {
+        return tx + ', actual:'+actual + ' target:'+target;
+        //return '%r, actual:%r target:%r' % (tx, actual, target)
+    }
 
     // (1) The transaction signature is valid;
     if (!tx.sender) {
@@ -41,10 +45,10 @@ function apply_transaction(block, tx) {
 
     // (2) the transaction nonce is valid (equivalent to the
     //     sender account's current nonce);
-//    var acctnonce = block.get_nonce(tx.sender);
-//    if (acctnonce != tx.nonce) {
-//        throw new InvalidNonce(rp(tx.nonce, acctnonce));
-//    }
+    var acctnonce = block.get_nonce(tx.sender);
+    if (!_.isEqual(acctnonce, tx.nonce)) {
+        throw new InvalidNonce(rp(tx.nonce, acctnonce));
+    }
 
     // (3) the gas limit is no smaller than the intrinsic gas,
     // g0, used by the transaction;
