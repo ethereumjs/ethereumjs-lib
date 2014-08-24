@@ -75,7 +75,6 @@ var rlp = (function() {
     }
 
     function encode(s) {
-      console.log('arr? ', util.isArray(s), 's', s)
         if (util.isString(s)) {
             if (s.length === 1 && s.charCodeAt(0) < 128) {
                 return s;
@@ -85,7 +84,6 @@ var rlp = (function() {
             }
         }
         else if (util.isArray(s)) {
-          console.log('map enc: ', s.map(encode))
             return concat(s.map(encode));
         }
         else if (s instanceof BigInteger) {
@@ -97,7 +95,6 @@ var rlp = (function() {
             return encode(bi);
         }
         else {
-          console.log('err s: ', s)
             throw new Error("input type not supported");
         }
     }

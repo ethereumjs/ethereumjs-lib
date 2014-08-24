@@ -92,14 +92,11 @@ describe('offical tests', function () {
     var jsonTests;
     before(function () {
         var rlpTestdata = fs.readFileSync('./test/jsonData/rlptest.json')
-      //console.log(rlpTestdata)
         jsonTests = JSON.parse(rlpTestdata);
     });
 
-    it.only('pass all tests', function (done) {
+    it('pass all tests', function (done) {
         for (var test in jsonTests) {
-            console.log(test);
-
             var incoming  = jsonTests[test].in
             //if we are testing a big number
             if (incoming[0] === '#') {
@@ -107,8 +104,8 @@ describe('offical tests', function () {
             }
 
             var encoded = rlp.encode(incoming);
-//console.log('incoming: ', incoming, 'enc: ', util.encodeHex(encoded))
-util.encodeHex(encoded).should.equal(jsonTests[test].out.toLowerCase());
+            var rlpHex = util.encodeHex(encoded);
+            rlpHex.should.equal(jsonTests[test].out.toLowerCase());
         }
         done();
     });
