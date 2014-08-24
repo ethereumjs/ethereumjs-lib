@@ -88,8 +88,8 @@ var Block = function(opts) {
     this.nonce = opts.nonce || '';
     this.uncles = opts.uncles || [];
 
-    var state_root = opts.state_root || '';
-    var tx_list_root = opts.tx_list_root || '';
+    var state_root = opts.state_root || trie.BLANK_ROOT;
+    var tx_list_root = opts.tx_list_root || trie.BLANK_ROOT;
 
     var transaction_list = opts.transaction_list || [];
 
@@ -135,10 +135,6 @@ var Block = function(opts) {
     if not this.is_genesis() and this.nonce and not this.check_proof_of_work(this.nonce):
         raise Exception("PoW check failed")
 */
-};
-
-Block.prototype.stateRoot = function() {
-    return this.state.rootHash();
 };
 
 /* TODO
@@ -233,6 +229,80 @@ Block.prototype._delta_item = function(address, param, value) {
     }
     this._set_acct_item(address, param, value);
     return true;
+};
+
+Block.prototype.get_state_root = function() {
+    // this.commit_state(); TODO
+    return this.state.rootHash();
+};
+
+Block.prototype.state_root = function() {
+    return this.get_state_root();
+};
+
+Block.prototype.tx_list_root = function() {
+    return this.transactions.rootHash();
+};
+
+Block.prototype.getattr = function(name) {
+    if (name === 'state_root') {
+        return this.state_root();
+    }
+    else if (name === 'tx_list_root') {
+        return this.tx_list_root();
+    }
+    return this[name];
+};
+
+Block.prototype.list_header = function(exclude) {
+    exclude = exclude || [];
+    this.uncles_hash = util.sha3(rlp.encode(this.uncles));
+    var header = [];
+
+    var self = this;
+    block_structure.forEach(function(v, i) {
+        var name = v[0];
+        var typ = v[1];
+        var defaul = v[2];
+        if (exclude.indexOf(name) === -1) {
+            header.push(util.encoders[typ](self.getattr(name)));
+        }
+    });
+    return header;
+};
+
+// returns [[tx_lst_serialized, state_root, gas_used_encoded],...]
+Block.prototype._list_transactions = function() {
+    var txlist = [];
+    var len = this.transaction_count;
+    for (var i=0; i<len; i++) {
+        txlist.push(this.get_transaction(i));
+    }
+    return txlist;
+};
+
+Block.prototype.get_transaction = function(num) {
+    return rlp.decode(this.transactions.get(rlp.encode(util.encode_int(num))));
+};
+
+Block.prototype.get_transactions = function() {
+    throw new Error('TODO');
+};
+
+// Serialization method; should act as perfect inverse function of the
+// constructor assuming no verification failures
+Block.prototype.serialize = function() {
+    return rlp.encode([this.list_header(),
+                       this._list_transactions(),
+                       this.uncles]);
+};
+
+Block.prototype.hash = function() {
+    return util.sha3(this.serialize());
+};
+
+Block.prototype.hex_hash = function() {
+    return util.encodeHex(this.hash());
 };
 
 function genesis(initial_alloc) {
