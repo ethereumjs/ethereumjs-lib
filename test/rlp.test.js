@@ -2,6 +2,8 @@ require('chai').should();
 
 var rlp = require('../src/rlp');
 var util = require('../src/util');
+var BigInteger = require('../src/jsbn/jsbn');
+var fs = require('fs');
 
 describe('rlp', function(){
   describe('#encode', function(){
@@ -85,4 +87,31 @@ describe('rlp', function(){
     })
   })
 })
+
+describe('offical tests', function () {
+    var jsonTests;
+    before(function () {
+        var rlpTestdata = fs.readFileSync('./test/jsonData/rlptest.json')
+      //console.log(rlpTestdata)
+        jsonTests = JSON.parse(rlpTestdata);
+    });
+
+    it('pass all tests', function (done) {
+        for (var test in jsonTests) {
+            console.log(test);
+
+            var incoming  = jsonTests[test].in
+            //if we are testing a big number
+            if(incoming[0] == '#'){
+                var bn = new BigInteger(incoming.slice(1));
+                incoming = bn.toString()
+            }
+
+            var encoded = rlp.encode(incoming);
+//console.log('incoming: ', incoming, 'enc: ', util.encodeHex(encoded))
+util.encodeHex(encoded).should.equal(jsonTests[test].out.toLowerCase());
+        }
+        done();
+    });
+});
 
