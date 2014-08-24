@@ -235,6 +235,19 @@ Block.prototype._delta_item = function(address, param, value) {
     return true;
 };
 
+Block.prototype.get_state_root = function() {
+    // this.commit_state(); TODO
+    return this.state.rootHash();
+}
+
+Block.prototype.state_root = function() {
+    return this.get_state_root();
+}
+
+Block.prototype.tx_list_root = function() {
+    return this.transactions.rootHash();
+}
+
 Block.prototype.getattr = function(name) {
     if (name === 'state_root') {
         return this.state_root();

@@ -52,6 +52,9 @@ describe('block', function(){
         else {
           genesis_default.should.equal(cpp_exp);
         }
+
+          console.log(name)
+        genesis.getattr(name).should.equal(genesis_default);
       });
 
       //b.stateRoot().should.eql(genesisData.genesis_rlp_hex);
