@@ -235,6 +235,48 @@ Block.prototype._delta_item = function(address, param, value) {
     return true;
 };
 
+Block.prototype.getattr = function(name) {
+    if (name === 'state_root') {
+        return this.state_root();
+    }
+    else if (name === 'tx_list_root') {
+        return this.tx_list_root();
+    }
+    return this[name];
+}
+
+Block.prototype.list_header = function(exclude) {
+    exclude = exclude || [];
+    this.uncles_hash = util.sha3(rlp.encode(this.uncless));
+    var header = [];
+
+    block_structure.forEach(function(v, i) {
+        var name = v[0];
+        var typ = v[1];
+        var defaul = v[2];
+        if (exclude.indexOf(name) === -1) {
+            header.push(util.encoders[typ](this.getattr(name)));
+        }
+    });
+    return header;
+}
+
+// Serialization method; should act as perfect inverse function of the
+// constructor assuming no verification failures
+Block.prototype.serialize = function() {
+    return rlp.encode([this.list_header(),
+                       this._list_transactions(),
+                       this.uncles]);
+}
+
+Block.prototype.hash = function() {
+    return util.sha3(this.serialize());
+}
+
+Block.prototype.hex_hash = function() {
+    return util.encodeHex(this.hash());
+}
+
 function genesis(initial_alloc) {
     initial_alloc = initial_alloc || GENESIS_INITIAL_ALLOC;
     // https://ethereum.etherpad.mozilla.org/12

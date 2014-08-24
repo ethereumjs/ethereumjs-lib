@@ -14,7 +14,7 @@ describe('block', function(){
       b.stateRoot().should.eql(genesisData.genesis_state_root);
     });
 
-    it('should have correct rlp hex', function(){
+    it.only('should have correct rlp hex', function(){
       // from pyethereum test/test_chain.py test_genesis_hash
       var genesis = block.genesis();
 
@@ -45,8 +45,6 @@ describe('block', function(){
         typ = val[1];
         genesis_default = val[2];
         cpp_exp = util.decoders[typ](cpp_genesis_header[i]);
-
-        console.log('i: ', i, 'gd: ', genesis_default, 'cpp: ', cpp_exp)
 
         if (typ === 'int') {
           genesis_default.compareTo(cpp_exp).should.equal(0);
