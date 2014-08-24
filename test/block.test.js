@@ -48,13 +48,12 @@ describe('block', function(){
 
         if (typ === 'int') {
           genesis_default.compareTo(cpp_exp).should.equal(0);
+          genesis.getattr(name).compareTo(genesis_default).should.equal(0);
         }
         else {
           genesis_default.should.equal(cpp_exp);
+          genesis.getattr(name).should.equal(genesis_default);
         }
-
-          console.log(name)
-        genesis.getattr(name).should.equal(genesis_default);
       });
 
       //b.stateRoot().should.eql(genesisData.genesis_rlp_hex);

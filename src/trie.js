@@ -142,6 +142,10 @@ Trie.prototype.update = function(k,v) {
 
 // based on pyethereum features/steps/trie.py
 Trie.prototype.rootHash = function() {
+    if (this.root === BLANK_NODE) {
+        return BLANK_ROOT;
+    }
+
     var rlpRoot = rlp.encode(this._rlp_decode(this.root));
     return util.sha3(rlpRoot);
 };

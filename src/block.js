@@ -88,8 +88,8 @@ var Block = function(opts) {
     this.nonce = opts.nonce || '';
     this.uncles = opts.uncles || [];
 
-    var state_root = opts.state_root || '';
-    var tx_list_root = opts.tx_list_root || '';
+    var state_root = opts.state_root || trie.BLANK_ROOT;
+    var tx_list_root = opts.tx_list_root || trie.BLANK_ROOT;
 
     var transaction_list = opts.transaction_list || [];
 
