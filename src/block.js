@@ -137,10 +137,6 @@ var Block = function(opts) {
 */
 };
 
-Block.prototype.stateRoot = function() {
-    return this.state.rootHash();
-};
-
 /* TODO
 Block.prototype._add_transaction_to_list = function(tx_serialized, state_root, gas_used_encoded) {
     // adds encoded data # FIXME: the constructor should get objects

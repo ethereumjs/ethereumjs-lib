@@ -9,11 +9,6 @@ var genesisData = require('./jsonData/genesishashestest.json');
 
 describe('block', function(){
   describe('genesis', function(){
-    it('should have correct state root', function(){
-      var b = block.genesis();
-      b.stateRoot().should.eql(genesisData.genesis_state_root);
-    });
-
     it('should have correct properties', function(){
       // from pyethereum test/test_chain.py test_genesis_hash
       var genesis = block.genesis();
