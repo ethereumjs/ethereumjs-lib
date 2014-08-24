@@ -35,7 +35,7 @@ describe('rlp', function(){
       res.should.equal(exp);
     });
 
-    it.skip('should encode integer 15', function(){
+    it('should encode integer 15', function(){
       var data = 15;
       var exp = '\x0f';
       var res = rlp.encode(data);
