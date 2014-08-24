@@ -84,14 +84,25 @@ var rlp = (function() {
             }
         }
         else if (util.isArray(s)) {
-            var output = s.reduce(function(output, item) {
-                return output += encode(item);
-            }, '');
-            return encodeLength(BigInteger(''+output.length), 192) + output;
+            return concat(s.map(encode));
+        }
+        else if (s instanceof BigInteger) {
+            var hex = util.intToBigEndian(s);
+            return encode(hex);
+        }
+        else if (isFinite(s) && !isNaN(parseFloat(s))) {
+            var bi = BigInteger(''+s);
+            return encode(bi);
         }
         else {
-            throw new Error("input must be string or array");
+            throw new Error("input type not supported");
         }
+    }
+
+    // param s: a list, each item is a string of a rlp encoded data
+    function concat(s) {
+        var output = s.join('');
+        return encodeLength(BigInteger(''+output.length), 192) + output;
     }
 
     return {
