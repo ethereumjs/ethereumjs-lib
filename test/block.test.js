@@ -56,6 +56,8 @@ describe('block', function(){
         }
       });
 
+      genesis.hex_hash().should.equal(genesisData.genesis_hash);
+
       //b.stateRoot().should.eql(genesisData.genesis_rlp_hex);
     });
   });

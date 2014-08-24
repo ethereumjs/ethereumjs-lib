@@ -260,19 +260,38 @@ Block.prototype.getattr = function(name) {
 
 Block.prototype.list_header = function(exclude) {
     exclude = exclude || [];
-    this.uncles_hash = util.sha3(rlp.encode(this.uncless));
+    this.uncles_hash = util.sha3(rlp.encode(this.uncles));
     var header = [];
 
+    var self = this;
     block_structure.forEach(function(v, i) {
         var name = v[0];
         var typ = v[1];
         var defaul = v[2];
         if (exclude.indexOf(name) === -1) {
-            header.push(util.encoders[typ](this.getattr(name)));
+            header.push(util.encoders[typ](self.getattr(name)));
         }
     });
     return header;
 };
+
+// returns [[tx_lst_serialized, state_root, gas_used_encoded],...]
+Block.prototype._list_transactions = function() {
+    var txlist = [];
+    var len = this.transaction_count;
+    for (var i=0; i<len; i++) {
+        txlist.push(this.get_transaction(i));
+    }
+    return txlist;
+}
+
+Block.prototype.get_transaction = function(num) {
+    return rlp.decode(this.transactions.get(rlp.encode(util.encode_int(num))));
+}
+
+Block.prototype.get_transactions = function() {
+    throw new Error('TODO');
+}
 
 // Serialization method; should act as perfect inverse function of the
 // constructor assuming no verification failures
