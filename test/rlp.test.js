@@ -102,9 +102,11 @@ describe('offical tests', function () {
 
             var incoming  = jsonTests[test].in
             //if we are testing a big number
-            if(incoming[0] == '#'){
-                var bn = new BigInteger(incoming.slice(1));
-                incoming = bn.toString()
+            if (incoming[0] == '#') {
+                incoming = new BigInteger(incoming.slice(1));
+            }
+            else if (!isNaN(incoming)) {
+                incoming = new BigInteger(''+incoming);
             }
 
             var encoded = rlp.encode(incoming);

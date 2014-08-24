@@ -89,12 +89,12 @@ var rlp = (function() {
             }, '');
             return encodeLength(BigInteger(''+output.length), 192) + output;
         }
-        else if (!isNaN(s)) {
-            var hex = util.intToBigEndian(BigInteger(''+s));
+        else if (s instanceof BigInteger) {
+            var hex = util.intToBigEndian(s);
             return encode(hex);
         }
         else {
-            throw new Error("input must be string or array");
+            throw new Error("input must be string, array, or BigInteger");
         }
     }
 
