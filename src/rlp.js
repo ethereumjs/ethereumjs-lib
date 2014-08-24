@@ -75,6 +75,7 @@ var rlp = (function() {
     }
 
     function encode(s) {
+      console.log('arr? ', util.isArray(s), 's', s)
         if (util.isString(s)) {
             if (s.length === 1 && s.charCodeAt(0) < 128) {
                 return s;
@@ -84,18 +85,27 @@ var rlp = (function() {
             }
         }
         else if (util.isArray(s)) {
-            var output = s.reduce(function(output, item) {
-                return output += encode(item);
-            }, '');
-            return encodeLength(BigInteger(''+output.length), 192) + output;
+          console.log('map enc: ', s.map(encode))
+            return concat(s.map(encode));
         }
         else if (s instanceof BigInteger) {
             var hex = util.intToBigEndian(s);
             return encode(hex);
         }
-        else {
-            throw new Error("input must be string, array, or BigInteger");
+        else if (isFinite(s) && !isNaN(parseFloat(s))) {
+            var bi = BigInteger(''+s);
+            return encode(bi);
         }
+        else {
+          console.log('err s: ', s)
+            throw new Error("input type not supported");
+        }
+    }
+
+    // param s: a list, each item is a string of a rlp encoded data
+    function concat(s) {
+        var output = s.join('');
+        return encodeLength(BigInteger(''+output.length), 192) + output;
     }
 
     return {
