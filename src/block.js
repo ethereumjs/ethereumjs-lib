@@ -238,15 +238,15 @@ Block.prototype._delta_item = function(address, param, value) {
 Block.prototype.get_state_root = function() {
     // this.commit_state(); TODO
     return this.state.rootHash();
-}
+};
 
 Block.prototype.state_root = function() {
     return this.get_state_root();
-}
+};
 
 Block.prototype.tx_list_root = function() {
     return this.transactions.rootHash();
-}
+};
 
 Block.prototype.getattr = function(name) {
     if (name === 'state_root') {
@@ -256,7 +256,7 @@ Block.prototype.getattr = function(name) {
         return this.tx_list_root();
     }
     return this[name];
-}
+};
 
 Block.prototype.list_header = function(exclude) {
     exclude = exclude || [];
@@ -272,7 +272,7 @@ Block.prototype.list_header = function(exclude) {
         }
     });
     return header;
-}
+};
 
 // Serialization method; should act as perfect inverse function of the
 // constructor assuming no verification failures
@@ -280,15 +280,15 @@ Block.prototype.serialize = function() {
     return rlp.encode([this.list_header(),
                        this._list_transactions(),
                        this.uncles]);
-}
+};
 
 Block.prototype.hash = function() {
     return util.sha3(this.serialize());
-}
+};
 
 Block.prototype.hex_hash = function() {
     return util.encodeHex(this.hash());
-}
+};
 
 function genesis(initial_alloc) {
     initial_alloc = initial_alloc || GENESIS_INITIAL_ALLOC;

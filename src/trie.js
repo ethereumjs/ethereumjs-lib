@@ -140,22 +140,10 @@ Trie.prototype.update = function(k,v) {
     this.root = this._update(this.root, key, v);
 };
 
-Trie.prototype.rootHash = function() {
-    if (this.root === BLANK_NODE) {
-        return BLANK_ROOT;
-    }
-
-    var val = rlp.encode(this.root);
-    var key = util.sha3(val);
-    // TODO
-//    self.db.put(key, val)
-//    self.spv_check(self.root_node)
-
-    return key;
-
 // based on pyethereum features/steps/trie.py
-//    var rlpRoot = rlp.encode(this._rlp_decode(this.root));
-//    return util.encodeHex(util.sha3(rlpRoot));
+Trie.prototype.rootHash = function() {
+    var rlpRoot = rlp.encode(this._rlp_decode(this.root));
+    return util.sha3(rlpRoot);
 };
 
 
