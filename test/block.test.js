@@ -14,7 +14,7 @@ describe('block', function(){
       b.stateRoot().should.eql(genesisData.genesis_state_root);
     });
 
-    it.only('should have correct rlp hex', function(){
+    it('should have correct properties', function(){
       // from pyethereum test/test_chain.py test_genesis_hash
       var genesis = block.genesis();
 
@@ -58,7 +58,10 @@ describe('block', function(){
 
       genesis.hex_hash().should.equal(genesisData.genesis_hash);
 
-      //b.stateRoot().should.eql(genesisData.genesis_rlp_hex);
+      genesis.hex_hash().should.equal(
+        util.encodeHex(
+          util.sha3(
+            util.decodeHex(genesisData.genesis_rlp_hex))));
     });
   });
 

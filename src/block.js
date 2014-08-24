@@ -283,15 +283,15 @@ Block.prototype._list_transactions = function() {
         txlist.push(this.get_transaction(i));
     }
     return txlist;
-}
+};
 
 Block.prototype.get_transaction = function(num) {
     return rlp.decode(this.transactions.get(rlp.encode(util.encode_int(num))));
-}
+};
 
 Block.prototype.get_transactions = function() {
     throw new Error('TODO');
-}
+};
 
 // Serialization method; should act as perfect inverse function of the
 // constructor assuming no verification failures
