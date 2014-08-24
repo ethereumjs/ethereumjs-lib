@@ -48,7 +48,12 @@ describe('block', function(){
 
         console.log('i: ', i, 'gd: ', genesis_default, 'cpp: ', cpp_exp)
 
-        genesis_default.should.equal(cpp_exp);
+        if (typ === 'int') {
+          genesis_default.compareTo(cpp_exp).should.equal(0);
+        }
+        else {
+          genesis_default.should.equal(cpp_exp);
+        }
       });
 
       //b.stateRoot().should.eql(genesisData.genesis_rlp_hex);
