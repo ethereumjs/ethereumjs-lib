@@ -19,7 +19,7 @@
     "chai": "~1.9.1",
     "istanbul": "0.1.30",
     "uglify-js": "*",
-    "node-browserify": "https://github.com/substack/node-browserify/tarball/master"
+    "browserify": "https://github.com/substack/node-browserify/tarball/master"
   },
   "testling": {
     "browsers": [
