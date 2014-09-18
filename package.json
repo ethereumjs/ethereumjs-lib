@@ -17,6 +17,7 @@
     "async": "~0.2.10",
     "bigi": "^1.3.0",
     "bignum": "^0.7.0",
+    "bn.js": "0.14.0",
     "ecdsa": "^0.5.3",
     "ecdsa-native": "0.0.1",
     "levelup": "^0.18.5",
@@ -36,7 +37,7 @@
       "chrome/22..latest"
     ],
     "harness": "mocha-qunit",
-    "files": "test/*.js"
+    "files": "test/transactions.js"
   },
   "scripts": {
     "test": "mocha --timeout 5000 --reporter spec ./test/"
@@ -44,5 +45,11 @@
   "author": {
     "name": "Ethereum",
     "url": "http://ethereum.org"
+  },
+  "browser": {
+    "lib/network": false,
+    "ecdsa-native": "ecdsa",
+    "bignum": "bn.js",
+    "sha3": "./browser/sha3.js"
   }
 }
