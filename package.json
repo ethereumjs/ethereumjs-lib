@@ -36,7 +36,7 @@
       "firefox/15..latest",
       "chrome/22..latest"
     ],
-    "harness": "mocha-qunit",
+    "harness": "mocha-bdd",
     "files": "test/transactions.js"
   },
   "scripts": {
@@ -48,8 +48,9 @@
   },
   "browser": {
     "lib/network": false,
-    "ecdsa-native": "ecdsa",
-    "bignum": "bn.js",
+    "ecdsa-native": false,
+    "./lib/ecdsaOps.js": "./lib/browser-ecdsaOps.js",
+    "bignum": "./browser/bignum.js",
     "sha3": "./browser/sha3.js"
   }
 }

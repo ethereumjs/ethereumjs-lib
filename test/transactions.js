@@ -34,7 +34,7 @@ describe('[Transaction]: Basic functions', function () {
   it('should correctly calcuate the upfront fee', function (done) {
     transactions.forEach(function (tx, i) {
       if (txFixtures[i].cost) {
-        assert(tx.getBaseFee().eq(txFixtures[i].cost));
+        assert(tx.getBaseFee().eq(bignum(txFixtures[i].cost)));
       }
     });
     done();
