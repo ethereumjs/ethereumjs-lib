@@ -20,9 +20,10 @@
     "bn.js": "0.14.0",
     "ecdsa": "^0.5.3",
     "ecdsa-native": "0.0.1",
+    "ecurve": "^0.6.0",
     "levelup": "^0.18.5",
-    "merkle-patricia-tree": "^0.1.6",
-    "rlp": "0.0.3",
+    "merkle-patricia-tree": "*",
+    "rlp": "*",
     "sha3": "~1.0.0",
     "underscore": "~1.6.0"
   },
@@ -37,7 +38,9 @@
       "chrome/22..latest"
     ],
     "harness": "mocha-bdd",
-    "files": "test/transactions.js"
+    "files": [
+      "test/vm.js"
+    ]
   },
   "scripts": {
     "test": "mocha --timeout 5000 --reporter spec ./test/"
@@ -49,7 +52,7 @@
   "browser": {
     "lib/network": false,
     "ecdsa-native": false,
-    "./lib/ecdsaOps.js": "./lib/browser-ecdsaOps.js",
+    "./lib/ecdsaOps.js": "./browser/ecdsaOps.js",
     "bignum": "./browser/bignum.js",
     "sha3": "./browser/sha3.js"
   }
