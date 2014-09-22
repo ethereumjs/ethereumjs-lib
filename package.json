@@ -21,7 +21,7 @@
     "ecdsa": "^0.5.3",
     "ecdsa-native": "0.0.1",
     "ecurve": "^0.6.0",
-    "levelup": "^0.18.5",
+    "levelup": "*",
     "merkle-patricia-tree": "*",
     "rlp": "*",
     "sha3": "~1.0.0",
