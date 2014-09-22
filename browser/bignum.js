@@ -1,3 +1,4 @@
+//horrible horrible shims to get bigi to act like bignum
 var bigi = require('bigi');
 
 var bi = function (i, r) {
@@ -10,13 +11,13 @@ var bi = function (i, r) {
   return bigi(i, r);
 };
 
-bi.fromBuffer = function (buf) {
-  return bigi.fromBuffer(buf);
-};
+bi.fromBuffer =  bigi.fromBuffer;
+
 
 bigi.prototype.mul = wrap('multiply');
 bigi.prototype.eq = wrap('equals');
 bigi.prototype.sub = wrap('subtract');
+bigi.prototype.div = wrap('divide');
 
 bigi.prototype.toNumber = function () {
   return Number(this.toString());

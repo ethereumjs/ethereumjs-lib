@@ -39,7 +39,11 @@
     ],
     "harness": "mocha-bdd",
     "files": [
-      "test/vm.js"
+      "test/vm.js",
+      "test/transactions.js",
+      "test/runBlock.js",
+      "test/block.js",
+      "test/blockchain.js"
     ]
   },
   "scripts": {
