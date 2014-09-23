@@ -1,15 +1,15 @@
-ethereum-lib [![Build Status](https://travis-ci.org/wanderer/ethereum-lib-node.svg?branch=master)](https://travis-ci.org/wanderer/ethereum-lib-node)
+ethereumjs-lib [![Build Status](https://travis-ci.org/wanderer/ethereum-lib-node.svg?branch=master)](https://travis-ci.org/wanderer/ethereum-lib-node)
 ===========
 
 
-A Node library of core [Ethereum](http://Ethereum.org) functions.
+A Javascript library of core [Ethereum](http://Ethereum.org) functions.
 
 ####Install
-`npm install ethereum-lib`
+`npm install ethereumjs-lib`
 
 ### Usage
 ``` javascript
- var Network = require('ethereum-node-lib').Network;
+ var Network = require('ethereumjs-lib').Network;
  
  //create a new tcp server instance using network version 25
  var network = new Network({
@@ -26,7 +26,7 @@ A Node library of core [Ethereum](http://Ethereum.org) functions.
  - [How to run contracts and create stack traces](https://wanderer.github.io/ethereum/nodejs/code/2014/08/12/running-contracts-with-vm/)
 
 #### API
-`ethereum-lib` provides the following.
+`ethereumjs-lib` provides the following.
 
  - [Network](./docs/networking.md) - Networking protocol and peer managment
  - [VM](./docs/VM.md) - The Ethereum vitural machine and state processing functions
@@ -39,7 +39,12 @@ A Node library of core [Ethereum](http://Ethereum.org) functions.
  - [Trie](https://github.com/wanderer/merkle-patricia-tree) - Modified Merkle Patricia Tree
 
 ####Testing
+Tests use mocha
 `npm test`
+
+For browser testing install testling and run  
+`testling -u`
+
 
 ####License
 GPL3
