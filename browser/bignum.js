@@ -12,8 +12,6 @@ var bi = function (i, r) {
 };
 
 bi.fromBuffer =  bigi.fromBuffer;
-
-
 bigi.prototype.mul = wrap('multiply');
 bigi.prototype.eq = wrap('equals');
 bigi.prototype.sub = wrap('subtract');
@@ -39,11 +37,10 @@ bigi.prototype.lt = function (n) {
   return false;
 };
 
-
-module.exports = bi;
-
 function wrap(f2) {
   return function (i) {
     return this[f2](bi(i));
   };
 }
+
+module.exports = bi;
