@@ -7,7 +7,7 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions.
 ####Install
 `npm install ethereumjs-lib`
 
-### Usage
+### Node Usage
 ``` javascript
  var Network = require('ethereumjs-lib').Network;
  
@@ -19,6 +19,10 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions.
  //start listening for incoming connects
  network.listen(30303, '0.0.0.0');
 ```
+
+### Browser Usage
+First `ethereumjs-lib` can be used with `browserify`. But you can also produce a standlone file by running `npm run-script compile`  which then can be used like this `var Ethereum = include('ethereumjs-lib')`
+
 #### Examples
 
  - [Exploring the state trie](https://wanderer.github.io/ethereum/nodejs/code/2014/05/21/using-ethereums-tries-with-node/)
@@ -42,7 +46,7 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions.
 Tests use mocha
 `npm test`
 
-For browser testing install testling and run  
+For browser testing install testling `npm install testling -g` and run  
 `testling -u`
 
 
