@@ -26,8 +26,10 @@ network.on('message.peers', function(){
     console.log('got peers');
 });
 
-network.on('message.transaction', function(){
-    console.log('got a transaction');
+network.on('message.transactions', function(txs){
+   txs.forEach(function(tx){
+      console.log('got a transaction to: ' + tx.to.toString('hex'));
+   });
 });
 
 network.on('message.blocks', function(){
