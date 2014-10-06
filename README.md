@@ -1,4 +1,4 @@
-ethereumjs-lib
+ethereumjs-lib [![Build Status](https://travis-ci.org/ethereum/ethereumjs-lib.svg?branch=master)](https://travis-ci.org/ethereum/ethereumjs-lib)
 ===========
 
 
