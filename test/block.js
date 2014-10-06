@@ -5,7 +5,6 @@ var Block = require('../lib/block.js'),
   Blockchain = require('../lib/blockchain.js'),
   levelup = require('levelup');
 
-
 var blockDB = levelup('', {
   db: require('memdown')
 }),
@@ -34,7 +33,6 @@ describe('[Block]: Basic functions', function () {
       block.genTxTrie(cb);
     }, done);
   });
-
 
   it('should validate POW', function () {
     //the genesis block does not have a valid POW
