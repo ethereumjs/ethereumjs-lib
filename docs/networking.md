@@ -45,12 +45,10 @@ Creates new Network object with the following arguments
 
 ### `Network` options
 When creating a Network the following options can be used to configure its behavoir.
-- `version` - The network version as a `Number`
-- `blockchainQuerying` - Determines whether of not this node will broadcast blocks
-- `peerDiscovery` - Determines whether or not this node will broadcast peers
-- `transactionRelaying` - Determines whether or not this node will broadcast transactions
+- `ehtVersion` - The version of the Ethereum protocol this peer implements. Defaults to 33 at present.
 - `timeout` - The lenght of time in milliseconds to wait for a peer to response after connecting to it
 - `maxPeers` - The max number of peer the network will try to connect to
+- `clientId` - specifies the client software identity, as a human-readable string 
 - `publicIp` - The public ip of this node
 
 ### `Network` methods
