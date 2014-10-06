@@ -20,7 +20,6 @@ exports.verifySignature = function () {
     };
 
   if (pubKey) {
-    pubKey = pubKey.getEncoded(false);
     return ecdsa.verify(msgHash, sig, pubKey);
   } else {
     return false;
@@ -62,9 +61,9 @@ exports.getSenderPublicKey = function () {
 
   var key = false;
   try {
-    key = ecdsa.recoverPubKey(e, sig, sig.v);
+    key = ecdsa.recoverPubKey(e, sig, sig.v).getEncoded(false);
   } catch (e) {}
 
-  return key.getEncoded(false);
+  return key;
 
 };
