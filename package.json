@@ -23,6 +23,7 @@
     "levelup": "*",
     "merkle-patricia-tree": "*",
     "rlp": "*",
+    "secp256k1": "0.0.3",
     "sha3": "~1.0.0",
     "underscore": "~1.6.0"
   },

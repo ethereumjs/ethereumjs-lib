@@ -44,3 +44,27 @@ exports.sign = function (privateKey) {
   var curvePt = ecparams.g.multiply(pKey);
   this.v = ecdsa.calcPubKeyRecoveryParam(e, signature, curvePt) + 27;
 };
+
+/**
+ * gets the senders public key
+ * @method getSenderPublicKey
+ * @return {Buffer}
+ */
+exports.getSenderPublicKey = function () {
+
+  var msgHash = this.hash(false),
+    sig = {
+      r: BigInteger.fromBuffer(this.r),
+      s: BigInteger.fromBuffer(this.s),
+      v: utils.bufferToInt(this.v) - 27
+    },
+    e = BigInteger.fromBuffer(msgHash);
+
+  var key = false;
+  try {
+    key = ecdsa.recoverPubKey(e, sig, sig.v);
+  } catch (e) {}
+
+  return key.getEncoded(false);
+
+};
