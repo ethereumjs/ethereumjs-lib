@@ -15,5 +15,13 @@ it('keyaddr tests', function () {
     var pubKey = ecdsa.createPublicKey(new Buffer(privKey, 'hex'));
     var addr = utils.pubToAddress(pubKey).toString('hex');
     assert(addr === data.addr)
+
+    var emptyMsg = new Buffer([0]);
+    var sig = ecdsa.signCompact(new Buffer(privKey, 'hex'), emptyMsg);
+
+    var recoveredPubKey = ecdsa.recoverCompact(emptyMsg, sig.signature, sig.recoveryId, false);
+    assert(pubKey.toString('hex') === recoveredPubKey.toString('hex'))
+
+    // todo: assert the v, r, s values when secp256k1 module is updated to use deterministicK
   });
 });
