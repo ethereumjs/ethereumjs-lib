@@ -15,19 +15,20 @@
   ],
   "dependencies": {
     "async": "~0.2.10",
+    "bigi": "^1.3.0",
     "bignum": "^0.7.0",
+    "ecdsa": "^0.5.3",
+    "ecurve": "^0.6.0",
     "levelup": "*",
     "merkle-patricia-tree": "*",
     "rlp": "*",
     "secp256k1": "0.0.3",
     "sha3": "~1.0.0",
-    "underscore": "~1.6.0",
-    "bigi": "^1.3.0",
-    "ecdsa": "^0.5.3",
-    "ecurve": "^0.6.0"
+    "underscore": "~1.6.0"
   },
   "devDependencies": {
     "browserify": "^5.12.0",
+    "eslint": "^0.8.2",
     "memdown": "^0.10.2",
     "mocha": ">=1.15.1",
     "uglifyjs": "^2.3.6"
@@ -48,7 +49,7 @@
     ]
   },
   "scripts": {
-    "test": "mocha --timeout 5000 --reporter spec ./test/ ./test/common/",
+    "test": "./script/eslint.sh && mocha --timeout 5000 --reporter spec ./test/ ./test/common/",
     "compile": "./node_modules/browserify/bin/cmd.js index.js -s Ethereum | node ./node_modules/uglifyjs/index.js > ethereum-min.js"
   },
   "author": {

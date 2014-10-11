@@ -1,0 +1,20 @@
+{
+    "env": {
+        "node": true
+    },
+    "rules": {
+       "strict": 0,
+       "no-underscore-dangle": 0,
+       "quotes":  [2, "single"]
+    },
+    "globals":{
+        "it": false,
+        "describe": false,
+        "module": false,
+        "require": false,
+        "before": false,
+        "beforeEach": false,
+        "after": false,
+        "afterEach": false
+    }
+}
