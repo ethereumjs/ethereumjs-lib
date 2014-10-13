@@ -1,12 +1,13 @@
 var Network = require('../lib/network'),
   RLP = require('rlp'),
   net = require('net'),
-  assert = require('assert'),
-  internals = {
-    //test port and host
-    port: 4447,
-    host: 'localhost'
-  };
+  assert = require('assert');
+
+var internals = {
+  //test port and host
+  port: 4447,
+  host: 'localhost'
+};
 
 describe('[Network]: Listening functions', function () {
   var network = new Network();
@@ -56,7 +57,7 @@ describe('[Network]: Peer Messages', function () {
   });
 
   it('should send a hello message on connect', function (done) {
-    network.once('message.hello', function (data) {
+    network.once('message.hello', function () {
       done();
     });
 
@@ -99,13 +100,6 @@ describe('[Network]: Peer Messages', function () {
     peer2._sendGetPeers();
   });
 
-  it('should send peers', function (done) {
-    network.once('message.peers', function () {
-      done();
-    });
-    peer2._sendPeers();
-  });
-
   it('should send disconnect', function (done) {
     network.once('message.disconnect', function () {
       done();
@@ -123,7 +117,7 @@ describe('[Network]: Peer Messages', function () {
 
 });
 
-describe('[Network]: Message Validation', function (done) {
+describe('[Network]: Message Validation', function () {
 
   var lastData,
     network = new Network(),

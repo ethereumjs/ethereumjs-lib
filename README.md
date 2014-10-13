@@ -1,7 +1,6 @@
 ethereumjs-lib [![Build Status](https://travis-ci.org/ethereum/ethereumjs-lib.svg?branch=master)](https://travis-ci.org/ethereum/ethereumjs-lib)
 ===========
 
-
 A Javascript library of core [Ethereum](http://Ethereum.org) functions.
 
 ####Install
@@ -50,7 +49,6 @@ Tests use mocha
 
 For browser testing install testling `npm install testling -g` and run  
 `testling -u`
-
 
 ####License
 GPL3
