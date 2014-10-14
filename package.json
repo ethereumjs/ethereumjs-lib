@@ -49,7 +49,7 @@
     ]
   },
   "scripts": {
-    "test": "./script/eslint.sh && mocha --timeout 5000 --reporter spec ./test/ ./test/common/",
+    "test": "./script/eslint.sh && mocha --timeout 5000 --reporter spec ./test/ ./test/common/**",
     "compile": "./node_modules/browserify/bin/cmd.js index.js -s Ethereum | node ./node_modules/uglifyjs/index.js > ethereum-min.js"
   },
   "author": {
