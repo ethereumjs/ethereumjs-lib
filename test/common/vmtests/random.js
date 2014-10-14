@@ -24,8 +24,7 @@ describe('[VM]: Basic functions', function () {
     var pre,
       account;
 
-    // todo async
-    testData.pre.forEach(function(acctData) {
+    async.each(testData.pre, function(acctData, callback) {
       pre = [
         acctData.nonce,
         acctData.balance,
@@ -34,9 +33,12 @@ describe('[VM]: Basic functions', function () {
       ];
 
       account = new Account(pre);
+      internals.state.put(new Buffer(test.from, 'hex'), account.serialize(), callback);
       // internals.state.put(new Buffer(test.from, 'hex'), account.serialize(), done);
-    })
+    }, done);
+  });
 
+  it('run code', function(done) {
     var block = new Block();
     block.header.timestamp = testData.currentTimestamp;
     block.header.gasLimit = testData.currentGasLimit;
