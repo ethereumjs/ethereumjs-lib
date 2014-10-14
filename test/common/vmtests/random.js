@@ -63,7 +63,7 @@ describe('[Common]: VM tests', function () {
       address: new Buffer(testData.exec.address, 'hex'),
       from: new Buffer(testData.exec.caller, 'hex'),
       data:  new Buffer(testData.exec.data.slice(2), 'hex'),  // slice off 0x
-      gasLimit: utils.intToBuffer(testData.exec.gas),
+      gasLimit: testData.exec.gas,
       block: block
     }, function(err, results) {
       console.log('gas used: ', results.gasUsed.toNumber())
