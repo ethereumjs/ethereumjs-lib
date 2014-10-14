@@ -31,13 +31,17 @@ describe('[Common]: VM tests', function () {
       account = new Account();
       account.nonce = utils.intToBuffer(acctData.nonce);
       account.balance = utils.intToBuffer(acctData.balance);
+      // account.stateRoot = new Buffer([0]);
       internals.state.put(new Buffer(key, 'hex'), account.serialize(), callback);
     }, done);
   });
 
   it('run code', function(done) {
     var env = testData.env,
-      block = new Block();
+      block = new Block(),
+      acctData,
+      account;
+
     block.header.timestamp = utils.intToBuffer(Number(env.currentTimestamp));
     block.header.gasLimit = utils.intToBuffer(Number(env.currentGasLimit));
     block.header.parentHash = new Buffer(env.previousHash, 'hex');
@@ -45,15 +49,21 @@ describe('[Common]: VM tests', function () {
     block.header.difficulty = utils.intToBuffer(Number(env.currentDifficulty));
     block.header.number = utils.intToBuffer(Number(env.currentNumber));
 
+    acctData = testData.pre[testData.exec.address];
+    account = new Account();
+    account.nonce = utils.intToBuffer(acctData.nonce);
+    account.balance = utils.intToBuffer(acctData.balance);
+
     var vm = new VM(internals.state);
     vm.runCode({
-      origin: testData.exec.origin,
-      code: testData.exec.code,
-      value: testData.exec.value,
-      address: testData.exec.address,
-      from: testData.exec.caller,
-      data: testData.exec.data,
-      gasLimit: testData.exec.gas,
+      account: account,
+      origin: new Buffer(testData.exec.origin, 'hex'),
+      code:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
+      value: utils.intToBuffer(testData.exec.value),
+      address: new Buffer(testData.exec.address, 'hex'),
+      from: new Buffer(testData.exec.caller, 'hex'),
+      data:  new Buffer(testData.exec.data.slice(2), 'hex'),  // slice off 0x
+      gasLimit: utils.intToBuffer(testData.exec.gas),
       block: block
     }, function(err, results) {
       console.log('gas used: ', results.gasUsed.toNumber())
