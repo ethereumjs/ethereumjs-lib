@@ -15,7 +15,7 @@ var blockDB = levelup('', {
   }),
   internals = {};
 
-describe('[Common]', function () {
+describe('[Common]: genesis hashes tests', function () {
   it('should create a new block chain', function (done) {
     internals.blockchain = new Blockchain(blockDB, detailsDB);
     internals.blockchain.init(done);
