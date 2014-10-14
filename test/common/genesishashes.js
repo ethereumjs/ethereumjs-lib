@@ -32,7 +32,7 @@ describe('[Common]', function () {
       difficulty = utils.intToHex(Math.pow(2, 17)),
       number = zero,
       minGasPrice = zero,
-      gasLimit = '0f4240', // todo: fix
+      gasLimit =  utils.intToHex(1000000),
       gasUsed = zero,
       timestamp = zero,
       extraData = zero,
