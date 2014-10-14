@@ -1,11 +1,9 @@
 var testData = require('../../../../tests/vmtests/random.json'),
   async = require('async'),
-  rlp = require('rlp'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
   Block = require('../../../lib/block.js'),
   utils = require('../../../lib/utils.js'),
-  Tx = require('../../../lib/transaction.js'),
   assert = require('assert'),
   levelup = require('levelup'),
   Trie = require('merkle-patricia-tree');
@@ -65,6 +63,7 @@ describe('[Common]: VM tests', function () {
       gasLimit: testData.exec.gas,
       block: block
     }, function(err, results) {
+      assert(!err);
       assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
       done();
     });
