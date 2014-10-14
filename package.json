@@ -19,7 +19,6 @@
     "bignum": "^0.7.0",
     "ecdsa": "^0.5.3",
     "ecurve": "^0.6.0",
-    "eslint": "^0.8.2",
     "levelup": "*",
     "merkle-patricia-tree": "*",
     "rlp": "*",
