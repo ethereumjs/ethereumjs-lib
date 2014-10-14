@@ -42,10 +42,10 @@ describe('[Common]', function () {
       hash;
 
     hash = new SHA3.SHA3Hash(256);
-    hash.update('42');
+    hash.update(rlp.encode(42));
     nonce = hash.digest('hex');
 
-    nonce = '04994f67dc55b09e814ab7ffc8df3686b4afb2bb53e60eae97ef043fe03fb829'; // todo: remove
+    // nonce = '04994f67dc55b09e814ab7ffc8df3686b4afb2bb53e60eae97ef043fe03fb829'; // todo: remove
 
     var genesis = [
       [
