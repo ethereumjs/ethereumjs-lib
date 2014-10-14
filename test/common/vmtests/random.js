@@ -21,20 +21,17 @@ testData = testData.random;
 describe('[Common]: VM tests', function () {
 
   it('setup the trie', function (done) {
-    var pre,
+    var keysOfPre = Object.keys(testData.pre),
+      acctData,
       account;
 
-    async.each(testData.pre, function(acctData, callback) {
-      pre = [
-        utils.intToBuffer(acctData.nonce),
-        utils.intToBuffer(acctData.balance),
-        // stateRoot?
-        // codeHash?
-      ];
+    async.each(keysOfPre, function(key, callback) {
+      acctData = testData.pre[key];
 
-      account = new Account(pre);
-      internals.state.put(new Buffer(test.from, 'hex'), account.serialize(), callback);
-      // internals.state.put(new Buffer(test.from, 'hex'), account.serialize(), done);
+      account = new Account();
+      account.nonce = utils.intToBuffer(acctData.nonce);
+      account.balance = utils.intToBuffer(acctData.balance);
+      internals.state.put(new Buffer(key, 'hex'), account.serialize(), callback);
     }, done);
   });
 
