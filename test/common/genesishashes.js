@@ -69,8 +69,8 @@ describe('[Common]', function () {
 
 console.log('genesis: ', genesis)
 console.log('expected: ', expected)
-    assert(genesis.length === expected.length)
-    assert.deepEqual(genesis, expected)
+    assert(genesis[0].length === expected.length)
+    assert.deepEqual(genesis[0], expected)
     internals.blockchain.addBlock(genesis, function() {
       assert(internals.blockchain.meta.genesis === genesisData.genesis_hash);
     });
