@@ -25,7 +25,7 @@ describe('[VM]: Basic functions', function () {
       account;
 
     // todo async
-    testdata.pre.forEach(function(acctData) {
+    testData.pre.forEach(function(acctData) {
       pre = [
         acctData.nonce,
         acctData.balance,
@@ -44,5 +44,17 @@ describe('[VM]: Basic functions', function () {
     block.header.coinbase = testData.currentCoinbase;
     block.header.difficulty = testData.currentDifficulty;
     block.header.number = testData.currentNumber;
+
+    var vm = new VM(internals.state);
+    vm.runCode({
+      origin: testData.exec.origin,
+      code: testData.exec.code,
+      value: testData.exec.value,
+      address: testData.exec.address,
+      from: testData.exec.caller,
+      data: testData.exec.data,
+      gasLimit: testData.exec.gas,
+      block: block
+    });
   });
 });
