@@ -5,7 +5,3 @@ node_js:
 before_script:
   - git clone https://github.com/ethereum/tests.git
   - mv tests ..
-
-branches:
-  only:
-    - commonTests
