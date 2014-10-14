@@ -31,7 +31,6 @@ describe('[Common]: VM tests', function () {
       account = new Account();
       account.nonce = utils.intToBuffer(acctData.nonce);
       account.balance = utils.intToBuffer(acctData.balance);
-      // account.stateRoot = new Buffer([0]);
       internals.state.put(new Buffer(key, 'hex'), account.serialize(), callback);
     }, done);
   });
@@ -66,7 +65,6 @@ describe('[Common]: VM tests', function () {
       gasLimit: testData.exec.gas,
       block: block
     }, function(err, results) {
-      console.log('gas used: ', results.gasUsed.toNumber())
       assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
       done();
     });
