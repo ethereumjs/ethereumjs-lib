@@ -24,7 +24,7 @@ describe('[Common]', function () {
   it('should have added the genesis correctly', function () {
     var expected = ["0000000000000000000000000000000000000000000000000000000000000000", "1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347", "0000000000000000000000000000000000000000", "08bf6a98374f333b84e7d063d607696ac7cbbd409bd20fbe6a741c2dfc0eb285", "00", "020000", "00", "00", "0f4240", "00", "00", "00", "04994f67dc55b09e814ab7ffc8df3686b4afb2bb53e60eae97ef043fe03fb829"];
     var zero = '00',
-      parentHash = '0000000000000000000000000000000000000000000000000000000000000000',
+      parentHash = utils.zero256().toString('hex'),
       unclesHash = utils.emptyRlpHash().toString('hex'),
       coinbase = utils.zero160().toString('hex'),
       stateRoot = genesisData.genesis_state_root,
