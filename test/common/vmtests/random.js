@@ -16,9 +16,9 @@ var internals = {},
   });
 
 internals.state = new Trie(stateDB);
+testData = testData.random;
 
-describe('[VM]: Basic functions', function () {
-  testData = testData.random;
+describe('[Common]: VM tests', function () {
 
   it('setup the trie', function (done) {
     var pre,
@@ -26,8 +26,8 @@ describe('[VM]: Basic functions', function () {
 
     async.each(testData.pre, function(acctData, callback) {
       pre = [
-        acctData.nonce,
-        acctData.balance,
+        utils.intToBuffer(acctData.nonce),
+        utils.intToBuffer(acctData.balance),
         // stateRoot?
         // codeHash?
       ];
@@ -39,13 +39,14 @@ describe('[VM]: Basic functions', function () {
   });
 
   it('run code', function(done) {
-    var block = new Block();
-    block.header.timestamp = testData.currentTimestamp;
-    block.header.gasLimit = testData.currentGasLimit;
-    block.header.parentHash = testData.previousHash;
-    block.header.coinbase = testData.currentCoinbase;
-    block.header.difficulty = testData.currentDifficulty;
-    block.header.number = testData.currentNumber;
+    var env = testData.env,
+      block = new Block();
+    block.header.timestamp = utils.intToBuffer(Number(env.currentTimestamp));
+    block.header.gasLimit = utils.intToBuffer(Number(env.currentGasLimit));
+    block.header.parentHash = new Buffer(env.previousHash, 'hex');
+    block.header.coinbase = new Buffer(env.currentCoinbase, 'hex');
+    block.header.difficulty = utils.intToBuffer(Number(env.currentDifficulty));
+    block.header.number = utils.intToBuffer(Number(env.currentNumber));
 
     var vm = new VM(internals.state);
     vm.runCode({
