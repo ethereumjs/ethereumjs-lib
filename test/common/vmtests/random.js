@@ -55,6 +55,10 @@ describe('[VM]: Basic functions', function () {
       data: testData.exec.data,
       gasLimit: testData.exec.gas,
       block: block
+    }, function(err, results) {
+      console.log('gas used: ', results.gasUsed.toNumber())
+      assert(results.gasUsed.toNumber() === testData.gas);
+      done();
     });
   });
 });
