@@ -29,7 +29,7 @@ describe('[Common]', function () {
       coinbase = utils.zero160().toString('hex'),
       stateRoot = genesisData.genesis_state_root,
       transactionTrie = zero,
-      difficulty = '020000',  // todo: fix
+      difficulty = utils.intToHex(Math.pow(2, 17)),
       number = zero,
       minGasPrice = zero,
       gasLimit = '0f4240', // todo: fix
