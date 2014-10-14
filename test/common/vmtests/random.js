@@ -67,7 +67,7 @@ describe('[Common]: VM tests', function () {
       block: block
     }, function(err, results) {
       console.log('gas used: ', results.gasUsed.toNumber())
-      assert(results.gasUsed.toNumber() === testData.gas);
+      assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
       done();
     });
   });
