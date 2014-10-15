@@ -89,8 +89,8 @@ console.log('nonce: ', account.nonce.toString('hex'))
           // console.log('account.stateRoot hex: ', account.stateRoot.toString('hex'))
 
 
-          assert(testUtils.decimal(account.balance) === acctData.balance);
-          assert(testUtils.decimal(account.nonce) === acctData.nonce);
+          assert(testUtils.toDecimal(account.balance) === acctData.balance);
+          assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
 
           internals.state.root = account.stateRoot.toString('hex');
 
