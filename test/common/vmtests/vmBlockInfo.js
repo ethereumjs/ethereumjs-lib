@@ -6,7 +6,7 @@ var testData = require('../../../../tests/vmtests/vmBlockInfoTest.json'),
   utils = require('../../../lib/utils.js'),
   assert = require('assert'),
   levelup = require('levelup'),
-  bignum = require('bignum'),
+  testUtils = require('../../testUtils'),
   rlp = require('rlp'),
   Trie = require('merkle-patricia-tree');
 
@@ -31,6 +31,7 @@ describe('[Common]: vmBlockInfoTest', function () {
         acctData = testData.pre[key];
 
         account = new Account();
+console.log('***** typeof ', typeof acctData.nonce)
         account.nonce = utils.intToBuffer(acctData.nonce);
         account.balance = utils.intToBuffer(acctData.balance);
         internals.state.put(new Buffer(key, 'hex'), account.serialize(), callback);
@@ -80,7 +81,7 @@ describe('[Common]: vmBlockInfoTest', function () {
 
 
           // console.log('codeHash: ', account.codeHash.toString('hex'))
-console.log('bal: ', bignum(account.balance.toString('hex')).toString())
+console.log('bal: ', account.balance.toString('hex'))
 console.log('exbal: ', acctData.balance)
 
 console.log('nonce: ', account.nonce.toString('hex'))
@@ -88,8 +89,8 @@ console.log('nonce: ', account.nonce.toString('hex'))
           // console.log('account.stateRoot hex: ', account.stateRoot.toString('hex'))
 
 
-          assert(bignum(account.balance.toString('hex')).toString() === acctData.balance);
-          assert(bignum(account.nonce.toString('hex')).toString() === acctData.nonce);
+          assert(testUtils.decimal(account.balance) === acctData.balance);
+          assert(testUtils.decimal(account.nonce) === acctData.nonce);
 
           internals.state.root = account.stateRoot.toString('hex');
 
