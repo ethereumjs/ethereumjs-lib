@@ -31,9 +31,8 @@ describe('[Common]: vmBlockInfoTest', function () {
         acctData = testData.pre[key];
 
         account = new Account();
-console.log('***** typeof ', typeof acctData.nonce)
-        account.nonce = utils.intToBuffer(acctData.nonce);
-        account.balance = utils.intToBuffer(acctData.balance);
+        account.nonce = testUtils.fromDecimal(acctData.nonce);
+        account.balance = testUtils.fromDecimal(acctData.balance);
         internals.state.put(new Buffer(key, 'hex'), account.serialize(), callback);
       }, done);
     });
@@ -53,15 +52,15 @@ console.log('***** typeof ', typeof acctData.nonce)
 
       acctData = testData.pre[testData.exec.address];
       account = new Account();
-      account.nonce = utils.intToBuffer(acctData.nonce);
-      account.balance = utils.intToBuffer(acctData.balance);
+      account.nonce = testUtils.fromDecimal(acctData.nonce);
+      account.balance = testUtils.fromDecimal(acctData.balance);
 
       var vm = new VM(internals.state);
       vm.runCode({
         account: account,
         origin: new Buffer(testData.exec.origin, 'hex'),
         code:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
-        value: utils.intToBuffer(testData.exec.value),
+        value: testUtils.fromDecimal(testData.exec.value),
         address: new Buffer(testData.exec.address, 'hex'),
         from: new Buffer(testData.exec.caller, 'hex'),
         data:  new Buffer(testData.exec.data.slice(2), 'hex'),  // slice off 0x
@@ -69,22 +68,32 @@ console.log('***** typeof ', typeof acctData.nonce)
         block: block
       }, function(err, results) {
         assert(!err);
+
         assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
 
         var keysOfPost = Object.keys(testData.post);
         async.each(keysOfPost, function(key, callback) {
           acctData = testData.post[key];
 
-          console.log('results.account: ', results.account)
+          // console.log('results.account: ', results.account)
 
           var account = results.account;   // new Account(results.account);
 
 
           // console.log('codeHash: ', account.codeHash.toString('hex'))
-console.log('bal: ', account.balance.toString('hex'))
-console.log('exbal: ', acctData.balance)
+console.log('bal: ', account.balance)
+console.log('balHex: ', account.balance.toString('hex'))
 
-console.log('nonce: ', account.nonce.toString('hex'))
+//return bignum(buffer.toString('hex')).toString();
+console.log('balDecimal: ', testUtils.toDecimal(account.balance));
+
+console.log('bal using bignum: ', require('bignum').fromBuffer(account.balance))
+
+
+
+// console.log('exbal: ', acctData.balance)
+//
+// console.log('nonce: ', account.nonce.toString('hex'))
 
           // console.log('account.stateRoot hex: ', account.stateRoot.toString('hex'))
 

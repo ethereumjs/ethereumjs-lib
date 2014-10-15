@@ -7,7 +7,7 @@ var bignum = require('bignum'),
  * @return {String}
  */
 exports.toDecimal = function (buffer) {
-  return bignum(buffer.toString('hex')).toString();
+  return bignum.fromBuffer(buffer).toString();
 };
 
 /**
