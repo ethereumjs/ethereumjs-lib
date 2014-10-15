@@ -17,4 +17,4 @@ exports.toDecimal = function (buffer) {
  */
 exports.fromDecimal = function (string) {
   return utils.intToBuffer(parseInt(string, 10));
-}
+};

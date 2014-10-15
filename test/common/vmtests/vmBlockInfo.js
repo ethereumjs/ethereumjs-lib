@@ -75,29 +75,7 @@ describe('[Common]: vmBlockInfoTest', function () {
         async.each(keysOfPost, function(key, callback) {
           acctData = testData.post[key];
 
-          // console.log('results.account: ', results.account)
-
-          var account = results.account;   // new Account(results.account);
-
-
-          // console.log('codeHash: ', account.codeHash.toString('hex'))
-console.log('bal: ', account.balance)
-console.log('balHex: ', account.balance.toString('hex'))
-
-//return bignum(buffer.toString('hex')).toString();
-console.log('balDecimal: ', testUtils.toDecimal(account.balance));
-
-console.log('bal using bignum: ', require('bignum').fromBuffer(account.balance))
-
-
-
-// console.log('exbal: ', acctData.balance)
-//
-// console.log('nonce: ', account.nonce.toString('hex'))
-
-          // console.log('account.stateRoot hex: ', account.stateRoot.toString('hex'))
-
-
+          var account = results.account;
           assert(testUtils.toDecimal(account.balance) === acctData.balance);
           assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
 
@@ -107,47 +85,12 @@ console.log('bal using bignum: ', require('bignum').fromBuffer(account.balance))
           storageKeys.forEach(function(skey) {
             var address = !parseInt(skey, 16) ? utils.zero256() : skey;
             internals.state.get(address, function(err, data) {
-              console.log('storage data: ', rlp.decode(data).toString('hex'))
-
-              assert(rlp.decode(data).toString('hex') === acctData.storage['0x'].slice(2))
+              assert(!err);
+              assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2));
               callback();
             });
-
           });
-
-          // internals.state.get(new Buffer([0]), function(err, data) {
-
-
-          // internals.state.get(new Buffer(key, 'hex'), function(err, acct) {
-          //   console.log('acct: ', acct)
-
-
-            // console.log('data: ', account.balance.toString('hex'), 'expected: ', acctData.balance)
-            // assert(account.balance.toString('hex') === acctData.balance)
-
-
-            //console.log('data: ', account.stateRoot.toString('hex'), 'expected: ', acctData.storage)
-            // assert(account.balance.toString('hex') === acctData.balance)
-
-
-            // console.log('data: ', account.balance.toString('hex'))
-          // })
-
-          // account = new Account();
-          // account.nonce = utils.intToBuffer(acctData.nonce);
-          // account.balance = utils.intToBuffer(acctData.balance);
-          // internals.state.put(new Buffer(key, 'hex'), account.serialize(), callback);
         }, done);
-
-
-        // internals.state.get(new Buffer('7d577a597b2742b498cb5cf0c26cdcd726d39e6e', 'hex'), function(err, acct) {
-        //
-        //   var account = new Account(acct);
-        //
-        //   console.log('data: ', account.balance.toString('hex'))
-        // })
-
-        // done();
       });
     });
   });
