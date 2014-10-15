@@ -44,12 +44,12 @@ console.log('***** typeof ', typeof acctData.nonce)
         acctData,
         account;
 
-      block.header.timestamp = utils.intToBuffer(Number(env.currentTimestamp));
-      block.header.gasLimit = utils.intToBuffer(Number(env.currentGasLimit));
+      block.header.timestamp = testUtils.fromDecimal(env.currentTimestamp);
+      block.header.gasLimit = testUtils.fromDecimal(env.currentGasLimit);
       block.header.parentHash = new Buffer(env.previousHash, 'hex');
       block.header.coinbase = new Buffer(env.currentCoinbase, 'hex');
-      block.header.difficulty = utils.intToBuffer(Number(env.currentDifficulty));
-      block.header.number = utils.intToBuffer(Number(env.currentNumber));
+      block.header.difficulty = testUtils.fromDecimal(env.currentDifficulty);
+      block.header.number = testUtils.fromDecimal(env.currentNumber);
 
       acctData = testData.pre[testData.exec.address];
       account = new Account();
