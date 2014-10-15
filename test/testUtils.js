@@ -12,9 +12,18 @@ exports.toDecimal = function (buffer) {
 
 /**
  * fromDecimal - converts decimal string to buffer
- * @param {[type]}
+ * @param {String}
 *  @return {Buffer}
  */
 exports.fromDecimal = function (string) {
   return utils.intToBuffer(parseInt(string, 10));
+};
+
+/**
+ * address - converts 0x to utils.zero256, otherwise returns input
+ * @param  {String}
+ * @return {String}
+ */
+exports.address = function (string) {
+  return !parseInt(string, 16) ? utils.zero256() : string;
 };

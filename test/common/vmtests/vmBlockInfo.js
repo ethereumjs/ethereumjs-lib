@@ -3,19 +3,16 @@ var testData = require('../../../../tests/vmtests/vmBlockInfoTest.json'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
   Block = require('../../../lib/block.js'),
-  utils = require('../../../lib/utils.js'),
   assert = require('assert'),
   levelup = require('levelup'),
   testUtils = require('../../testUtils'),
   rlp = require('rlp'),
   Trie = require('merkle-patricia-tree');
 
-var internals = {},
-  stateDB = levelup('', {
+var stateDB = levelup('', {
       db: require('memdown')
-  });
-
-internals.state = new Trie(stateDB);
+  }),
+  state = new Trie(stateDB);
 
 describe('[Common]: vmBlockInfoTest', function () {
 
@@ -33,7 +30,7 @@ describe('[Common]: vmBlockInfoTest', function () {
         account = new Account();
         account.nonce = testUtils.fromDecimal(acctData.nonce);
         account.balance = testUtils.fromDecimal(acctData.balance);
-        internals.state.put(new Buffer(key, 'hex'), account.serialize(), callback);
+        state.put(new Buffer(key, 'hex'), account.serialize(), callback);
       }, done);
     });
 
@@ -55,7 +52,7 @@ describe('[Common]: vmBlockInfoTest', function () {
       account.nonce = testUtils.fromDecimal(acctData.nonce);
       account.balance = testUtils.fromDecimal(acctData.balance);
 
-      var vm = new VM(internals.state);
+      var vm = new VM(state);
       vm.runCode({
         account: account,
         origin: new Buffer(testData.exec.origin, 'hex'),
@@ -68,7 +65,6 @@ describe('[Common]: vmBlockInfoTest', function () {
         block: block
       }, function(err, results) {
         assert(!err);
-
         assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
 
         var keysOfPost = Object.keys(testData.post);
@@ -79,12 +75,11 @@ describe('[Common]: vmBlockInfoTest', function () {
           assert(testUtils.toDecimal(account.balance) === acctData.balance);
           assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
 
-          internals.state.root = account.stateRoot.toString('hex');
+          state.root = account.stateRoot.toString('hex');
 
           var storageKeys = Object.keys(acctData.storage);
           storageKeys.forEach(function(skey) {
-            var address = !parseInt(skey, 16) ? utils.zero256() : skey;
-            internals.state.get(address, function(err, data) {
+            state.get(testUtils.address(skey), function(err, data) {
               assert(!err);
               assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2));
               callback();
