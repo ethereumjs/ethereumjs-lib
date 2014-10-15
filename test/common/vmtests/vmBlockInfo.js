@@ -37,25 +37,17 @@ describe('[Common]: vmBlockInfoTest', function () {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
         acctData,
-        account;
+        account,
+        runCodeData,
+        vm = new VM(state);
 
       acctData = testData.pre[testData.exec.address];
       account = new Account();
       account.nonce = testUtils.fromDecimal(acctData.nonce);
       account.balance = testUtils.fromDecimal(acctData.balance);
 
-      var vm = new VM(state);
-      vm.runCode({
-        account: account,
-        origin: new Buffer(testData.exec.origin, 'hex'),
-        code:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
-        value: testUtils.fromDecimal(testData.exec.value),
-        address: new Buffer(testData.exec.address, 'hex'),
-        from: new Buffer(testData.exec.caller, 'hex'),
-        data:  new Buffer(testData.exec.data.slice(2), 'hex'),  // slice off 0x
-        gasLimit: testData.exec.gas,
-        block: block
-      }, function(err, results) {
+      runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
+      vm.runCode(runCodeData, function(err, results) {
         assert(!err);
         assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
 

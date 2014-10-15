@@ -43,3 +43,17 @@ exports.makeBlockFromEnv = function (env) {
 
   return block;
 };
+
+exports.makeRunCodeData = function (exec, account, block) {
+  return {
+    account: account,
+    origin: new Buffer(exec.origin, 'hex'),
+    code:  new Buffer(exec.code.slice(2), 'hex'),  // slice off 0x
+    value: testUtils.fromDecimal(exec.value),
+    address: new Buffer(exec.address, 'hex'),
+    from: new Buffer(exec.caller, 'hex'),
+    data:  new Buffer(exec.data.slice(2), 'hex'),  // slice off 0x
+    gasLimit: exec.gas,
+    block: block
+  };
+};
