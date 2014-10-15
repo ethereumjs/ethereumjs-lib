@@ -2,7 +2,6 @@ var testData = require('../../../../tests/vmtests/vmBlockInfoTest.json'),
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
-  Block = require('../../../lib/block.js'),
   assert = require('assert'),
   levelup = require('levelup'),
   testUtils = require('../../testUtils'),
@@ -36,16 +35,9 @@ describe('[Common]: vmBlockInfoTest', function () {
 
     it('run code', function(done) {
       var env = testData.env,
-        block = new Block(),
+        block = testUtils.makeBlockFromEnv(env),
         acctData,
         account;
-
-      block.header.timestamp = testUtils.fromDecimal(env.currentTimestamp);
-      block.header.gasLimit = testUtils.fromDecimal(env.currentGasLimit);
-      block.header.parentHash = new Buffer(env.previousHash, 'hex');
-      block.header.coinbase = new Buffer(env.currentCoinbase, 'hex');
-      block.header.difficulty = testUtils.fromDecimal(env.currentDifficulty);
-      block.header.number = testUtils.fromDecimal(env.currentNumber);
 
       acctData = testData.pre[testData.exec.address];
       account = new Account();
