@@ -3,7 +3,7 @@ var testData = require('../../../../tests/vmtests/random.json'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
   Block = require('../../../lib/block.js'),
-  utils = require('../../../lib/utils.js'),
+  testUtils = require('../../testUtils'),
   assert = require('assert'),
   levelup = require('levelup'),
   Trie = require('merkle-patricia-tree');
@@ -28,8 +28,8 @@ describe('[Common]: VM tests', function () {
         acctData = testData.pre[key];
 
         account = new Account();
-        account.nonce = utils.intToBuffer(acctData.nonce);
-        account.balance = utils.intToBuffer(acctData.balance);
+        account.nonce = testUtils.fromDecimal(acctData.nonce);
+        account.balance = testUtils.fromDecimal(acctData.balance);
         internals.state.put(new Buffer(key, 'hex'), account.serialize(), callback);
       }, done);
     });
@@ -40,24 +40,24 @@ describe('[Common]: VM tests', function () {
         acctData,
         account;
 
-      block.header.timestamp = utils.intToBuffer(Number(env.currentTimestamp));
-      block.header.gasLimit = utils.intToBuffer(Number(env.currentGasLimit));
+      block.header.timestamp = testUtils.fromDecimal(env.currentTimestamp);
+      block.header.gasLimit = testUtils.fromDecimal(env.currentGasLimit);
       block.header.parentHash = new Buffer(env.previousHash, 'hex');
       block.header.coinbase = new Buffer(env.currentCoinbase, 'hex');
-      block.header.difficulty = utils.intToBuffer(Number(env.currentDifficulty));
-      block.header.number = utils.intToBuffer(Number(env.currentNumber));
+      block.header.difficulty = testUtils.fromDecimal(env.currentDifficulty);
+      block.header.number = testUtils.fromDecimal(env.currentNumber);
 
       acctData = testData.pre[testData.exec.address];
       account = new Account();
-      account.nonce = utils.intToBuffer(acctData.nonce);
-      account.balance = utils.intToBuffer(acctData.balance);
+      account.nonce = testUtils.fromDecimal(acctData.nonce);
+      account.balance = testUtils.fromDecimal(acctData.balance);
 
       var vm = new VM(internals.state);
       vm.runCode({
         account: account,
         origin: new Buffer(testData.exec.origin, 'hex'),
         code:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
-        value: utils.intToBuffer(testData.exec.value),
+        value: testUtils.fromDecimal(testData.exec.value),
         address: new Buffer(testData.exec.address, 'hex'),
         from: new Buffer(testData.exec.caller, 'hex'),
         data:  new Buffer(testData.exec.data.slice(2), 'hex'),  // slice off 0x
