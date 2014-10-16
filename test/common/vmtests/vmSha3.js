@@ -17,8 +17,6 @@ describe('[Common]: vmSha3', function () {
 
   var tests = Object.keys(vmSha3Test);
   tests.forEach(function(testKey) {
-
-  // testKey = 'sha3_3';
     var testData = vmSha3Test[testKey];
 
     it(testKey + ' setup the trie', function (done) {
@@ -92,9 +90,6 @@ describe('[Common]: vmSha3', function () {
             storageKeys.forEach(function(skey) {
               state.get(testUtils.address(skey), function(err, data) {
                 assert(!err);
-
-console.log('storage: ', rlp.decode(data).toString('hex'))
-
                 assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2));
                 callback();
               });
