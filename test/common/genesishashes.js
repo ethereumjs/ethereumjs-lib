@@ -2,10 +2,7 @@ var genesisData = require('../../../tests/genesishashestest.json'),
   assert = require('assert'),
   Blockchain = require('../../lib/blockchain.js'),
   Block = require('../../lib/block.js'),
-  levelup = require('levelup'),
-  utils = require('../../lib/utils'),
-  rlp = require('rlp'),
-  SHA3 = require('sha3');
+  levelup = require('levelup');
 
 var blockDB = levelup('', {
   db: require('memdown')
@@ -13,12 +10,12 @@ var blockDB = levelup('', {
   detailsDB = levelup('/does/not/matter', {
     db: require('memdown')
   }),
-  internals = {};
+  blockchain;
 
 describe('[Common]: genesis hashes tests', function () {
   it('should create a new block chain', function (done) {
-    internals.blockchain = new Blockchain(blockDB, detailsDB);
-    internals.blockchain.init(done);
+    blockchain = new Blockchain(blockDB, detailsDB);
+    blockchain.init(done);
   });
 
   it('should have added the genesis correctly', function () {
@@ -29,8 +26,8 @@ describe('[Common]: genesis hashes tests', function () {
     rlpGenesis = blockGenesis.serialize();
     assert(rlpGenesis.toString('hex') === genesisData.genesis_rlp_hex, 'rlp hex mismatch');
 
-    internals.blockchain.addBlock(blockGenesis, function() {
-      assert(internals.blockchain.meta.genesis === genesisData.genesis_hash);
+    blockchain.addBlock(blockGenesis, function() {
+      assert(blockchain.meta.genesis === genesisData.genesis_hash);
     });
   });
 });
