@@ -55,6 +55,7 @@ describe('[Common]: VM tests', function () {
 
       var vm = new VM(internals.state);
       vm.runCall({
+        // since there is no 'to', an address will be generated for the contract
         fromAccount: account,
         origin: new Buffer(testData.exec.origin, 'hex'),
         data:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
@@ -72,13 +73,23 @@ describe('[Common]: VM tests', function () {
         console.log('res: ', results)
         assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
 
-        internals.state.get(new Buffer('0000000000000000000000000000000000000001', 'hex'), function(err, acct) {
+        var suicideTo = results.vm.suicideTo.toString('hex');
+        assert(Object.keys(testData.post).indexOf(suicideTo) !== -1);
+
+        internals.state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
 
         // internals.state.get(new Buffer('7d577a597b2742b498cb5cf0c26cdcd726d39e6e', 'hex'), function(err, acct) {
 
           var account = new Account(acct);
 
           console.log('data: ', account.balance.toString('hex'))
+
+          assert(testUtils.toDecimal(account.balance) ===
+            testData.post[suicideTo].balance);
+
+          // we can't check that 7d577a597b2742b498cb5cf0c26cdcd726d39e6e has
+          // been deleted/hasBalance0 because the generated address doesn't
+          // match 7d577a597b2742b498cb5cf0c26cdcd726d39e6e
           done();
         })
       });
