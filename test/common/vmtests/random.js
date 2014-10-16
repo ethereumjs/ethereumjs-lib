@@ -58,7 +58,10 @@ describe('[Common]: VM tests', function () {
         fromAccount: account,
         origin: new Buffer(testData.exec.origin, 'hex'),
         data:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
-        value: bignum(testData.exec.value),
+
+        // using account.balance instead testData.exec.value to simulate that
+        // the generated address is the fromAccount
+        value: bignum.fromBuffer(account.balance),
         // to: new Buffer(testData.exec.address, 'hex'),
         from: new Buffer(testData.exec.caller, 'hex'),
         //data:  new Buffer(testData.exec.data.slice(2), 'hex'),  // slice off 0x
@@ -68,7 +71,16 @@ describe('[Common]: VM tests', function () {
         assert(!err);
         console.log('res: ', results)
         assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
-        done();
+
+        internals.state.get(new Buffer('0000000000000000000000000000000000000001', 'hex'), function(err, acct) {
+
+        // internals.state.get(new Buffer('7d577a597b2742b498cb5cf0c26cdcd726d39e6e', 'hex'), function(err, acct) {
+
+          var account = new Account(acct);
+
+          console.log('data: ', account.balance.toString('hex'))
+          done();
+        })
       });
     });
   });
