@@ -74,61 +74,64 @@ describe('[Common]: vmBlockInfoTest', function () {
     });
   });
 
-  describe('difficulty', function () {
-    var testData = vmBlockInfoTest.difficulty;
+  describe('vmBlockInfoTest', function () {
+    var tests = Object.keys(vmBlockInfoTest);
+    tests.forEach(function(testKey) {
+      var testData = vmBlockInfoTest[testKey];
 
-    it('setup the trie', function (done) {
-      var keysOfPre = Object.keys(testData.pre),
-        acctData,
-        account;
+      it(testKey + ' setup the trie', function (done) {
+        var keysOfPre = Object.keys(testData.pre),
+          acctData,
+          account;
 
-      async.each(keysOfPre, function(key, callback) {
-        acctData = testData.pre[key];
+        async.each(keysOfPre, function(key, callback) {
+          acctData = testData.pre[key];
 
+          account = new Account();
+          account.nonce = testUtils.fromDecimal(acctData.nonce);
+          account.balance = testUtils.fromDecimal(acctData.balance);
+          state.put(new Buffer(key, 'hex'), account.serialize(), callback);
+        }, done);
+      });
+
+      it(testKey + ' run code', function(done) {
+        var env = testData.env,
+          block = testUtils.makeBlockFromEnv(env),
+          acctData,
+          account,
+          runCodeData,
+          vm = new VM(state);
+
+        acctData = testData.pre[testData.exec.address];
         account = new Account();
         account.nonce = testUtils.fromDecimal(acctData.nonce);
         account.balance = testUtils.fromDecimal(acctData.balance);
-        state.put(new Buffer(key, 'hex'), account.serialize(), callback);
-      }, done);
-    });
 
-    it('run code', function(done) {
-      var env = testData.env,
-        block = testUtils.makeBlockFromEnv(env),
-        acctData,
-        account,
-        runCodeData,
-        vm = new VM(state);
+        runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
+        vm.runCode(runCodeData, function(err, results) {
+          assert(!err);
+          assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
 
-      acctData = testData.pre[testData.exec.address];
-      account = new Account();
-      account.nonce = testUtils.fromDecimal(acctData.nonce);
-      account.balance = testUtils.fromDecimal(acctData.balance);
+          var keysOfPost = Object.keys(testData.post);
+          async.each(keysOfPost, function(key, callback) {
+            acctData = testData.post[key];
 
-      runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
-      vm.runCode(runCodeData, function(err, results) {
-        assert(!err);
-        assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
+            var account = results.account;
+            assert(testUtils.toDecimal(account.balance) === acctData.balance);
+            assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
 
-        var keysOfPost = Object.keys(testData.post);
-        async.each(keysOfPost, function(key, callback) {
-          acctData = testData.post[key];
+            state.root = account.stateRoot.toString('hex');
 
-          var account = results.account;
-          assert(testUtils.toDecimal(account.balance) === acctData.balance);
-          assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
-
-          state.root = account.stateRoot.toString('hex');
-
-          var storageKeys = Object.keys(acctData.storage);
-          storageKeys.forEach(function(skey) {
-            state.get(testUtils.address(skey), function(err, data) {
-              assert(!err);
-              assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2));
-              callback();
+            var storageKeys = Object.keys(acctData.storage);
+            storageKeys.forEach(function(skey) {
+              state.get(testUtils.address(skey), function(err, data) {
+                assert(!err);
+                assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2));
+                callback();
+              });
             });
-          });
-        }, done);
+          }, done);
+        });
       });
     });
   });
