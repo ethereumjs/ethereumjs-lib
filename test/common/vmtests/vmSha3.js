@@ -16,9 +16,9 @@ var stateDB = levelup('', {
 describe('[Common]: vmSha3', function () {
 
   var tests = Object.keys(vmSha3Test);
-  // tests.forEach(function(testKey) {
+  tests.forEach(function(testKey) {
 
-  testKey = 'sha3_0';
+  // testKey = 'sha3_3';
     var testData = vmSha3Test[testKey];
 
     it(testKey + ' setup the trie', function (done) {
@@ -49,8 +49,31 @@ describe('[Common]: vmSha3', function () {
       account.nonce = testUtils.fromDecimal(acctData.nonce);
       account.balance = testUtils.fromDecimal(acctData.balance);
 
+
+      var bignum = require('bignum')
+      var log = { info: console.log }
+      vm.onStep = function (info, done) {
+        log.info('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
+
+        info.stack.reverse();
+        info.stack.forEach(function (item) {
+          log.info('vm', '    ' + item.toString('hex'));
+        });
+        info.stack.reverse();
+
+        done();
+      };
+
+
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
+        if (testKey === 'sha3_3') {
+          assert(err)
+          console.log('err: ', err)
+          done();
+          return;
+        }
+
         assert(!err);
         assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
 
@@ -59,6 +82,7 @@ describe('[Common]: vmSha3', function () {
           acctData = testData.post[key];
 
           var account = results.account;
+
           assert(testUtils.toDecimal(account.balance) === acctData.balance);
           assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
 
@@ -68,6 +92,9 @@ describe('[Common]: vmSha3', function () {
             storageKeys.forEach(function(skey) {
               state.get(testUtils.address(skey), function(err, data) {
                 assert(!err);
+
+console.log('storage: ', rlp.decode(data).toString('hex'))
+
                 assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2));
                 callback();
               });
@@ -78,6 +105,6 @@ describe('[Common]: vmSha3', function () {
         }, done);
       });
     });
-  // });
+  });
 
 });
