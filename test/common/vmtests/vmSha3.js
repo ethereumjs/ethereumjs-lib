@@ -47,27 +47,10 @@ describe('[Common]: vmSha3', function () {
       account.nonce = testUtils.fromDecimal(acctData.nonce);
       account.balance = testUtils.fromDecimal(acctData.balance);
 
-
-      var bignum = require('bignum')
-      var log = { info: console.log }
-      vm.onStep = function (info, done) {
-        log.info('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
-
-        info.stack.reverse();
-        info.stack.forEach(function (item) {
-          log.info('vm', '    ' + item.toString('hex'));
-        });
-        info.stack.reverse();
-
-        done();
-      };
-
-
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
         if (testKey === 'sha3_3') {
-          assert(err)
-          console.log('err: ', err)
+          assert(err === 'out of gas');
           done();
           return;
         }
