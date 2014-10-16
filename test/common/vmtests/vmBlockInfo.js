@@ -1,8 +1,7 @@
-var testData = require('../../../../tests/vmtests/vmBlockInfoTest.json'),
+var vmBlockInfoTest = require('../../../../tests/vmtests/vmBlockInfoTest.json'),
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
-  Block = require('../../../lib/block.js'),
   assert = require('assert'),
   levelup = require('levelup'),
   testUtils = require('../../testUtils'),
@@ -16,8 +15,8 @@ var stateDB = levelup('', {
 
 describe('[Common]: vmBlockInfoTest', function () {
 
-  describe('coinbase', function () {
-    testData = testData.coinbase;
+  describe.skip('number', function () {
+    var testData = vmBlockInfoTest.number;
 
     it('setup the trie', function (done) {
       var keysOfPre = Object.keys(testData.pre),
@@ -36,34 +35,19 @@ describe('[Common]: vmBlockInfoTest', function () {
 
     it('run code', function(done) {
       var env = testData.env,
-        block = new Block(),
+        block = testUtils.makeBlockFromEnv(env),
         acctData,
-        account;
-
-      block.header.timestamp = testUtils.fromDecimal(env.currentTimestamp);
-      block.header.gasLimit = testUtils.fromDecimal(env.currentGasLimit);
-      block.header.parentHash = new Buffer(env.previousHash, 'hex');
-      block.header.coinbase = new Buffer(env.currentCoinbase, 'hex');
-      block.header.difficulty = testUtils.fromDecimal(env.currentDifficulty);
-      block.header.number = testUtils.fromDecimal(env.currentNumber);
+        account,
+        runCodeData,
+        vm = new VM(state);
 
       acctData = testData.pre[testData.exec.address];
       account = new Account();
       account.nonce = testUtils.fromDecimal(acctData.nonce);
       account.balance = testUtils.fromDecimal(acctData.balance);
 
-      var vm = new VM(state);
-      vm.runCode({
-        account: account,
-        origin: new Buffer(testData.exec.origin, 'hex'),
-        code:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
-        value: testUtils.fromDecimal(testData.exec.value),
-        address: new Buffer(testData.exec.address, 'hex'),
-        from: new Buffer(testData.exec.caller, 'hex'),
-        data:  new Buffer(testData.exec.data.slice(2), 'hex'),  // slice off 0x
-        gasLimit: testData.exec.gas,
-        block: block
-      }, function(err, results) {
+      runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
+      vm.runCode(runCodeData, function(err, results) {
         assert(!err);
         assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
 
@@ -75,7 +59,13 @@ describe('[Common]: vmBlockInfoTest', function () {
           assert(testUtils.toDecimal(account.balance) === acctData.balance);
           assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
 
-          state.root = account.stateRoot.toString('hex');
+console.log('root: ', account.stateRoot);
+console.log('root hex: ', account.stateRoot.toString('hex'));
+          // state.root = account.stateRoot.toString('hex');
+
+          var utils = require('../../../lib/utils');
+          state.root = utils.zero256();
+
 
           var storageKeys = Object.keys(acctData.storage);
           storageKeys.forEach(function(skey) {
@@ -89,4 +79,68 @@ describe('[Common]: vmBlockInfoTest', function () {
       });
     });
   });
+
+  var tests = Object.keys(vmBlockInfoTest);
+  tests.forEach(function(testKey) {
+    var testData = vmBlockInfoTest[testKey];
+
+    it(testKey + ' setup the trie', function (done) {
+      var keysOfPre = Object.keys(testData.pre),
+        acctData,
+        account;
+
+      async.each(keysOfPre, function(key, callback) {
+        acctData = testData.pre[key];
+
+        account = new Account();
+        account.nonce = testUtils.fromDecimal(acctData.nonce);
+        account.balance = testUtils.fromDecimal(acctData.balance);
+        state.put(new Buffer(key, 'hex'), account.serialize(), callback);
+      }, done);
+    });
+
+    it(testKey + ' run code', function(done) {
+      var env = testData.env,
+        block = testUtils.makeBlockFromEnv(env),
+        acctData,
+        account,
+        runCodeData,
+        vm = new VM(state);
+
+      acctData = testData.pre[testData.exec.address];
+      account = new Account();
+      account.nonce = testUtils.fromDecimal(acctData.nonce);
+      account.balance = testUtils.fromDecimal(acctData.balance);
+
+      runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
+      vm.runCode(runCodeData, function(err, results) {
+        assert(!err);
+        assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
+
+        var keysOfPost = Object.keys(testData.post);
+        async.each(keysOfPost, function(key, callback) {
+          acctData = testData.post[key];
+
+          var account = results.account;
+          assert(testUtils.toDecimal(account.balance) === acctData.balance);
+          assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
+
+          var storageKeys = Object.keys(acctData.storage);
+          if (storageKeys.length > 0) {
+            state.root = account.stateRoot.toString('hex');
+            storageKeys.forEach(function(skey) {
+              state.get(testUtils.address(skey), function(err, data) {
+                assert(!err);
+                assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2));
+                callback();
+              });
+            });
+          } else {
+            callback();
+          }
+        }, done);
+      });
+    });
+  });
+
 });

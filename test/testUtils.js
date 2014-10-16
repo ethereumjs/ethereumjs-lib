@@ -1,5 +1,9 @@
 var bignum = require('bignum'),
-  utils = require('../lib/utils');
+  utils = require('../lib/utils'),
+  Block = require('../lib/block.js');
+
+
+var testUtils = exports;
 
 /**
  * toDecimal - converts buffer to decimal string, no leading zeroes
@@ -26,4 +30,43 @@ exports.fromDecimal = function (string) {
  */
 exports.address = function (string) {
   return !parseInt(string, 16) ? utils.zero256() : string;
+};
+
+/**
+ * makeBlockFromEnv - helper to create a block from the env object in tests repo
+ * @param {Object} env object from tests repo
+ * @return {Object}  the block
+ */
+exports.makeBlockFromEnv = function (env) {
+  var block = new Block();
+  block.header.timestamp = testUtils.fromDecimal(env.currentTimestamp);
+  block.header.gasLimit = testUtils.fromDecimal(env.currentGasLimit);
+  block.header.parentHash = new Buffer(env.previousHash, 'hex');
+  block.header.coinbase = new Buffer(env.currentCoinbase, 'hex');
+  block.header.difficulty = testUtils.fromDecimal(env.currentDifficulty);
+  block.header.number = testUtils.fromDecimal(env.currentNumber);
+
+  return block;
+};
+
+/**
+ * makeRunCodeData - helper to create the object for VM.runCode using
+ *   the exec object specified in the tests repo
+ * @param {Object} exec    object from the tests repo
+ * @param {Object} account that the executing code belongs to
+ * @param {Object} block   that the transaction belongs to
+ * @return {Object}        object that will be passed to VM.runCode function
+ */
+exports.makeRunCodeData = function (exec, account, block) {
+  return {
+    account: account,
+    origin: new Buffer(exec.origin, 'hex'),
+    code:  new Buffer(exec.code.slice(2), 'hex'),  // slice off 0x
+    value: testUtils.fromDecimal(exec.value),
+    address: new Buffer(exec.address, 'hex'),
+    from: new Buffer(exec.caller, 'hex'),
+    data:  new Buffer(exec.data.slice(2), 'hex'),  // slice off 0x
+    gasLimit: exec.gas,
+    block: block
+  };
 };
