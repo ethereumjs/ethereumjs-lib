@@ -35,6 +35,7 @@ exports.address = function (string) {
 /**
  * makeBlockFromEnv - helper to create a block from the env object in tests repo
  * @param {Object} env object from tests repo
+ * @return {Object}  the block
  */
 exports.makeBlockFromEnv = function (env) {
   var block = new Block();
@@ -52,8 +53,9 @@ exports.makeBlockFromEnv = function (env) {
  * makeRunCodeData - helper to create the object for VM.runCode using
  *   the exec object specified in the tests repo
  * @param {Object} exec    object from the tests repo
- * @param {[type]} account that the executing code belongs to
- * @param {[type]} block   that the transaction belongs to
+ * @param {Object} account that the executing code belongs to
+ * @param {Object} block   that the transaction belongs to
+ * @return {Object}        object that will be passed to VM.runCode function
  */
 exports.makeRunCodeData = function (exec, account, block) {
   return {
