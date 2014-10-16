@@ -32,6 +32,10 @@ exports.address = function (string) {
   return !parseInt(string, 16) ? utils.zero256() : string;
 };
 
+/**
+ * makeBlockFromEnv - helper to create a block from the env object in tests repo
+ * @param {Object} env object from tests repo
+ */
 exports.makeBlockFromEnv = function (env) {
   var block = new Block();
   block.header.timestamp = testUtils.fromDecimal(env.currentTimestamp);
@@ -44,6 +48,13 @@ exports.makeBlockFromEnv = function (env) {
   return block;
 };
 
+/**
+ * makeRunCodeData - helper to create the object for VM.runCode using
+ *   the exec object specified in the tests repo
+ * @param {Object} exec    object from the tests repo
+ * @param {[type]} account that the executing code belongs to
+ * @param {[type]} block   that the transaction belongs to
+ */
 exports.makeRunCodeData = function (exec, account, block) {
   return {
     account: account,
