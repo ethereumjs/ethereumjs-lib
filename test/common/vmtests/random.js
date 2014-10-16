@@ -50,8 +50,9 @@ describe('[Common]: VM tests', function () {
 
       acctData = testData.pre[testData.exec.address];
       account = new Account();
-      account.nonce = testUtils.fromDecimal('1');  // 1 because we assume runTx has incremented it
       account.balance = testUtils.fromDecimal(acctData.balance);
+      // we assume runTx has incremented the nonce
+      account.nonce = bignum(acctData.balance).add(1).toBuffer();
 
       var vm = new VM(internals.state);
       vm.runCall({
@@ -63,35 +64,29 @@ describe('[Common]: VM tests', function () {
         // using account.balance instead testData.exec.value to simulate that
         // the generated address is the fromAccount
         value: bignum.fromBuffer(account.balance),
-        // to: new Buffer(testData.exec.address, 'hex'),
         from: new Buffer(testData.exec.caller, 'hex'),
-        //data:  new Buffer(testData.exec.data.slice(2), 'hex'),  // slice off 0x
         gas: testData.exec.gas,
         block: block
       }, function(err, results) {
         assert(!err);
-        console.log('res: ', results)
         assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
 
         var suicideTo = results.vm.suicideTo.toString('hex');
         assert(Object.keys(testData.post).indexOf(suicideTo) !== -1);
 
         internals.state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
-
-        // internals.state.get(new Buffer('7d577a597b2742b498cb5cf0c26cdcd726d39e6e', 'hex'), function(err, acct) {
-
+          assert(!err);
           var account = new Account(acct);
+          var expectedSuicideAcct = testData.post[suicideTo];
 
-          console.log('data: ', account.balance.toString('hex'))
-
-          assert(testUtils.toDecimal(account.balance) ===
-            testData.post[suicideTo].balance);
+          assert(testUtils.toDecimal(account.balance) === expectedSuicideAcct.balance);
+          assert(testUtils.toDecimal(account.nonce) === expectedSuicideAcct.nonce);
 
           // we can't check that 7d577a597b2742b498cb5cf0c26cdcd726d39e6e has
           // been deleted/hasBalance0 because the generated address doesn't
           // match 7d577a597b2742b498cb5cf0c26cdcd726d39e6e
           done();
-        })
+        });
       });
     });
   });
