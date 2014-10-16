@@ -6,6 +6,7 @@ var testData = require('../../../../tests/vmtests/random.json'),
   testUtils = require('../../testUtils'),
   assert = require('assert'),
   levelup = require('levelup'),
+  bignum = require('bignum'),
   Trie = require('merkle-patricia-tree');
 
 var internals = {},
@@ -34,7 +35,7 @@ describe('[Common]: VM tests', function () {
       }, done);
     });
 
-    it('run code', function(done) {
+    it('run call', function(done) {
       var env = testData.env,
         block = new Block(),
         acctData,
@@ -49,22 +50,23 @@ describe('[Common]: VM tests', function () {
 
       acctData = testData.pre[testData.exec.address];
       account = new Account();
-      account.nonce = testUtils.fromDecimal(acctData.nonce);
+      account.nonce = testUtils.fromDecimal('1');  // 1 because we assume runTx has incremented it
       account.balance = testUtils.fromDecimal(acctData.balance);
 
       var vm = new VM(internals.state);
-      vm.runCode({
-        account: account,
+      vm.runCall({
+        fromAccount: account,
         origin: new Buffer(testData.exec.origin, 'hex'),
-        code:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
-        value: testUtils.fromDecimal(testData.exec.value),
-        address: new Buffer(testData.exec.address, 'hex'),
+        data:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
+        value: bignum(testData.exec.value),
+        // to: new Buffer(testData.exec.address, 'hex'),
         from: new Buffer(testData.exec.caller, 'hex'),
-        data:  new Buffer(testData.exec.data.slice(2), 'hex'),  // slice off 0x
-        gasLimit: testData.exec.gas,
+        //data:  new Buffer(testData.exec.data.slice(2), 'hex'),  // slice off 0x
+        gas: testData.exec.gas,
         block: block
       }, function(err, results) {
         assert(!err);
+        console.log('res: ', results)
         assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
         done();
       });
