@@ -10,13 +10,13 @@ var vmEnvironmentalInfoTest = require('../../../../tests/vmtests/vmEnvironmental
 
 var stateDB = levelup('', {
       db: require('memdown')
-  }),
-  state = new Trie(stateDB);
+  });
 
 describe('[Common]: vmEnvironmentalInfoTest', function () {
   var tests = Object.keys(vmEnvironmentalInfoTest);
-  // tests.forEach(function(testKey) {
-  testKey = 'balance0'
+  tests.forEach(function(testKey) {
+  // testKey = 'balanceCaller3'
+    var state = new Trie(stateDB);
     var testData = vmEnvironmentalInfoTest[testKey];
 
     it(testKey + ' setup the trie', function (done) {
@@ -51,8 +51,8 @@ describe('[Common]: vmEnvironmentalInfoTest', function () {
       vm.runCode(runCodeData, function(err, results) {
         assert(!err);
 
-console.log('gasUsed: ', results.gasUsed.toNumber())
-console.log('exp gasUsed: ', testData.exec.gas - testData.gas)
+// console.log('gasUsed: ', results.gasUsed.toNumber())
+// console.log('exp gasUsed: ', testData.exec.gas - testData.gas)
 
         // assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
 
@@ -62,7 +62,7 @@ console.log('exp gasUsed: ', testData.exec.gas - testData.gas)
 
         var keysOfPost = Object.keys(testData.post);
         var indexOfExecAddress = keysOfPost.indexOf(testData.exec.address);
-console.log('indexOfExecAddress: ', indexOfExecAddress)
+// console.log('indexOfExecAddress: ', indexOfExecAddress)
         if (indexOfExecAddress !== -1) {
           keysOfPost.splice(indexOfExecAddress, 1);
         }
@@ -102,6 +102,6 @@ console.log('indexOfExecAddress: ', indexOfExecAddress)
         }, done);
       });
     });
-  // });
+  });
 
 });
