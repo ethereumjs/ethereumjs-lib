@@ -1,5 +1,7 @@
 var bignum = require('bignum'),
+  async = require('async'),
   utils = require('../lib/utils'),
+  Account = require('../lib/account.js'),
   Block = require('../lib/block.js');
 
 
@@ -70,4 +72,25 @@ exports.makeRunCodeData = function (exec, account, block) {
     gasPrice: testUtils.fromDecimal(exec.gasPrice),
     block: block
   };
+};
+
+/**
+ * setupPreConditions given JSON testData
+ * @param {[type]}   state    - the state DB/trie
+ * @param {[type]}   testData - JSON from tests repo
+ * @param {Function} done     - callback when function is completed
+ */
+exports.setupPreConditions = function(state, testData, done) {
+  var keysOfPre = Object.keys(testData.pre),
+    acctData,
+    account;
+
+  async.each(keysOfPre, function(key, callback) {
+    acctData = testData.pre[key];
+
+    account = new Account();
+    account.nonce = testUtils.fromDecimal(acctData.nonce);
+    account.balance = testUtils.fromDecimal(acctData.balance);
+    state.put(new Buffer(key, 'hex'), account.serialize(), callback);
+  }, done);
 };
