@@ -50,26 +50,26 @@ describe('[Common]: vmEnvironmentalInfoTest', function () {
       vm.runCode(runCodeData, function(err, results) {
         assert(!err);
 
-        var account = results.account;
+        // validate the postcondition of account
+        acctData = testData.post[testData.exec.address];
+        account = results.account;
         assert(testUtils.toDecimal(account.balance) === acctData.balance);
         assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
 
+        // validate the postcondition of other accounts
+        delete testData.post[testData.exec.address];
         var keysOfPost = Object.keys(testData.post);
-        var indexOfExecAddress = keysOfPost.indexOf(testData.exec.address);
-        if (indexOfExecAddress !== -1) {
-          keysOfPost.splice(indexOfExecAddress, 1);
-        }
-
         async.each(keysOfPost, function(key, callback) {
           acctData = testData.post[key];
 
           state.get(new Buffer(key, 'hex'), function(err, raw) {
             assert(!err);
 
-            var account = new Account(raw);
+            account = new Account(raw);
             assert(testUtils.toDecimal(account.balance) === acctData.balance);
             assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
 
+            // validate storage
             var storageKeys = Object.keys(acctData.storage);
             if (storageKeys.length > 0) {
               state.root = account.stateRoot.toString('hex');
