@@ -61,15 +61,26 @@ describe('[Common]: vmSha3', function () {
             assert(testUtils.toDecimal(account.balance) === acctData.balance);
             assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
 
-            // todo: check storage
-            cb();
+            // validate storage
+            var storageKeys = Object.keys(acctData.storage);
+            if (storageKeys.length > 0) {
+              state.root = account.stateRoot.toString('hex');
+              storageKeys.forEach(function(skey) {
+                state.get(testUtils.address(skey), function(err, data) {
+                  assert(!err);
+                  assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2));
+                  cb();
+                });
+              });
+            } else {
+              cb();
+            }
           },
 
           function(cb) {
             // validate the postcondition of other accounts
             delete testData.post[testData.exec.address];
             var keysOfPost = Object.keys(testData.post);
-            console.log('kpost: ', keysOfPost)
             async.each(keysOfPost, function(key, callback) {
               acctData = testData.post[key];
 
