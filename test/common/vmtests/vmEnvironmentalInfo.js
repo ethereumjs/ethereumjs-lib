@@ -15,7 +15,6 @@ var stateDB = levelup('', {
 describe('[Common]: vmEnvironmentalInfoTest', function () {
   var tests = Object.keys(vmEnvironmentalInfoTest);
   tests.forEach(function(testKey) {
-  // testKey = 'balanceCaller3'
     var state = new Trie(stateDB);
     var testData = vmEnvironmentalInfoTest[testKey];
 
@@ -51,18 +50,12 @@ describe('[Common]: vmEnvironmentalInfoTest', function () {
       vm.runCode(runCodeData, function(err, results) {
         assert(!err);
 
-// console.log('gasUsed: ', results.gasUsed.toNumber())
-// console.log('exp gasUsed: ', testData.exec.gas - testData.gas)
-
-        // assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
-
         var account = results.account;
         assert(testUtils.toDecimal(account.balance) === acctData.balance);
         assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
 
         var keysOfPost = Object.keys(testData.post);
         var indexOfExecAddress = keysOfPost.indexOf(testData.exec.address);
-// console.log('indexOfExecAddress: ', indexOfExecAddress)
         if (indexOfExecAddress !== -1) {
           keysOfPost.splice(indexOfExecAddress, 1);
         }
@@ -71,17 +64,9 @@ describe('[Common]: vmEnvironmentalInfoTest', function () {
           acctData = testData.post[key];
 
           state.get(new Buffer(key, 'hex'), function(err, raw) {
-            //assert(!err)
-            // if (err) {
-            //   assert(err)
-            //   return;
-            // }
-            //
-            console.log('key: ', key, 'raw: ', raw)
-            var account = new Account(raw);
+            assert(!err);
 
-            console.log('bal: ', testUtils.toDecimal(account.balance))
-            console.log('acctData: ', acctData, 'exp bal: ', acctData.balance)
+            var account = new Account(raw);
             assert(testUtils.toDecimal(account.balance) === acctData.balance);
             assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
 
