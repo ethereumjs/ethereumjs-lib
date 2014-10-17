@@ -3,7 +3,6 @@ var vmEnvironmentalInfoTest = require('../../../../tests/vmtests/vmEnvironmental
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
   assert = require('assert'),
-  levelup = require('levelup'),
   testUtils = require('../../testUtils'),
   rlp = require('rlp'),
   Trie = require('merkle-patricia-tree');
@@ -141,6 +140,6 @@ describe('[Common]: vmEnvironmentalInfoTest', function () {
         }, done);
       });
     });
-  })
+  });
 
 });
