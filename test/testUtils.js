@@ -67,6 +67,7 @@ exports.makeRunCodeData = function (exec, account, block) {
     from: new Buffer(exec.caller, 'hex'),
     data:  new Buffer(exec.data.slice(2), 'hex'),  // slice off 0x
     gasLimit: exec.gas,
+    gasPrice: testUtils.fromDecimal(exec.gasPrice),
     block: block
   };
 };
