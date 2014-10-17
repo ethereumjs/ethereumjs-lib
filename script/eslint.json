@@ -7,6 +7,7 @@
        "no-underscore-dangle": 0,
        "curly": 0,
        "new-cap": 0,
+       "handle-callback-err": 1,
        "quotes":  [2, "single"]
     },
     "globals":{
