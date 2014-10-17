@@ -18,19 +18,8 @@ describe('[Common]: vmEnvironmentalInfoTest', function () {
     var state = new Trie(stateDB);
     var testData = vmEnvironmentalInfoTest[testKey];
 
-    it(testKey + ' setup the trie', function (done) {
-      var keysOfPre = Object.keys(testData.pre),
-        acctData,
-        account;
-
-      async.each(keysOfPre, function(key, callback) {
-        acctData = testData.pre[key];
-
-        account = new Account();
-        account.nonce = testUtils.fromDecimal(acctData.nonce);
-        account.balance = testUtils.fromDecimal(acctData.balance);
-        state.put(new Buffer(key, 'hex'), account.serialize(), callback);
-      }, done);
+    it(testKey + ' setup the pre', function (done) {
+      testUtils.setupPreConditions(state, testData, done);
     });
 
     it(testKey + ' run code', function(done) {
