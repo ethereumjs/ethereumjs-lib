@@ -84,23 +84,21 @@ console.log('indexOfExecAddress: ', indexOfExecAddress)
             console.log('acctData: ', acctData, 'exp bal: ', acctData.balance)
             assert(testUtils.toDecimal(account.balance) === acctData.balance);
             assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
-            callback();
+
+            var storageKeys = Object.keys(acctData.storage);
+            if (storageKeys.length > 0) {
+              state.root = account.stateRoot.toString('hex');
+              storageKeys.forEach(function(skey) {
+                state.get(testUtils.address(skey), function(err, data) {
+                  assert(!err);
+                  assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2));
+                  callback();
+                });
+              });
+            } else {
+              callback();
+            }
           });
-
-
-          // var storageKeys = Object.keys(acctData.storage);
-          // if (storageKeys.length > 0) {
-          //   state.root = account.stateRoot.toString('hex');
-          //   storageKeys.forEach(function(skey) {
-          //     state.get(testUtils.address(skey), function(err, data) {
-          //       assert(!err);
-          //       assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2));
-          //       callback();
-          //     });
-          //   });
-          // } else {
-          //   callback();
-          // }
         }, done);
       });
     });
