@@ -1,11 +1,41 @@
 var bignum = require('bignum'),
   async = require('async'),
+  assert = require('assert'),
+  rlp = require('rlp'),
   utils = require('../lib/utils'),
   Account = require('../lib/account.js'),
   Block = require('../lib/block.js');
 
 
 var testUtils = exports;
+
+/**
+ * verifyAccountPostConditions using JSON from tests repo
+ * @param {[type]}   state    DB/trie
+ * @param {[type]}   account  to verify
+ * @param {[type]}   acctData postconditions JSON from tests repo
+ * @param {Function} cb       completion callback
+ */
+exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
+  // validate the postcondition of account
+  assert(testUtils.toDecimal(account.balance) === acctData.balance);
+  assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
+
+  // validate storage
+  var storageKeys = Object.keys(acctData.storage);
+  if (storageKeys.length > 0) {
+    state.root = account.stateRoot.toString('hex');
+    storageKeys.forEach(function(skey) {
+      state.get(testUtils.address(skey), function(err, data) {
+        assert(!err);
+        assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2));
+        cb();
+      });
+    });
+  } else {
+    cb();
+  }
+};
 
 /**
  * toDecimal - converts buffer to decimal string, no leading zeroes

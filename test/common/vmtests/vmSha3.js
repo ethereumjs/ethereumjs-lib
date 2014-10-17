@@ -3,20 +3,14 @@ var vmSha3Test = require('../../../../tests/vmtests/vmSha3Test.json'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
   assert = require('assert'),
-  levelup = require('levelup'),
   testUtils = require('../../testUtils'),
-  rlp = require('rlp'),
   Trie = require('merkle-patricia-tree');
-
-var stateDB = levelup('', {
-      db: require('memdown')
-  }),
-  state = new Trie(stateDB);
 
 describe('[Common]: vmSha3', function () {
 
   var tests = Object.keys(vmSha3Test);
   tests.forEach(function(testKey) {
+    var state = new Trie();
     var testData = vmSha3Test[testKey];
 
     it(testKey + ' setup the trie', function (done) {
@@ -58,29 +52,28 @@ describe('[Common]: vmSha3', function () {
         assert(!err);
         assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
 
-        var keysOfPost = Object.keys(testData.post);
-        async.each(keysOfPost, function(key, callback) {
-          acctData = testData.post[key];
+        async.series([
+          function(cb) {
+            account = results.account;
+            acctData = testData.post[testData.exec.address];
+            testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+          },
 
-          var account = results.account;
-
-          assert(testUtils.toDecimal(account.balance) === acctData.balance);
-          assert(testUtils.toDecimal(account.nonce) === acctData.nonce);
-
-          var storageKeys = Object.keys(acctData.storage);
-          if (storageKeys.length > 0) {
-            state.root = account.stateRoot.toString('hex');
-            storageKeys.forEach(function(skey) {
-              state.get(testUtils.address(skey), function(err, data) {
+          function() {
+            // validate the postcondition of other accounts
+            delete testData.post[testData.exec.address];
+            var keysOfPost = Object.keys(testData.post);
+            async.each(keysOfPost, function(key, cb) {
+              state.get(new Buffer(key, 'hex'), function(err, raw) {
                 assert(!err);
-                assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2));
-                callback();
+
+                account = new Account(raw);
+                acctData = testData.post[key];
+                testUtils.verifyAccountPostConditions(state, account, acctData, cb);
               });
-            });
-          } else {
-            callback();
+            }, done);
           }
-        }, done);
+        ]);
       });
     });
   });
