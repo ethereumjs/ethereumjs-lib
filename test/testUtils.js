@@ -18,8 +18,8 @@ var testUtils = exports;
  */
 exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
   // validate the postcondition of account
-  assert(testUtils.toDecimal(account.balance) === acctData.balance, 'balance mismatch');
-  assert(testUtils.toDecimal(account.nonce) === acctData.nonce, 'nonce mismatch');
+  assert.strictEqual(testUtils.toDecimal(account.balance), acctData.balance, 'balance mismatch');
+  assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
 
   // validate storage
   var storageKeys = Object.keys(acctData.storage);
@@ -28,7 +28,8 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
     storageKeys.forEach(function(skey) {
       state.get(testUtils.address(skey), function(err, data) {
         assert(!err);
-        assert(rlp.decode(data).toString('hex') === acctData.storage[skey].slice(2), 'storage mismatch');
+        assert.strictEqual(rlp.decode(data).toString('hex'),
+          acctData.storage[skey].slice(2), 'storage mismatch');
         cb();
       });
     });
