@@ -37,6 +37,8 @@ describe('[Common]: vmEnvironmentalInfoTest', function () {
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
         assert(!err);
+        assert(results.gasUsed.toNumber()
+          === (testData.exec.gas - testData.gas), 'gas used mismatch');
 
         // validate the postcondition of account
         acctData = testData.post[testData.exec.address];
@@ -102,6 +104,8 @@ describe('[Common]: vmEnvironmentalInfoTest', function () {
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
         assert(!err);
+        assert(results.gasUsed.toNumber()
+          === (testData.exec.gas - testData.gas), 'gas used mismatch');
 
         // validate the postcondition of account
         acctData = testData.post[testData.exec.address];

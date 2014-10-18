@@ -69,7 +69,8 @@ describe('[Common]: VM tests', function () {
         block: block
       }, function(err, results) {
         assert(!err);
-        assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
+        assert(results.gasUsed.toNumber()
+          === (testData.exec.gas - testData.gas), 'gas used mismatch');
 
         var suicideTo = results.vm.suicideTo.toString('hex');
         assert(Object.keys(testData.post).indexOf(suicideTo) !== -1);
