@@ -50,7 +50,8 @@ describe('[Common]: vmSha3', function () {
         }
 
         assert(!err);
-        assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
+        assert(results.gasUsed.toNumber()
+          === (testData.exec.gas - testData.gas), 'gas used mismatch');
 
         async.series([
           function(cb) {
