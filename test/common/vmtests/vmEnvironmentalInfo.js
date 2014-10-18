@@ -36,7 +36,7 @@ describe('[Common]: vmEnvironmentalInfoTest', function () {
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
-        assert(!err);
+        assert(!err, 'err: ' + err);
         assert(results.gasUsed.toNumber()
           === (testData.exec.gas - testData.gas), 'gas used mismatch');
 
@@ -53,7 +53,7 @@ describe('[Common]: vmEnvironmentalInfoTest', function () {
             var keysOfPost = Object.keys(testData.post);
             async.each(keysOfPost, function(key, cb) {
               state.get(new Buffer(key, 'hex'), function(err, raw) {
-                assert(!err);
+                assert(!err, 'err: ' + err);
 
                 account = new Account(raw);
                 acctData = testData.post[key];
