@@ -16,7 +16,7 @@ var testUtils = exports;
  * @param {[type]}   acctData postconditions JSON from tests repo
  * @param {Function} cb       completion callback
  */
-exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
+exports.verifyAccountPostConditions = function (state, account, acctData, cb) {
   // validate the postcondition of account
   assert.strictEqual(testUtils.toDecimal(account.balance), acctData.balance, 'balance mismatch');
   assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
@@ -25,8 +25,8 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
   var storageKeys = Object.keys(acctData.storage);
   if (storageKeys.length > 0) {
     state.root = account.stateRoot.toString('hex');
-    storageKeys.forEach(function(skey) {
-      state.get(testUtils.address(skey), function(err, data) {
+    storageKeys.forEach(function (skey) {
+      state.get(testUtils.address(skey), function (err, data) {
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'),
           acctData.storage[skey].slice(2), 'storage mismatch');
@@ -50,7 +50,7 @@ exports.toDecimal = function (buffer) {
 /**
  * fromDecimal - converts decimal string to buffer
  * @param {String}
-*  @return {Buffer}
+ *  @return {Buffer}
  */
 exports.fromDecimal = function (string) {
   return utils.intToBuffer(parseInt(string, 10));
@@ -94,11 +94,11 @@ exports.makeRunCodeData = function (exec, account, block) {
   return {
     account: account,
     origin: new Buffer(exec.origin, 'hex'),
-    code:  new Buffer(exec.code.slice(2), 'hex'),  // slice off 0x
+    code: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
     value: testUtils.fromDecimal(exec.value),
     address: new Buffer(exec.address, 'hex'),
     from: new Buffer(exec.caller, 'hex'),
-    data:  new Buffer(exec.data.slice(2), 'hex'),  // slice off 0x
+    data: new Buffer(exec.data.slice(2), 'hex'), // slice off 0x
     gasLimit: exec.gas,
     gasPrice: testUtils.fromDecimal(exec.gasPrice),
     block: block
@@ -111,17 +111,34 @@ exports.makeRunCodeData = function (exec, account, block) {
  * @param {[type]}   testData - JSON from tests repo
  * @param {Function} done     - callback when function is completed
  */
-exports.setupPreConditions = function(state, testData, done) {
+exports.setupPreConditions = function (state, testData, done) {
   var keysOfPre = Object.keys(testData.pre),
     acctData,
     account;
 
-  async.each(keysOfPre, function(key, callback) {
+  async.each(keysOfPre, function (key, callback) {
     acctData = testData.pre[key];
 
     account = new Account();
     account.nonce = testUtils.fromDecimal(acctData.nonce);
     account.balance = testUtils.fromDecimal(acctData.balance);
-    state.put(new Buffer(key, 'hex'), account.serialize(), callback);
+
+    if (acctData.code) {
+      //convert to buffer
+      try{
+        acctData.code = utils.intToBuffer(parseInt(acctData.code, 16));
+      }catch(e){}
+
+      account.storeCode(state, acctData.code, function (err, codeHash) {
+        if (err) {
+          callback(err);
+        } else {
+          account.codeHash = codeHash;
+          state.put(new Buffer(key, 'hex'), account.serialize(), callback);
+        }
+      });
+    } else {
+      state.put(new Buffer(key, 'hex'), account.serialize(), callback);
+    }
   }, done);
 };
