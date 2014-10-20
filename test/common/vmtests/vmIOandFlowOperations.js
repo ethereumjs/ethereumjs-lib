@@ -6,7 +6,32 @@ var vmIOandFlowOperationsTest = require('../../../../tests/vmtests/vmIOandFlowOp
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
+
+function expectError(testKey, error) {
+  if (testKey.match(
+    /(^dupAt51doesNotExistAnymore$|^swapAt52doesNotExistAnymore$)/)) {
+    assert.strictEqual(error, 'invalid opcode');
+    return true;
+  } else if (testKey.match(
+    /(^jump0$|^jump0_jumpdest1$|^jumpi0$)/)) {
+    assert.strictEqual(error, 'jump destination must have be preceded by a JUMPDEST opcode');
+    return true;
+  } else if (testKey.match(
+    /(^pop1$)/)) {
+    assert.strictEqual(error, 'stack underflow');
+    return true;
+  }
+
+  return false;
+}
+
 describe('[Common]: vmIOandFlowOperationsTest', function () {
+  // var jump0_foreverOutOfGas = vmIOandFlowOperationsTest.jump0_foreverOutOfGas;
+  // var mloadOutOfGasError2 = vmIOandFlowOperationsTest.mloadOutOfGasError2;
+
+  delete vmIOandFlowOperationsTest.jump0_foreverOutOfGas;
+  delete vmIOandFlowOperationsTest.mloadOutOfGasError2;
+
   var tests = Object.keys(vmIOandFlowOperationsTest);
   tests.forEach(function(testKey) {
     var state = new Trie();
@@ -31,6 +56,11 @@ describe('[Common]: vmIOandFlowOperationsTest', function () {
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
+        if (expectError(testKey, err)) {
+          done();
+          return;
+        }
+
         assert(!err, 'err: ' + err);
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
@@ -60,4 +90,6 @@ describe('[Common]: vmIOandFlowOperationsTest', function () {
       });
     });
   });
+
+  it('TODO: out of gas error tests');
 });
