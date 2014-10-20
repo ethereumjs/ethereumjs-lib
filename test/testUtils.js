@@ -63,7 +63,7 @@ exports.fromDecimal = function (string) {
  */
 exports.fromAddress = function (hexString) {
   hexString = hexString.substring(2);
-  return utils.pad256(bignum.fromBuffer(hexString).toBuffer());
+  return utils.pad256(bignum(hexString, 16).toBuffer());
 };
 
 /**
