@@ -11,7 +11,7 @@ var vmIOandFlowOperationsTest = require('../../../../tests/vmtests/vmIOandFlowOp
 function expectError(testKey, error) {
   if (testKey.match(
     /(^dupAt51doesNotExistAnymore$|^swapAt52doesNotExistAnymore$)/)) {
-    assert.strictEqual(error, 'invalid opcode');
+    assert.strictEqual(error, ERROR.INVALID_OPCODE);
     return true;
   } else if (testKey.match(
     /(^jump0$|^jump0_jumpdest1$|^jumpi0$)/)) {
@@ -19,7 +19,7 @@ function expectError(testKey, error) {
     return true;
   } else if (testKey.match(
     /(^pop1$)/)) {
-    assert.strictEqual(error, 'stack underflow');
+    assert.strictEqual(error, ERROR.STACK_UNDERFLOW);
     return true;
   }
 
