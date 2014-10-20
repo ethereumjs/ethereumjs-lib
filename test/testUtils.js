@@ -26,7 +26,7 @@ exports.verifyAccountPostConditions = function (state, account, acctData, cb) {
   if (storageKeys.length > 0) {
     state.root = account.stateRoot.toString('hex');
     storageKeys.forEach(function (skey) {
-      state.get(testUtils.address(skey), function (err, data) {
+      state.get(testUtils.fromAddress(skey), function (err, data) {
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'),
           acctData.storage[skey].slice(2), 'storage mismatch');
@@ -57,12 +57,13 @@ exports.fromDecimal = function (string) {
 };
 
 /**
- * address - converts 0x to utils.zero256, otherwise returns input
- * @param  {String}
- * @return {String}
+ * fromAddress - converts hexString address to 256-bit buffer
+ * @param  {String} hexString address for example '0x03'
+ * @return {Buffer}
  */
-exports.address = function (string) {
-  return !parseInt(string, 16) ? utils.zero256() : string;
+exports.fromAddress = function (hexString) {
+  hexString = hexString.substring(2);
+  return utils.pad256(utils.intToBuffer(hexString));
 };
 
 /**
