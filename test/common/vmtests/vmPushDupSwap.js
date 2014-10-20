@@ -4,7 +4,6 @@ var vmPushDupSwapTest = require('../../../../tests/vmtests/vmPushDupSwapTest.jso
   Account = require('../../../lib/account.js'),
   assert = require('assert'),
   testUtils = require('../../testUtils'),
-  rlp = require('rlp'),
   Trie = require('merkle-patricia-tree');
 
 describe('[Common]: vmPushDupSwapTest', function () {
