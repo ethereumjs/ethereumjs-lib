@@ -7,6 +7,14 @@ var vmPushDupSwapTest = require('../../../../tests/vmtests/vmPushDupSwapTest.jso
   Trie = require('merkle-patricia-tree');
 
 describe('[Common]: vmPushDupSwapTest', function () {
+  // var dup2error = vmPushDupSwapTest.dup2error;
+  // var push32error = vmPushDupSwapTest.push32error;
+  // var swap2error = vmPushDupSwapTest.swap2error;
+
+  delete vmPushDupSwapTest.dup2error;
+  delete vmPushDupSwapTest.push32error;
+  delete vmPushDupSwapTest.swap2error;
+
   var tests = Object.keys(vmPushDupSwapTest);
   tests.forEach(function(testKey) {
     var state = new Trie();
@@ -60,4 +68,6 @@ describe('[Common]: vmPushDupSwapTest', function () {
       });
     });
   });
+
+  it('TODO: error tests');
 });
