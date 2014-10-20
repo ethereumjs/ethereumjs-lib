@@ -1,6 +1,7 @@
 var vmIOandFlowOperationsTest = require('../../../../tests/vmtests/vmIOandFlowOperationsTest.json'),
   async = require('async'),
   VM = require('../../../lib/vm'),
+  ERROR = require('../../../lib/vm/constants').ERROR,
   Account = require('../../../lib/account.js'),
   assert = require('assert'),
   testUtils = require('../../testUtils'),
@@ -14,7 +15,7 @@ function expectError(testKey, error) {
     return true;
   } else if (testKey.match(
     /(^jump0$|^jump0_jumpdest1$|^jumpi0$)/)) {
-    assert.strictEqual(error, 'jump destination must have be preceded by a JUMPDEST opcode');
+    assert.strictEqual(error, ERROR.MISSING_JUMPDEST);
     return true;
   } else if (testKey.match(
     /(^pop1$)/)) {
