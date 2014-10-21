@@ -194,50 +194,25 @@ acctData = testData.pre[testData.exec.caller];
         var suicideTo = results.vm.suicideTo.toString('hex');
         var keysOfPost = Object.keys(testData.post);
         assert.strictEqual(keysOfPost.length, 1, '#post mismatch');
-
         assert.notStrictEqual(suicideTo, keysOfPost[0], 'suicideTo should not exist');
 
-        // assert(Object.keys(testData.post).indexOf(suicideTo) !== -1);
-        //
-
-        state.get(new Buffer(keysOfPost[0], 'hex'), function(err, acct) {
-          assert(!err);
-          var account = new Account(acct);
-          var acctData = testData.post[keysOfPost[0]];
-
-          testUtils.verifyAccountPostConditions(state, account, acctData, done);
-        });
-        return
-
-        state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
-          assert(!err);
-          var account = new Account(acct);
-          debugger
-
-          var acctData = testData.post[suicideTo];
-
-          testUtils.verifyAccountPostConditions(state, account, acctData, done);
-
-          // assert(testUtils.toDecimal(account.balance) === expectedSuicideAcct.balance);
-          // assert(testUtils.toDecimal(account.nonce) === expectedSuicideAcct.nonce);
-
-          // we can't check that 7d577a597b2742b498cb5cf0c26cdcd726d39e6e has
-          // been deleted/hasBalance0 because the generated address doesn't
-          // match 7d577a597b2742b498cb5cf0c26cdcd726d39e6e
-          // done();
-        });
-
-
-
-        // async.each(keysOfPost, function(key, cb) {
-        //   state.get(new Buffer(key, 'hex'), function(err, raw) {
-        //     assert(!err);
-        //
-        //     account = new Account(raw);
-        //     acctData = testData.post[key];
-        //     testUtils.verifyAccountPostConditions(state, account, acctData, cb);
-        //   });
-        // }, done);
+        async.series([
+          function(cb) {
+            state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
+              assert(!err);
+              assert(!acct, 'suicide account should be gone');
+              cb();
+            });
+          },
+          function(cb) {
+            state.get(new Buffer(keysOfPost[0], 'hex'), function(err, acct) {
+              assert(!err);
+              var account = new Account(acct);
+              var acctData = testData.post[keysOfPost[0]];
+              testUtils.verifyAccountPostConditions(state, account, acctData, done);
+            });
+          }
+        ], done);
       });
     });
   });
