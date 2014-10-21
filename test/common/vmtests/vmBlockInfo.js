@@ -32,7 +32,8 @@ describe('[Common]: vmBlockInfoTest', function () {
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
         assert(!err);
-        assert(results.gasUsed.toNumber() === (testData.exec.gas - testData.gas));
+        assert.strictEqual(results.gasUsed.toNumber(),
+          testData.exec.gas - testData.gas, 'gas used mismatch');
 
         async.series([
           function(cb) {
