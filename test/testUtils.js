@@ -118,7 +118,7 @@ exports.setupPreConditions = function (state, testData, done) {
     acctData,
     account;
 
-  async.each(keysOfPre, function (key, callback) {
+  async.eachSeries(keysOfPre, function (key, callback) {
     acctData = testData.pre[key];
 
     account = new Account();
