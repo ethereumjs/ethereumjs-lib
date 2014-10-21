@@ -18,6 +18,7 @@ var testUtils = exports;
  */
 exports.verifyAccountPostConditions = function (state, account, acctData, cb) {
   // validate the postcondition of account
+console.log('bal: ', testUtils.toDecimal(account.balance), 'exp: ', acctData.balance)
   assert.strictEqual(testUtils.toDecimal(account.balance), acctData.balance, 'balance mismatch');
   assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
 
