@@ -118,7 +118,7 @@ acctData = testData.pre[testData.exec.caller];
 
         // assert(Object.keys(testData.post).indexOf(suicideTo) !== -1);
 
-        internals.state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
+        state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
           assert(!err);
           var account = new Account(acct);
           var acctData = testData.post[suicideTo];
