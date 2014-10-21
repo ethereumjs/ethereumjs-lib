@@ -127,7 +127,7 @@ exports.setupPreConditions = function (state, testData, done) {
     if (acctData.code) {
       //convert to buffer
       try{
-        acctData.code = utils.intToBuffer(parseInt(acctData.code, 16));
+        acctData.code = bignum(acctData.code.slice(2), 16).toBuffer();
       }catch(e){}
 
       account.storeCode(state, acctData.code, function (err, codeHash) {
