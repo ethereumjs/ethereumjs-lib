@@ -67,6 +67,76 @@ describe('[Common]: vmSystemOperationsTest', function () {
     });
   });
 
+  describe.only('suicideNotExistingAccount', function() {
+    var testKey = 'suicideNotExistingAccount';
+    var state = new Trie();
+    var testData = vmSystemOperationsTest[testKey];
+
+    it(testKey + ' setup the trie', function (done) {
+      testUtils.setupPreConditions(state, testData, done);
+    });
+
+    it(testKey + ' run code', function(done) {
+      var env = testData.env,
+        block = testUtils.makeBlockFromEnv(env),
+        acctData,
+        account,
+        runCodeData,
+        vm = new VM(state);
+
+      // acctData = testData.pre[testData.exec.address];
+      acctData = testData.pre[testData.exec.caller];
+      account = new Account();
+      account.nonce = testUtils.fromDecimal(acctData.nonce);
+      account.balance = testUtils.fromDecimal(acctData.balance);
+      // account.balance = testUtils.fromDecimal(testData.exec.gas);
+
+      // runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
+
+      runCodeData = {
+        fromAccount: account,
+        origin: new Buffer(testData.exec.origin, 'hex'),
+        data:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
+        value: bignum(testData.exec.value),
+        from: new Buffer(testData.exec.caller, 'hex'),
+        to: new Buffer(testData.exec.address, 'hex'),
+        gas: testData.exec.gas,
+        block: block
+      };
+
+      vm.runCall(runCodeData, function(err, results) {
+        assert(!err);
+        assert.strictEqual(results.gasUsed.toNumber(),
+          testData.exec.gas - testData.gas, 'gas used mismatch');
+
+        async.series([
+          function(cb) {
+            cb()
+            return
+
+            // account = results.account;
+            // acctData = testData.post[testData.exec.address];
+            // testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+          },
+
+          function() {
+            // validate the postcondition of other accounts
+            // delete testData.post[testData.exec.address];
+            var keysOfPost = Object.keys(testData.post);
+            async.each(keysOfPost, function(key, cb) {
+              state.get(new Buffer(key, 'hex'), function(err, raw) {
+                assert(!err);
+
+                account = new Account(raw);
+                acctData = testData.post[key];
+                testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+              });
+            }, done);
+          }
+        ]);
+      });
+    });
+  });
 
   describe('suicide0', function() {
     var testKey = 'suicide0';
