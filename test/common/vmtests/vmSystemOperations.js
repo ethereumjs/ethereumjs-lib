@@ -111,8 +111,8 @@ describe('[Common]: vmSystemOperationsTest', function () {
 
         async.series([
           function(cb) {
-            cb()
-            return
+            cb();
+            return;
 
             // account = results.account;
             // acctData = testData.post[testData.exec.address];
@@ -274,7 +274,7 @@ acctData = testData.pre[testData.exec.caller];
               cb();
             });
           },
-          function(cb) {
+          function() {
             state.get(new Buffer(keysOfPost[0], 'hex'), function(err, acct) {
               assert(!err);
               var account = new Account(acct);
