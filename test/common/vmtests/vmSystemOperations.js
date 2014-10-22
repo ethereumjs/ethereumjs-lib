@@ -239,20 +239,15 @@ acctData = testData.pre[testData.exec.caller];
         runData,
         vm = new VM(state);
 
-      acctData = testData.pre[testData.exec.caller];
-      account = new Account();
-      account.nonce = testUtils.fromDecimal(acctData.nonce);
-      account.balance = testUtils.fromDecimal(acctData.balance);
-
-      runData = testUtils.makeRunCallData(testData.exec, account, block);
+      runData = testUtils.makeRunCallData(testData, block);
 
       vm.runCall(runData, function(err, results) {
         assert(!err);
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
 
-        var suicideTo = results.vm.suicideTo.toString('hex');
-        var keysOfPost = Object.keys(testData.post);
+        var suicideTo = results.vm.suicideTo.toString('hex'),
+          keysOfPost = Object.keys(testData.post);
         assert.strictEqual(keysOfPost.length, 1, '#post mismatch');
         assert.notStrictEqual(suicideTo, keysOfPost[0], 'suicideTo should not exist');
 
@@ -267,8 +262,8 @@ acctData = testData.pre[testData.exec.caller];
           function() {
             state.get(new Buffer(keysOfPost[0], 'hex'), function(err, acct) {
               assert(!err);
-              var account = new Account(acct);
-              var acctData = testData.post[keysOfPost[0]];
+              var account = new Account(acct),
+                acctData = testData.post[keysOfPost[0]];
               testUtils.verifyAccountPostConditions(state, account, acctData, done);
             });
           }
