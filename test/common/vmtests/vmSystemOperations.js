@@ -123,7 +123,7 @@ describe('[Common]: vmSystemOperationsTest', function () {
             // delete testData.post[testData.exec.address];
             var keysOfPost = Object.keys(testData.post);
 
-            var suicideCreated = testData.exec.code.substr(4, 20*2);
+            var suicideCreated = testData.exec.code.substr(4, 20 * 2);
             assert(keysOfPost.indexOf(suicideCreated) !== -1, 'suicideCreated not in post');
 
             async.each(keysOfPost, function(key, cb) {
@@ -153,71 +153,25 @@ describe('[Common]: vmSystemOperationsTest', function () {
     it(testKey + ' run code', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
-        acctData,
-        account,
-        runCodeData,
+        runData = testUtils.makeRunCallData(testData, block),
         vm = new VM(state);
 
-      // acctData = testData.pre[testData.exec.address];
-acctData = testData.pre[testData.exec.caller];
-      account = new Account();
-      account.nonce = testUtils.fromDecimal(acctData.nonce);
-      account.balance = testUtils.fromDecimal(acctData.balance);
-// account.balance = testUtils.fromDecimal(testData.exec.gas);
-
-      // runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
-
-      runCodeData = {
-        fromAccount: account,
-        origin: new Buffer(testData.exec.origin, 'hex'),
-        data:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
-        value: bignum(testData.exec.value),
-        from: new Buffer(testData.exec.caller, 'hex'),
-        to: new Buffer(testData.exec.address, 'hex'),
-        gas: testData.exec.gas,
-        block: block
-      };
-
-      vm.runCall(runCodeData, function(err, results) {
+      vm.runCall(runData, function(err, results) {
         assert(!err);
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
 
-        var suicideTo = results.vm.suicideTo.toString('hex');
-        var keysOfPost = Object.keys(testData.post);
+        var suicideTo = results.vm.suicideTo.toString('hex'),
+          keysOfPost = Object.keys(testData.post);
         assert.strictEqual(keysOfPost.length, 1, '#post mismatch');
-
         assert.strictEqual(suicideTo, keysOfPost[0], 'suicideTo mismatch');
-
-        // assert(Object.keys(testData.post).indexOf(suicideTo) !== -1);
 
         state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
           assert(!err);
-          var account = new Account(acct);
-          var acctData = testData.post[suicideTo];
-
+          var account = new Account(acct),
+            acctData = testData.post[suicideTo];
           testUtils.verifyAccountPostConditions(state, account, acctData, done);
-
-          // assert(testUtils.toDecimal(account.balance) === expectedSuicideAcct.balance);
-          // assert(testUtils.toDecimal(account.nonce) === expectedSuicideAcct.nonce);
-
-          // we can't check that 7d577a597b2742b498cb5cf0c26cdcd726d39e6e has
-          // been deleted/hasBalance0 because the generated address doesn't
-          // match 7d577a597b2742b498cb5cf0c26cdcd726d39e6e
-          // done();
         });
-
-
-
-        // async.each(keysOfPost, function(key, cb) {
-        //   state.get(new Buffer(key, 'hex'), function(err, raw) {
-        //     assert(!err);
-        //
-        //     account = new Account(raw);
-        //     acctData = testData.post[key];
-        //     testUtils.verifyAccountPostConditions(state, account, acctData, cb);
-        //   });
-        // }, done);
       });
     });
   });
@@ -234,12 +188,8 @@ acctData = testData.pre[testData.exec.caller];
     it(testKey + ' run call', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
-        acctData,
-        account,
-        runData,
+        runData = testUtils.makeRunCallData(testData, block),
         vm = new VM(state);
-
-      runData = testUtils.makeRunCallData(testData, block);
 
       vm.runCall(runData, function(err, results) {
         assert(!err);
