@@ -9,7 +9,7 @@ var vmSystemOperationsTest = require('../../../../tests/vmtests/vmSystemOperatio
 
 describe('[Common]: vmSystemOperationsTest', function () {
   var tests = Object.keys(vmSystemOperationsTest);
-  // tests = ['CallToReturn1']
+  // TODO add tests
   tests = [];
   tests.forEach(function(testKey) {
     var state = new Trie();
@@ -67,7 +67,7 @@ describe('[Common]: vmSystemOperationsTest', function () {
     });
   });
 
-  describe.only('suicideNotExistingAccount', function() {
+  describe('.', function() {
     var testKey = 'suicideNotExistingAccount';
     var state = new Trie();
     var testData = vmSystemOperationsTest[testKey];
@@ -138,7 +138,7 @@ describe('[Common]: vmSystemOperationsTest', function () {
     });
   });
 
-  describe('suicide0', function() {
+  describe('.', function() {
     var testKey = 'suicide0';
     var state = new Trie();
     var testData = vmSystemOperationsTest[testKey];
@@ -219,7 +219,7 @@ acctData = testData.pre[testData.exec.caller];
     });
   });
 
-  describe('suicideSendEtherToMe', function() {
+  describe('.', function() {
     var testKey = 'suicideSendEtherToMe';
     var state = new Trie();
     var testData = vmSystemOperationsTest[testKey];
