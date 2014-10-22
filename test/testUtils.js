@@ -39,6 +39,27 @@ exports.verifyAccountPostConditions = function (state, account, acctData, cb) {
 };
 
 /**
+ * makeRunCallData - helper to create the object for VM.runCall using
+ *   the exec object specified in the tests repo
+ * @param {Object} exec    object from the tests repo
+ * @param {Object} account of caller
+ * @param {Object} block   that the transaction belongs to
+ * @return {Object}        object that will be passed to VM.runCall function
+ */
+exports.makeRunCallData = function (exec, account, block) {
+  return {
+    fromAccount: account,
+    origin: new Buffer(exec.origin, 'hex'),
+    data: new Buffer(exec.code.slice(2), 'hex'),  // slice off 0x
+    value: bignum(exec.value),
+    from: new Buffer(exec.caller, 'hex'),
+    to: new Buffer(exec.address, 'hex'),
+    gas: exec.gas,
+    block: block
+  };
+};
+
+/**
  * toDecimal - converts buffer to decimal string, no leading zeroes
  * @param  {Buffer}
  * @return {String}

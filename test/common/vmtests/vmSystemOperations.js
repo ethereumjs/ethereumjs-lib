@@ -231,35 +231,22 @@ acctData = testData.pre[testData.exec.caller];
       testUtils.setupPreConditions(state, testData, done);
     });
 
-    it(testKey + ' run code', function(done) {
+    it(testKey + ' run call', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
         acctData,
         account,
-        runCodeData,
+        runData,
         vm = new VM(state);
 
-      // acctData = testData.pre[testData.exec.address];
-acctData = testData.pre[testData.exec.caller];
+      acctData = testData.pre[testData.exec.caller];
       account = new Account();
       account.nonce = testUtils.fromDecimal(acctData.nonce);
       account.balance = testUtils.fromDecimal(acctData.balance);
-// account.balance = testUtils.fromDecimal(testData.exec.gas);
 
-      // runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
+      runData = testUtils.makeRunCallData(testData.exec, account, block);
 
-      runCodeData = {
-        fromAccount: account,
-        origin: new Buffer(testData.exec.origin, 'hex'),
-        data:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
-        value: bignum(testData.exec.value),
-        from: new Buffer(testData.exec.caller, 'hex'),
-        to: new Buffer(testData.exec.address, 'hex'),
-        gas: testData.exec.gas,
-        block: block
-      };
-
-      vm.runCall(runCodeData, function(err, results) {
+      vm.runCall(runData, function(err, results) {
         assert(!err);
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
