@@ -133,6 +133,18 @@ exports.makeRunCodeData = function (exec, account, block) {
   };
 };
 
+
+exports.storeCode = function(state, address, account, code, callback) {
+  account.storeCode(state, code, function(err, codeHash) {
+    if (err) {
+      callback(err);
+    } else {
+      account.codeHash = codeHash;
+      state.put(new Buffer(address, 'hex'), account.serialize(), callback);
+    }
+  });
+};
+
 /**
  * setupPreConditions given JSON testData
  * @param {[type]}   state    - the state DB/trie
@@ -153,13 +165,11 @@ exports.setupPreConditions = function (state, testData, done) {
     account = new Account();
     account.nonce = testUtils.fromDecimal(acctData.nonce);
     account.balance = testUtils.fromDecimal(acctData.balance);
-    account.storeCode(state, acctData.code, function (err, codeHash) {
-      if (err) {
-        callback(err);
-      } else {
-        account.codeHash = codeHash;
-        state.put(new Buffer(key, 'hex'), account.serialize(), callback);
-      }
-    });
+
+    if (acctData.code.toString('hex') !== '00') {
+      testUtils.storeCode(state, key, account, acctData.code, callback);
+    } else {
+      state.put(new Buffer(key, 'hex'), account.serialize(), callback);
+    }
   }, done);
 };
