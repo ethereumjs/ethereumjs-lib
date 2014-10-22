@@ -123,6 +123,10 @@ describe('[Common]: vmSystemOperationsTest', function () {
             // validate the postcondition of other accounts
             // delete testData.post[testData.exec.address];
             var keysOfPost = Object.keys(testData.post);
+
+            var suicideCreated = testData.exec.code.substr(4, 20*2);
+            assert(keysOfPost.indexOf(suicideCreated) !== -1, 'suicideCreated not in post');
+
             async.each(keysOfPost, function(key, cb) {
               state.get(new Buffer(key, 'hex'), function(err, raw) {
                 assert(!err);
