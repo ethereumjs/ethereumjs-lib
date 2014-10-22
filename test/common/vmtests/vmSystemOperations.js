@@ -67,6 +67,56 @@ describe('[Common]: vmSystemOperationsTest', function () {
   });
 
   describe('.', function() {
+    var testKey = 'ABAcalls0',
+      state = new Trie(),
+      testData = vmSystemOperationsTest[testKey];
+
+    it(testKey + ' setup the trie', function (done) {
+      testUtils.setupPreConditions(state, testData, done);
+    });
+
+    it(testKey + ' run call', function(done) {
+      var env = testData.env,
+        block = testUtils.makeBlockFromEnv(env),
+        runData = testUtils.makeRunCallData(testData, block),
+        vm = new VM(state);
+
+      vm.runCall(runData, function(err, results) {
+        assert(!err);
+        assert.strictEqual(results.gasUsed.toNumber(),
+          testData.exec.gas - testData.gas, 'gas used mismatch');
+
+        async.series([
+          function(cb) {
+            cb()
+            return
+
+            state.get(new Buffer(testData.exec.address, 'hex'), function(err, raw) {
+              assert(!err);
+              assert(!raw, 'contract should have been deleted by SUICIDE');
+              cb();
+            });
+          },
+          function() {
+            var keysOfPost = Object.keys(testData.post),
+              suicideCreated = testData.exec.code.substr(4, 20 * 2);
+            assert(keysOfPost.indexOf(suicideCreated) !== -1, 'suicideCreated not in post');
+
+            async.each(keysOfPost, function(key, cb) {
+              state.get(new Buffer(key, 'hex'), function(err, raw) {
+                assert(!err);
+                var account = new Account(raw),
+                  acctData = testData.post[key];
+                testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+              });
+            }, done);
+          }
+        ]);
+      });
+    });
+  });
+
+  describe('.', function() {
     var testKey = 'suicide0',
       state = new Trie(),
       testData = vmSystemOperationsTest[testKey];
