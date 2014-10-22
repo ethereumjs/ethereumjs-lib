@@ -147,26 +147,19 @@ exports.setupPreConditions = function (state, testData, done) {
   async.eachSeries(keysOfPre, function (key, callback) {
     acctData = testData.pre[key];
 
+    //convert to buffer
+    acctData.code = bignum(acctData.code.slice(2), 16).toBuffer();
+
     account = new Account();
     account.nonce = testUtils.fromDecimal(acctData.nonce);
     account.balance = testUtils.fromDecimal(acctData.balance);
-
-    if (acctData.code) {
-      //convert to buffer
-      try{
-        acctData.code = bignum(acctData.code.slice(2), 16).toBuffer();
-      }catch(e){}
-
-      account.storeCode(state, acctData.code, function (err, codeHash) {
-        if (err) {
-          callback(err);
-        } else {
-          account.codeHash = codeHash;
-          state.put(new Buffer(key, 'hex'), account.serialize(), callback);
-        }
-      });
-    } else {
-      state.put(new Buffer(key, 'hex'), account.serialize(), callback);
-    }
+    account.storeCode(state, acctData.code, function (err, codeHash) {
+      if (err) {
+        callback(err);
+      } else {
+        account.codeHash = codeHash;
+        state.put(new Buffer(key, 'hex'), account.serialize(), callback);
+      }
+    });
   }, done);
 };
