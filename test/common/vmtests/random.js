@@ -21,7 +21,18 @@ describe('[Common]: VM tests', function () {
 
   describe('random.json', function () {
     it('setup the trie', function (done) {
-      testUtils.setupPreConditions(internals.state, testData, done);
+      var state = internals.state;
+      testUtils.setupPreConditions(internals.state, testData, function() {
+        // the exec code is not in the pre, so the code needs to be stored for
+        // the account at testData.exec.address
+        state.get(new Buffer(testData.exec.address, 'hex'), function(err, raw) {
+          assert(!err);
+
+          var code = bignum(testData.exec.code.slice(2), 16).toBuffer(),
+            account = new Account(raw);
+          testUtils.storeCode(state, testData.exec.address, account, code, done);
+        });
+      });
     });
 
     it('run call', function(done) {
