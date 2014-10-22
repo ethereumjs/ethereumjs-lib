@@ -67,6 +67,41 @@ describe('[Common]: vmSystemOperationsTest', function () {
   });
 
   describe('.', function() {
+    var testKey = 'suicide0',
+      state = new Trie(),
+      testData = vmSystemOperationsTest[testKey];
+
+    it(testKey + ' setup the trie', function (done) {
+      testUtils.setupPreConditions(state, testData, done);
+    });
+
+    it(testKey + ' run call', function(done) {
+      var env = testData.env,
+        block = testUtils.makeBlockFromEnv(env),
+        runData = testUtils.makeRunCallData(testData, block),
+        vm = new VM(state);
+
+      vm.runCall(runData, function(err, results) {
+        assert(!err);
+        assert.strictEqual(results.gasUsed.toNumber(),
+          testData.exec.gas - testData.gas, 'gas used mismatch');
+
+        var suicideTo = results.vm.suicideTo.toString('hex'),
+          keysOfPost = Object.keys(testData.post);
+        assert.strictEqual(keysOfPost.length, 1, '#post mismatch');
+        assert.strictEqual(suicideTo, keysOfPost[0], 'suicideTo mismatch');
+
+        state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
+          assert(!err);
+          var account = new Account(acct),
+            acctData = testData.post[suicideTo];
+          testUtils.verifyAccountPostConditions(state, account, acctData, done);
+        });
+      });
+    });
+  });
+
+  describe('.', function() {
     var testKey = 'suicideNotExistingAccount',
       state = new Trie(),
       testData = vmSystemOperationsTest[testKey];
@@ -109,41 +144,6 @@ describe('[Common]: vmSystemOperationsTest', function () {
             }, done);
           }
         ]);
-      });
-    });
-  });
-
-  describe('.', function() {
-    var testKey = 'suicide0',
-      state = new Trie(),
-      testData = vmSystemOperationsTest[testKey];
-
-    it(testKey + ' setup the trie', function (done) {
-      testUtils.setupPreConditions(state, testData, done);
-    });
-
-    it(testKey + ' run call', function(done) {
-      var env = testData.env,
-        block = testUtils.makeBlockFromEnv(env),
-        runData = testUtils.makeRunCallData(testData, block),
-        vm = new VM(state);
-
-      vm.runCall(runData, function(err, results) {
-        assert(!err);
-        assert.strictEqual(results.gasUsed.toNumber(),
-          testData.exec.gas - testData.gas, 'gas used mismatch');
-
-        var suicideTo = results.vm.suicideTo.toString('hex'),
-          keysOfPost = Object.keys(testData.post);
-        assert.strictEqual(keysOfPost.length, 1, '#post mismatch');
-        assert.strictEqual(suicideTo, keysOfPost[0], 'suicideTo mismatch');
-
-        state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
-          assert(!err);
-          var account = new Account(acct),
-            acctData = testData.post[suicideTo];
-          testUtils.verifyAccountPostConditions(state, account, acctData, done);
-        });
       });
     });
   });
