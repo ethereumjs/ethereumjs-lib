@@ -3,7 +3,6 @@ var vmSystemOperationsTest = require('../../../../tests/vmtests/vmSystemOperatio
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
   assert = require('assert'),
-  bignum = require('bignum'),
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
@@ -68,43 +67,21 @@ describe('[Common]: vmSystemOperationsTest', function () {
   });
 
   describe('.', function() {
-    var testKey = 'suicideNotExistingAccount';
-    var state = new Trie();
-    var testData = vmSystemOperationsTest[testKey];
+    var testKey = 'suicideNotExistingAccount',
+      state = new Trie(),
+      testData = vmSystemOperationsTest[testKey];
 
     it(testKey + ' setup the trie', function (done) {
       testUtils.setupPreConditions(state, testData, done);
     });
 
-    it(testKey + ' run code', function(done) {
+    it(testKey + ' run call', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
-        acctData,
-        account,
-        runCodeData,
+        runData = testUtils.makeRunCallData(testData, block),
         vm = new VM(state);
 
-      // acctData = testData.pre[testData.exec.address];
-      acctData = testData.pre[testData.exec.caller];
-      account = new Account();
-      account.nonce = testUtils.fromDecimal(acctData.nonce);
-      account.balance = testUtils.fromDecimal(acctData.balance);
-      // account.balance = testUtils.fromDecimal(testData.exec.gas);
-
-      // runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
-
-      runCodeData = {
-        fromAccount: account,
-        origin: new Buffer(testData.exec.origin, 'hex'),
-        data:  new Buffer(testData.exec.code.slice(2), 'hex'),  // slice off 0x
-        value: bignum(testData.exec.value),
-        from: new Buffer(testData.exec.caller, 'hex'),
-        to: new Buffer(testData.exec.address, 'hex'),
-        gas: testData.exec.gas,
-        block: block
-      };
-
-      vm.runCall(runCodeData, function(err, results) {
+      vm.runCall(runData, function(err, results) {
         assert(!err);
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
@@ -117,21 +94,16 @@ describe('[Common]: vmSystemOperationsTest', function () {
               cb();
             });
           },
-
           function() {
-            // validate the postcondition of other accounts
-            // delete testData.post[testData.exec.address];
-            var keysOfPost = Object.keys(testData.post);
-
-            var suicideCreated = testData.exec.code.substr(4, 20 * 2);
+            var keysOfPost = Object.keys(testData.post),
+              suicideCreated = testData.exec.code.substr(4, 20 * 2);
             assert(keysOfPost.indexOf(suicideCreated) !== -1, 'suicideCreated not in post');
 
             async.each(keysOfPost, function(key, cb) {
               state.get(new Buffer(key, 'hex'), function(err, raw) {
                 assert(!err);
-
-                account = new Account(raw);
-                acctData = testData.post[key];
+                var account = new Account(raw),
+                  acctData = testData.post[key];
                 testUtils.verifyAccountPostConditions(state, account, acctData, cb);
               });
             }, done);
@@ -142,15 +114,15 @@ describe('[Common]: vmSystemOperationsTest', function () {
   });
 
   describe('.', function() {
-    var testKey = 'suicide0';
-    var state = new Trie();
-    var testData = vmSystemOperationsTest[testKey];
+    var testKey = 'suicide0',
+      state = new Trie(),
+      testData = vmSystemOperationsTest[testKey];
 
     it(testKey + ' setup the trie', function (done) {
       testUtils.setupPreConditions(state, testData, done);
     });
 
-    it(testKey + ' run code', function(done) {
+    it(testKey + ' run call', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
         runData = testUtils.makeRunCallData(testData, block),
@@ -177,9 +149,9 @@ describe('[Common]: vmSystemOperationsTest', function () {
   });
 
   describe('.', function() {
-    var testKey = 'suicideSendEtherToMe';
-    var state = new Trie();
-    var testData = vmSystemOperationsTest[testKey];
+    var testKey = 'suicideSendEtherToMe',
+      state = new Trie(),
+      testData = vmSystemOperationsTest[testKey];
 
     it(testKey + ' setup the trie', function (done) {
       testUtils.setupPreConditions(state, testData, done);
