@@ -133,7 +133,14 @@ exports.makeRunCodeData = function (exec, account, block) {
   };
 };
 
-
+/**
+ * storeCode for a given account
+ * @param {[type]}   state    trie/DB
+ * @param {[type]}   address  of account
+ * @param {[type]}   account  for which code belongs to
+ * @param {[type]}   code     to store
+ * @param {Function} callback completion
+ */
 exports.storeCode = function(state, address, account, code, callback) {
   account.storeCode(state, code, function(err, codeHash) {
     if (err) {
