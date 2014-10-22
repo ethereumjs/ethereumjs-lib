@@ -2,7 +2,6 @@ var testData = require('../../../../tests/vmtests/random.json'),
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
-  Block = require('../../../lib/block.js'),
   testUtils = require('../../testUtils'),
   assert = require('assert'),
   levelup = require('levelup'),
@@ -47,7 +46,6 @@ describe('[Common]: VM tests', function () {
       vm.runCall(runData, function(err, results) {
         assert(!err);
 
-console.log('gas: ', results.gasUsed.toNumber(), 'exp: ', testData.exec.gas - testData.gas)
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
 
