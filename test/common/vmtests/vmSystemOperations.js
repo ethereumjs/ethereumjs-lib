@@ -111,12 +111,11 @@ describe('[Common]: vmSystemOperationsTest', function () {
 
         async.series([
           function(cb) {
-            cb();
-            return;
-
-            // account = results.account;
-            // acctData = testData.post[testData.exec.address];
-            // testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+            state.get(new Buffer(testData.exec.address, 'hex'), function(err, raw) {
+              assert(!err);
+              assert(!raw, 'contract should have been deleted by SUICIDE');
+              cb();
+            });
           },
 
           function() {
