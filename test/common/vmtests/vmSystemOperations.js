@@ -21,7 +21,8 @@ describe('[Common]: vmSystemOperationsTest', function() {
 
   var tests = Object.keys(vmSystemOperationsTest);
   // TODO add tests
-  tests = ['CallToNameRegistrator0'];
+  // tests = ['CallToNameRegistrator0'];
+  tests = [];
   tests.forEach(function(testKey) {
     var state = new Trie();
     var testData = vmSystemOperationsTest[testKey];
@@ -96,6 +97,81 @@ describe('[Common]: vmSystemOperationsTest', function() {
 //             acctData = testData.post[testData.exec.address];
 //             testUtils.verifyAccountPostConditions(state, account, acctData, cb);
 //           },
+
+          function() {
+            // validate the postcondition of other accounts
+            // delete testData.post[testData.exec.address];
+            var keysOfPost = Object.keys(testData.post);
+            async.eachSeries(keysOfPost, function(key, cb) {
+              state.get(new Buffer(key, 'hex'), function(err, raw) {
+                assert(!err);
+
+                account = new Account(raw);
+                acctData = testData.post[key];
+                testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+              });
+            }, done);
+          }
+        ]);
+      });
+    });
+  });
+
+  describe('.', function() {
+    var testKey = 'CallToNameRegistratorNotMuchMemory0',
+      state = new Trie(),
+      testData = vmSystemOperationsTest.CallToNameRegistratorNotMuchMemory0;
+
+    it.only(testKey + ' setup the trie', function(done) {
+      testUtils.setupPreConditions(state, testData, done);
+    });
+
+    it.only(testKey + ' run code', function(done) {
+      var env = testData.env,
+        block = testUtils.makeBlockFromEnv(env),
+        acctData,
+        account,
+        runCodeData,
+        vm = new VM(state);
+
+
+vm.onStep = function(info, done) {
+  console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
+
+
+  var stream = vm.trie.createReadStream();
+  stream.on("data", function(data) {
+    var account = new Account(data.value);
+    console.log("key: " + data.key.toString("hex"));
+    //console.log(data.value.toString('hex'));
+    console.log('decoded:' + bignum.fromBuffer(account.balance).toString() + '\n');
+  });
+
+  stream.on('end', done);
+
+  info.stack.reverse();
+  info.stack.forEach(function (item) {
+    console.log('vm', '    ' + item.toString('hex'));
+  });
+  info.stack.reverse();
+
+};
+
+      acctData = testData.pre[testData.exec.address];
+      account = new Account();
+      account.nonce = testUtils.fromDecimal(acctData.nonce);
+      account.balance = testUtils.fromDecimal(acctData.balance);
+
+      runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
+      vm.runCode(runCodeData, function(err, results) {
+        console.log('err: ', err)
+        assert(!err);
+
+        // console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
+        assert.strictEqual(results.gasUsed.toNumber(),
+          testData.exec.gas - testData.gas, 'gas used mismatch');
+
+        async.series([
 
           function() {
             // validate the postcondition of other accounts
