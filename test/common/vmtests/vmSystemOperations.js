@@ -29,6 +29,25 @@ describe('[Common]: vmSystemOperationsTest', function () {
         runCodeData,
         vm = new VM(state);
 
+      
+      vm.onTx = function (tx, done) {
+        console.log('vm', ' Transaction ' + tx.nonce.toString('hex'));
+        done();
+      };
+
+      vm.onStep = function (info, done) {
+        console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
+
+        info.stack.reverse();
+        info.stack.forEach(function (item) {
+          console.log('vm', '    ' + item.toString('hex'));
+        });
+        info.stack.reverse();
+
+        done();
+      };
+
+
       acctData = testData.pre[testData.exec.address];
       account = new Account();
       account.nonce = testUtils.fromDecimal(acctData.nonce);
