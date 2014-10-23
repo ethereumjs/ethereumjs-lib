@@ -6,7 +6,7 @@ var vmSystemOperationsTest = require('../../../../tests/vmtests/vmSystemOperatio
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
-describe('[Common]: vmSystemOperationsTest', function () {
+describe.skip('[Common]: vmSystemOperationsTest', function () {
   var tests = Object.keys(vmSystemOperationsTest);
   // TODO add tests
   tests = [];
@@ -88,14 +88,13 @@ describe('[Common]: vmSystemOperationsTest', function () {
 
         async.series([
           function(cb) {
-            cb()
-            return
+            cb();
 
-            state.get(new Buffer(testData.exec.address, 'hex'), function(err, raw) {
-              assert(!err);
-              assert(!raw, 'contract should have been deleted by SUICIDE');
-              cb();
-            });
+            // state.get(new Buffer(testData.exec.address, 'hex'), function(err, raw) {
+            //   assert(!err);
+            //   assert(!raw, 'contract should have been deleted by SUICIDE');
+            //   cb();
+            // });
           },
           function() {
             var keysOfPost = Object.keys(testData.post),
