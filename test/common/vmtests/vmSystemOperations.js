@@ -23,7 +23,7 @@ describe('[Common]: vmSystemOperationsTest', function() {
 
   var tests = Object.keys(vmSystemOperationsTest);
   // TODO add tests
-  // tests = ['CallToNameRegistrator0'];
+  tests = ['CallToNameRegistrator0'];
   tests.forEach(function(testKey) {
     var state = new Trie();
     var testData = vmSystemOperationsTest[testKey];
@@ -78,17 +78,17 @@ describe('[Common]: vmSystemOperationsTest', function() {
           testData.exec.gas - testData.gas, 'gas used mismatch');
 
         async.series([
-          function(cb) {
-            var stream = state.createReadStream();
-            stream.on("data", function(data) {
-              var account = new Account(data.value);
-              console.log("key: " + data.key.toString("hex"));
-              //console.log(data.value.toString('hex'));
-              console.log('decoded:' + bignum.fromBuffer(account.balance).toString() + '\n');
-            });
-
-            stream.on('end', cb);
-          },
+          // function(cb) {
+          //   var stream = state.createReadStream();
+          //   stream.on("data", function(data) {
+          //     var account = new Account(data.value);
+          //     console.log("key: " + data.key.toString("hex"));
+          //     //console.log(data.value.toString('hex'));
+          //     console.log('decoded:' + bignum.fromBuffer(account.balance).toString() + '\n');
+          //   });
+          //
+          //   stream.on('end', cb);
+          // },
 
 //           function(cb) {
 //             // cb()
@@ -109,56 +109,6 @@ describe('[Common]: vmSystemOperationsTest', function() {
 
                 account = new Account(raw);
                 acctData = testData.post[key];
-                testUtils.verifyAccountPostConditions(state, account, acctData, cb);
-              });
-            }, done);
-          }
-        ]);
-      });
-    });
-  });
-
-  describe.skip('.', function() {
-    var testKey = 'CallToNameRegistrator0',
-      state = new Trie(),
-      testData = vmSystemOperationsTest[testKey];
-
-    it(testKey + ' setup the trie', function(done) {
-      testUtils.setupPreConditions(state, testData, done);
-    });
-
-    it(testKey + ' run call', function(done) {
-      var env = testData.env,
-        block = testUtils.makeBlockFromEnv(env),
-        account = new Account([
-          new Buffer([0]),
-          bignum(TMP_BAL_AVOID_NEG).toBuffer()
-        ]),
-        runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
-        vm = new VM(state);
-
-      vm.runCall(runData, function(err, results) {
-        assert(!err);
-        assert.strictEqual(results.gasUsed.toNumber(),
-          testData.exec.gas - testData.gas, 'gas used mismatch');
-
-        async.series([
-          function(cb) {
-            cb();
-
-            // state.get(new Buffer(testData.exec.address, 'hex'), function(err, raw) {
-            //   assert(!err);
-            //   assert(!raw, 'contract should have been deleted by SUICIDE');
-            //   cb();
-            // });
-          },
-          function() {
-            var keysOfPost = Object.keys(testData.post);
-            async.each(keysOfPost, function(key, cb) {
-              state.get(new Buffer(key, 'hex'), function(err, raw) {
-                assert(!err);
-                var account = new Account(raw),
-                  acctData = testData.post[key];
                 testUtils.verifyAccountPostConditions(state, account, acctData, cb);
               });
             }, done);
@@ -256,8 +206,6 @@ describe('[Common]: vmSystemOperationsTest', function() {
                   acctData = testData.post[key];
 
                 if (key === testData.exec.caller) {
-console.log('@@@@@@@@ bal: ', bignum.fromBuffer(account.balance))
-
                   account.balance = bignum.fromBuffer(account.balance)
                     .add(testData.exec.value)
                     .sub(TMP_BAL_AVOID_NEG).toBuffer();
