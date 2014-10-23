@@ -2,11 +2,12 @@ var vmSystemOperationsTest = require('../../../../tests/vmtests/vmSystemOperatio
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
+  bignum = require('bignum'),
   assert = require('assert'),
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
-describe.skip('[Common]: vmSystemOperationsTest', function () {
+describe('[Common]: vmSystemOperationsTest', function () {
   var tests = Object.keys(vmSystemOperationsTest);
   // TODO add tests
   tests = [];
@@ -127,8 +128,13 @@ describe.skip('[Common]: vmSystemOperationsTest', function () {
     it(testKey + ' run call', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
-        runData = testUtils.makeRunCallData(testData, block),
+        account = new Account(),
+        runData,
         vm = new VM(state);
+
+      account.nonce = new Buffer([0]);
+      account.balance = bignum('1333333').toBuffer();
+      runData = testUtils.makeRunCallDataWithAccount(testData, account, block);
 
       vm.runCall(runData, function(err, results) {
         assert(!err);
