@@ -169,7 +169,11 @@ describe('[Common]: vmSystemOperationsTest', function () {
     it(testKey + ' run call', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
-        runData = testUtils.makeRunCallData(testData, block),
+        account = new Account([
+          new Buffer([0]),
+          bignum(START_BALANCE).toBuffer()
+        ]),
+        runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
 
       vm.runCall(runData, function(err, results) {
@@ -216,7 +220,11 @@ describe('[Common]: vmSystemOperationsTest', function () {
     it(testKey + ' run call', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
-        runData = testUtils.makeRunCallData(testData, block),
+        account = new Account([
+          new Buffer([0]),
+          bignum(START_BALANCE).toBuffer()
+        ]),
+        runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
 
       vm.runCall(runData, function(err, results) {
