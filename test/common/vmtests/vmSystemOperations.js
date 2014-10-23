@@ -160,7 +160,7 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
     });
   });
 
-  describe.only('.', function() {
+  describe('.', function() {
     var testKey = 'suicide0',
       state = new Trie(),
       testData = vmSystemOperationsTest[testKey];
@@ -175,8 +175,7 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
         account = new Account([
           new Buffer([0]),
           bignum(testData.pre[testData.exec.caller].balance)
-            .add(TMP_BAL_AVOID_NEG)
-            .toBuffer()
+            .add(TMP_BAL_AVOID_NEG).toBuffer()
         ]),
         runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
@@ -195,11 +194,6 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
           assert(!err);
           var account = new Account(acct),
             acctData = testData.post[suicideTo];
-
-          // account.balance =bignum.fromBuffer(account.balance)
-          //   .sub(TMP_BAL_AVOID_NEG) //subcract
-          //   .add(23) //add orignal val
-
           account.balance = bignum.fromBuffer(account.balance).sub(TMP_BAL_AVOID_NEG).toBuffer();
 
           testUtils.verifyAccountPostConditions(state, account, acctData, done);
@@ -208,7 +202,7 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
     });
   });
 
-  describe.skip('.', function() {
+  describe('.', function() {
     var testKey = 'suicideNotExistingAccount',
       state = new Trie(),
       testData = vmSystemOperationsTest[testKey];
@@ -222,7 +216,8 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
         block = testUtils.makeBlockFromEnv(env),
         account = new Account([
           new Buffer([0]),
-          bignum(TMP_BAL_AVOID_NEG).toBuffer()
+          bignum(testData.pre[testData.exec.caller].balance)
+            .add(TMP_BAL_AVOID_NEG).toBuffer()
         ]),
         runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
@@ -250,6 +245,11 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
                 assert(!err);
                 var account = new Account(raw),
                   acctData = testData.post[key];
+
+                if (key === testData.exec.caller) {
+                  account.balance = bignum.fromBuffer(account.balance).sub(TMP_BAL_AVOID_NEG).toBuffer();
+                }
+
                 testUtils.verifyAccountPostConditions(state, account, acctData, cb);
               });
             }, done);
