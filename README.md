@@ -42,8 +42,6 @@ First `ethereumjs-lib` can be used with `browserify`. But you can also produce a
  - [Trie](https://github.com/wanderer/merkle-patricia-tree) - Modified Merkle Patricia Tree
 
 ####Testing
-To run the tests, make sure you clone the tests [repository](https://github.com/ethereum/tests) to tests as a sibling to ethereumjs-lib.
-
 Tests use mocha
 `npm test`
 
