@@ -9,7 +9,8 @@ const vmSystemOperationsTest = require('ethereum-tests').vmtests.vmSystemOperati
   utils = require('../../../lib/utils.js'),
   Trie = require('merkle-patricia-tree');
 
-const START_BALANCE = '1333333';
+// for SUICIDE tests, this is temporarily added to avoid negative balances
+const TMP_BAL_AVOID_NEG = '13333337';
 
 describe.only('[Common]: vmSystemOperationsTest', function() {
   var tests = Object.keys(vmSystemOperationsTest);
@@ -123,7 +124,7 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
         block = testUtils.makeBlockFromEnv(env),
         account = new Account([
           new Buffer([0]),
-          bignum(START_BALANCE).toBuffer()
+          bignum(TMP_BAL_AVOID_NEG).toBuffer()
         ]),
         runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
@@ -173,8 +174,8 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
         block = testUtils.makeBlockFromEnv(env),
         account = new Account([
           new Buffer([0]),
-          bignum(START_BALANCE)
-            .add(testData.pre[testData.exec.caller].balance)
+          bignum(testData.pre[testData.exec.caller].balance)
+            .add(TMP_BAL_AVOID_NEG)
             .toBuffer()
         ]),
         runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
@@ -196,10 +197,10 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
             acctData = testData.post[suicideTo];
 
           // account.balance =bignum.fromBuffer(account.balance)
-          //   .sub(START_BALANCE) //subcract
+          //   .sub(TMP_BAL_AVOID_NEG) //subcract
           //   .add(23) //add orignal val
 
-          account.balance = bignum.fromBuffer(account.balance).sub(START_BALANCE).toBuffer();
+          account.balance = bignum.fromBuffer(account.balance).sub(TMP_BAL_AVOID_NEG).toBuffer();
 
           testUtils.verifyAccountPostConditions(state, account, acctData, done);
         });
@@ -221,7 +222,7 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
         block = testUtils.makeBlockFromEnv(env),
         account = new Account([
           new Buffer([0]),
-          bignum(START_BALANCE).toBuffer()
+          bignum(TMP_BAL_AVOID_NEG).toBuffer()
         ]),
         runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
@@ -272,7 +273,7 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
         block = testUtils.makeBlockFromEnv(env),
         account = new Account([
           new Buffer([0]),
-          bignum(START_BALANCE).toBuffer()
+          bignum(TMP_BAL_AVOID_NEG).toBuffer()
         ]),
         runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
