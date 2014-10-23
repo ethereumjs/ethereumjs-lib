@@ -70,7 +70,7 @@ describe('[Common]: vmSystemOperationsTest', function () {
   });
 
   describe('.', function() {
-    var testKey = 'ABAcalls0',
+    var testKey = 'CallToNameRegistrator0',
       state = new Trie(),
       testData = vmSystemOperationsTest[testKey];
 
@@ -104,10 +104,7 @@ describe('[Common]: vmSystemOperationsTest', function () {
             // });
           },
           function() {
-            var keysOfPost = Object.keys(testData.post),
-              suicideCreated = testData.exec.code.substr(4, 20 * 2);
-            assert(keysOfPost.indexOf(suicideCreated) !== -1, 'suicideCreated not in post');
-
+            var keysOfPost = Object.keys(testData.post);
             async.each(keysOfPost, function(key, cb) {
               state.get(new Buffer(key, 'hex'), function(err, raw) {
                 assert(!err);
