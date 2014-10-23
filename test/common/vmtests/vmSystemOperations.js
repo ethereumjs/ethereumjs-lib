@@ -267,7 +267,7 @@ console.log('@@@@@@@@ bal: ', bignum.fromBuffer(account.balance))
     });
   });
 
-  describe.skip('.', function() {
+  describe('.', function() {
     var testKey = 'suicideSendEtherToMe',
       state = new Trie(),
       testData = vmSystemOperationsTest[testKey];
@@ -281,7 +281,8 @@ console.log('@@@@@@@@ bal: ', bignum.fromBuffer(account.balance))
         block = testUtils.makeBlockFromEnv(env),
         account = new Account([
           new Buffer([0]),
-          bignum(TMP_BAL_AVOID_NEG).toBuffer()
+          bignum(testData.pre[testData.exec.caller].balance)
+            .add(TMP_BAL_AVOID_NEG).toBuffer()
         ]),
         runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
@@ -309,6 +310,9 @@ console.log('@@@@@@@@ bal: ', bignum.fromBuffer(account.balance))
               assert(!err);
               var account = new Account(acct),
                 acctData = testData.post[keysOfPost[0]];
+              account.balance = bignum.fromBuffer(account.balance)
+                .add(testData.exec.value)
+                .sub(TMP_BAL_AVOID_NEG).toBuffer();
               testUtils.verifyAccountPostConditions(state, account, acctData, done);
             });
           }
