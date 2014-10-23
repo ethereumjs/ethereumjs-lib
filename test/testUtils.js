@@ -50,13 +50,8 @@ exports.makeRunCallData = function (testData, block) {
     acctData = testData.pre[exec.caller],
     account = new Account();
 
-  if (acctData) {
-    account.nonce = testUtils.fromDecimal(acctData.nonce);
-    account.balance = testUtils.fromDecimal(acctData.balance);
-  } else {
-    account.nonce = new Buffer([0]);
-    account.balance = bignum('13333').toBuffer();
-  }
+  account.nonce = testUtils.fromDecimal(acctData.nonce);
+  account.balance = testUtils.fromDecimal(acctData.balance);
 
   return {
     fromAccount: account,
