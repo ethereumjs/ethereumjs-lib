@@ -246,8 +246,12 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
                 var account = new Account(raw),
                   acctData = testData.post[key];
 
+console.log('@@@@@@@@ key: ', key)
                 if (key === testData.exec.caller) {
                   account.balance = bignum.fromBuffer(account.balance).sub(TMP_BAL_AVOID_NEG).toBuffer();
+                } else if (key === suicideCreated) {
+                  console.log('@@@@@@@@ val: ', testData.exec.value)
+                  account.balance = bignum.fromBuffer(account.balance).sub(testData.exec.value).toBuffer();
                 }
 
                 testUtils.verifyAccountPostConditions(state, account, acctData, cb);
