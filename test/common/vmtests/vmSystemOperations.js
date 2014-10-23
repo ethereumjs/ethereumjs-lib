@@ -238,6 +238,7 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
           function() {
             var keysOfPost = Object.keys(testData.post),
               suicideCreated = testData.exec.code.substr(4, 20 * 2);
+            assert(keysOfPost.length === 2, 'post should only have caller and suicideCreated')
             assert(keysOfPost.indexOf(suicideCreated) !== -1, 'suicideCreated not in post');
 
             async.each(keysOfPost, function(key, cb) {
@@ -246,11 +247,14 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
                 var account = new Account(raw),
                   acctData = testData.post[key];
 
-console.log('@@@@@@@@ key: ', key)
                 if (key === testData.exec.caller) {
-                  account.balance = bignum.fromBuffer(account.balance).sub(TMP_BAL_AVOID_NEG).toBuffer();
+console.log('@@@@@@@@ bal: ', bignum.fromBuffer(account.balance))
+
+                  account.balance = bignum.fromBuffer(account.balance)
+                    .add(testData.exec.value)
+                    .sub(TMP_BAL_AVOID_NEG).toBuffer();
                 } else if (key === suicideCreated) {
-                  console.log('@@@@@@@@ val: ', testData.exec.value)
+                  // console.log('@@@@@@@@ val: ', testData.exec.value)
                   account.balance = bignum.fromBuffer(account.balance).sub(testData.exec.value).toBuffer();
                 }
 
