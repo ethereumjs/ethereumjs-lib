@@ -1,12 +1,15 @@
-var vmSystemOperationsTest = require('../../../../tests/vmtests/vmSystemOperationsTest.json'),
+const vmSystemOperationsTest = require('../../../../tests/vmtests/vmSystemOperationsTest.json'),
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
+  bignum = require('bignum'),
   assert = require('assert'),
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
-describe.skip('[Common]: vmSystemOperationsTest', function () {
+const START_BALANCE = '1333333';
+
+describe('[Common]: vmSystemOperationsTest', function () {
   var tests = Object.keys(vmSystemOperationsTest);
   // TODO add tests
   tests = [];
@@ -67,7 +70,7 @@ describe.skip('[Common]: vmSystemOperationsTest', function () {
   });
 
   describe('.', function() {
-    var testKey = 'ABAcalls0',
+    var testKey = 'CallToNameRegistrator0',
       state = new Trie(),
       testData = vmSystemOperationsTest[testKey];
 
@@ -78,7 +81,11 @@ describe.skip('[Common]: vmSystemOperationsTest', function () {
     it(testKey + ' run call', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
-        runData = testUtils.makeRunCallData(testData, block),
+        account = new Account([
+          new Buffer([0]),
+          bignum(START_BALANCE).toBuffer()
+        ]),
+        runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
 
       vm.runCall(runData, function(err, results) {
@@ -97,10 +104,7 @@ describe.skip('[Common]: vmSystemOperationsTest', function () {
             // });
           },
           function() {
-            var keysOfPost = Object.keys(testData.post),
-              suicideCreated = testData.exec.code.substr(4, 20 * 2);
-            assert(keysOfPost.indexOf(suicideCreated) !== -1, 'suicideCreated not in post');
-
+            var keysOfPost = Object.keys(testData.post);
             async.each(keysOfPost, function(key, cb) {
               state.get(new Buffer(key, 'hex'), function(err, raw) {
                 assert(!err);
@@ -127,7 +131,11 @@ describe.skip('[Common]: vmSystemOperationsTest', function () {
     it(testKey + ' run call', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
-        runData = testUtils.makeRunCallData(testData, block),
+        account = new Account([
+          new Buffer([0]),
+          bignum(START_BALANCE).toBuffer()
+        ]),
+        runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
 
       vm.runCall(runData, function(err, results) {
@@ -162,7 +170,11 @@ describe.skip('[Common]: vmSystemOperationsTest', function () {
     it(testKey + ' run call', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
-        runData = testUtils.makeRunCallData(testData, block),
+        account = new Account([
+          new Buffer([0]),
+          bignum(START_BALANCE).toBuffer()
+        ]),
+        runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
 
       vm.runCall(runData, function(err, results) {
@@ -209,7 +221,11 @@ describe.skip('[Common]: vmSystemOperationsTest', function () {
     it(testKey + ' run call', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
-        runData = testUtils.makeRunCallData(testData, block),
+        account = new Account([
+          new Buffer([0]),
+          bignum(START_BALANCE).toBuffer()
+        ]),
+        runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
 
       vm.runCall(runData, function(err, results) {

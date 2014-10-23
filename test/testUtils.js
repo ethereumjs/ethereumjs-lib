@@ -41,7 +41,7 @@ exports.verifyAccountPostConditions = function (state, account, acctData, cb) {
 /**
  * makeRunCallData - helper to create the object for VM.runCall using
  *   the exec object specified in the tests repo
- * @param {Object} exec    object from the tests repo
+ * @param {Object} testData    object from the tests repo
  * @param {Object} block   that the transaction belongs to
  * @return {Object}        object that will be passed to VM.runCall function
  */
@@ -50,14 +50,31 @@ exports.makeRunCallData = function (testData, block) {
     acctData = testData.pre[exec.caller],
     account = new Account();
 
-  if (acctData) {
-    account.nonce = testUtils.fromDecimal(acctData.nonce);
-    account.balance = testUtils.fromDecimal(acctData.balance);
-  } else {
-    account.nonce = new Buffer([0]);
-    account.balance = new Buffer([0]);
-  }
+  account.nonce = testUtils.fromDecimal(acctData.nonce);
+  account.balance = testUtils.fromDecimal(acctData.balance);
 
+  return {
+    fromAccount: account,
+    origin: new Buffer(exec.origin, 'hex'),
+    data: new Buffer(exec.code.slice(2), 'hex'),  // slice off 0x
+    value: bignum(exec.value),
+    from: new Buffer(exec.caller, 'hex'),
+    to: new Buffer(exec.address, 'hex'),
+    gas: exec.gas,
+    block: block
+  };
+};
+
+/**
+ * makeRunCallDataWithAccount - helper to create the object for VM.runCall using
+ *   the exec object specified in the tests repo
+ * @param {Object} testData    object from the tests repo
+ * @param {Object} account that is making the call
+ * @param {Object} block   that the transaction belongs to
+ * @return {Object}        object that will be passed to VM.runCall function
+ */
+exports.makeRunCallDataWithAccount = function (testData, account, block) {
+  var exec = testData.exec;
   return {
     fromAccount: account,
     origin: new Buffer(exec.origin, 'hex'),
