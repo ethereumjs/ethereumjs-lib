@@ -1,15 +1,17 @@
 const vmSystemOperationsTest = require('ethereum-tests').vmtests.vmSystemOperationsTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
+  rlp = require('rlp'),
   Account = require('../../../lib/account.js'),
   bignum = require('bignum'),
   assert = require('assert'),
   testUtils = require('../../testUtils'),
+  utils = require('../../../lib/utils.js'),
   Trie = require('merkle-patricia-tree');
 
 const START_BALANCE = '1333333';
 
-describe('[Common]: vmSystemOperationsTest', function () {
+describe.only('[Common]: vmSystemOperationsTest', function() {
   var tests = Object.keys(vmSystemOperationsTest);
   // TODO add tests
   tests = ['CallToNameRegistrator0'];
@@ -17,7 +19,7 @@ describe('[Common]: vmSystemOperationsTest', function () {
     var state = new Trie();
     var testData = vmSystemOperationsTest[testKey];
 
-    it(testKey + ' setup the trie', function (done) {
+    it(testKey + ' setup the trie', function(done) {
       testUtils.setupPreConditions(state, testData, done);
     });
 
@@ -29,23 +31,28 @@ describe('[Common]: vmSystemOperationsTest', function () {
         runCodeData,
         vm = new VM(state);
 
-      
-      vm.onTx = function (tx, done) {
-        console.log('vm', ' Transaction ' + tx.nonce.toString('hex'));
-        done();
-      };
 
-      vm.onStep = function (info, done) {
-        console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
+      // vm.onStep = function(info, done) {
+      //   console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
 
-        info.stack.reverse();
-        info.stack.forEach(function (item) {
-          console.log('vm', '    ' + item.toString('hex'));
-        });
-        info.stack.reverse();
 
-        done();
-      };
+      //   var stream = vm.trie.createReadStream();
+      //   stream.on("data", function(data) {
+      //     var account = new Account(data.value);
+      //     console.log("key: " + data.key.toString("hex"));
+      //     //console.log(data.value.toString('hex'));
+      //     console.log('decoded:' + bignum.fromBuffer(account.balance).toString() + '\n');
+      //   });
+
+      //   stream.on('end', done);
+
+      //   // info.stack.reverse();
+      //   // info.stack.forEach(function (item) {
+      //   //   console.log('vm', '    ' + item.toString('hex'));
+      //   // });
+      //   // info.stack.reverse();
+
+      // };
 
 
       acctData = testData.pre[testData.exec.address];
@@ -57,25 +64,37 @@ describe('[Common]: vmSystemOperationsTest', function () {
       vm.runCode(runCodeData, function(err, results) {
         assert(!err);
 
-// console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
+        // console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
 
         async.series([
           function(cb) {
-            // cb()
-            // return
+            var stream = state.createReadStream();
+            stream.on("data", function(data) {
+              var account = new Account(data.value);
+              console.log("key: " + data.key.toString("hex"));
+              //console.log(data.value.toString('hex'));
+              console.log('decoded:' + bignum.fromBuffer(account.balance).toString() + '\n');
+            });
 
-            account = results.account;
-            acctData = testData.post[testData.exec.address];
-            testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+            stream.on('end', cb);
           },
+
+//           function(cb) {
+//             // cb()
+//             // return
+
+//             account = results.account;
+//             acctData = testData.post[testData.exec.address];
+//             testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+//           },
 
           function() {
             // validate the postcondition of other accounts
-            delete testData.post[testData.exec.address];
+            // delete testData.post[testData.exec.address];
             var keysOfPost = Object.keys(testData.post);
-            async.each(keysOfPost, function(key, cb) {
+            async.eachSeries(keysOfPost, function(key, cb) {
               state.get(new Buffer(key, 'hex'), function(err, raw) {
                 assert(!err);
 
@@ -95,7 +114,7 @@ describe('[Common]: vmSystemOperationsTest', function () {
       state = new Trie(),
       testData = vmSystemOperationsTest[testKey];
 
-    it(testKey + ' setup the trie', function (done) {
+    it(testKey + ' setup the trie', function(done) {
       testUtils.setupPreConditions(state, testData, done);
     });
 
@@ -145,7 +164,7 @@ describe('[Common]: vmSystemOperationsTest', function () {
       state = new Trie(),
       testData = vmSystemOperationsTest[testKey];
 
-    it(testKey + ' setup the trie', function (done) {
+    it(testKey + ' setup the trie', function(done) {
       testUtils.setupPreConditions(state, testData, done);
     });
 
@@ -184,7 +203,7 @@ describe('[Common]: vmSystemOperationsTest', function () {
       state = new Trie(),
       testData = vmSystemOperationsTest[testKey];
 
-    it(testKey + ' setup the trie', function (done) {
+    it(testKey + ' setup the trie', function(done) {
       testUtils.setupPreConditions(state, testData, done);
     });
 
@@ -235,7 +254,7 @@ describe('[Common]: vmSystemOperationsTest', function () {
       state = new Trie(),
       testData = vmSystemOperationsTest[testKey];
 
-    it(testKey + ' setup the trie', function (done) {
+    it(testKey + ' setup the trie', function(done) {
       testUtils.setupPreConditions(state, testData, done);
     });
 
