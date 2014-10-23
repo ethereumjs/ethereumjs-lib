@@ -192,12 +192,15 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
           assert(!err);
           var account = new Account(acct),
             acctData = testData.post[suicideTo];
-          
+
           // account.balance =bignum.fromBuffer(account.balance)
-          //   .sub(START_BALANCE) //subcract 
+          //   .sub(START_BALANCE) //subcract
           //   .add(23) //add orignal val
 
-          account.balance = bignum.fromBuffer(account.balance).sub(START_BALANCE).toBuffer(); 
+          account.balance = bignum.fromBuffer(account.balance)
+            .sub(START_BALANCE)
+            .add(testData.pre[testData.exec.caller].balance)
+            .toBuffer();
 
           testUtils.verifyAccountPostConditions(state, account, acctData, done);
         });
