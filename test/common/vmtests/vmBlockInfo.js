@@ -1,4 +1,4 @@
-var vmBlockInfoTest = require('../../../../tests/vmtests/vmBlockInfoTest.json'),
+var vmBlockInfoTest = require('ethereum-tests').vmtests.vmBlockInfoTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),

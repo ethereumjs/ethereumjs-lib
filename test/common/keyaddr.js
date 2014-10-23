@@ -1,4 +1,4 @@
-var tests = require('../../../tests/keyaddrtest.json'),
+var tests = require('ethereum-tests').keyaddrtests,
   assert = require('assert'),
   utils = require('../../lib/utils'),
   ecdsa = require('secp256k1'),

@@ -1,4 +1,4 @@
-var vmIOandFlowOperationsTest = require('../../../../tests/vmtests/vmIOandFlowOperationsTest.json'),
+var vmIOandFlowOperationsTest = require('ethereum-tests').vmtests.vmIOandFlowOperationsTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
   ERROR = require('../../../lib/vm/constants').ERROR,

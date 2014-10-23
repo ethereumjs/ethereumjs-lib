@@ -1,4 +1,4 @@
-var vmArithmeticTest = require('../../../../tests/vmtests/vmArithmeticTest.json'),
+var vmArithmeticTest = require('ethereum-tests').vmtests.vmArithmeticTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),

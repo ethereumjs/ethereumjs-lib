@@ -1,4 +1,4 @@
-const vmSystemOperationsTest = require('../../../../tests/vmtests/vmSystemOperationsTest.json'),
+const vmSystemOperationsTest = require('ethereum-tests').vmtests.vmSystemOperationsTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),

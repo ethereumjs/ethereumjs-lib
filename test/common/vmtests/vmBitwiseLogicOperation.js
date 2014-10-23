@@ -1,4 +1,4 @@
-var vmBitwiseLogicOperationTest = require('../../../../tests/vmtests/vmBitwiseLogicOperationTest.json'),
+var vmBitwiseLogicOperationTest = require('ethereum-tests').vmtests.vmBitwiseLogicOperationTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),

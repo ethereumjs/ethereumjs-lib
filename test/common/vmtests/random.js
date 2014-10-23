@@ -1,4 +1,4 @@
-var testData = require('../../../../tests/vmtests/random.json'),
+var testData = require('ethereum-tests').vmtests.random,
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
