@@ -12,7 +12,7 @@ const START_BALANCE = '1333333';
 describe('[Common]: vmSystemOperationsTest', function () {
   var tests = Object.keys(vmSystemOperationsTest);
   // TODO add tests
-  tests = [];
+  tests = ['CallToNameRegistrator0'];
   tests.forEach(function(testKey) {
     var state = new Trie();
     var testData = vmSystemOperationsTest[testKey];
@@ -37,6 +37,8 @@ describe('[Common]: vmSystemOperationsTest', function () {
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
         assert(!err);
+
+// console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
 
@@ -69,7 +71,7 @@ describe('[Common]: vmSystemOperationsTest', function () {
     });
   });
 
-  describe('.', function() {
+  describe.skip('.', function() {
     var testKey = 'CallToNameRegistrator0',
       state = new Trie(),
       testData = vmSystemOperationsTest[testKey];
