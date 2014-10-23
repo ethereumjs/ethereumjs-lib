@@ -12,10 +12,18 @@ const vmSystemOperationsTest = require('ethereum-tests').vmtests.vmSystemOperati
 // for SUICIDE tests, this is temporarily added to avoid negative balances
 const TMP_BAL_AVOID_NEG = '13333337';
 
-describe.only('[Common]: vmSystemOperationsTest', function() {
+describe('[Common]: vmSystemOperationsTest', function() {
+  var suicide0 = vmSystemOperationsTest.suicide0;
+  var suicideNotExistingAccount = vmSystemOperationsTest.suicideNotExistingAccount;
+  var suicideSendEtherToMe = vmSystemOperationsTest.suicideSendEtherToMe;
+
+  delete vmSystemOperationsTest.suicide0;
+  delete vmSystemOperationsTest.suicideNotExistingAccount;
+  delete vmSystemOperationsTest.suicideSendEtherToMe;
+
   var tests = Object.keys(vmSystemOperationsTest);
   // TODO add tests
-  tests = ['CallToNameRegistrator0'];
+  // tests = ['CallToNameRegistrator0'];
   tests.forEach(function(testKey) {
     var state = new Trie();
     var testData = vmSystemOperationsTest[testKey];
@@ -163,7 +171,7 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
   describe('.', function() {
     var testKey = 'suicide0',
       state = new Trie(),
-      testData = vmSystemOperationsTest[testKey];
+      testData = suicide0;
 
     it(testKey + ' setup the trie', function(done) {
       testUtils.setupPreConditions(state, testData, done);
@@ -205,7 +213,7 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
   describe('.', function() {
     var testKey = 'suicideNotExistingAccount',
       state = new Trie(),
-      testData = vmSystemOperationsTest[testKey];
+      testData = suicideNotExistingAccount;
 
     it(testKey + ' setup the trie', function(done) {
       testUtils.setupPreConditions(state, testData, done);
@@ -270,7 +278,7 @@ console.log('@@@@@@@@ bal: ', bignum.fromBuffer(account.balance))
   describe('.', function() {
     var testKey = 'suicideSendEtherToMe',
       state = new Trie(),
-      testData = vmSystemOperationsTest[testKey];
+      testData = suicideSendEtherToMe;
 
     it(testKey + ' setup the trie', function(done) {
       testUtils.setupPreConditions(state, testData, done);
