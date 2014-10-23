@@ -1,4 +1,4 @@
-var vmSystemOperationsTest = require('../../../../tests/vmtests/vmSystemOperationsTest.json'),
+const vmSystemOperationsTest = require('../../../../tests/vmtests/vmSystemOperationsTest.json'),
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
@@ -6,6 +6,8 @@ var vmSystemOperationsTest = require('../../../../tests/vmtests/vmSystemOperatio
   assert = require('assert'),
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
+
+const START_BALANCE = '1333333';
 
 describe('[Common]: vmSystemOperationsTest', function () {
   var tests = Object.keys(vmSystemOperationsTest);
@@ -128,13 +130,12 @@ describe('[Common]: vmSystemOperationsTest', function () {
     it(testKey + ' run call', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
-        account = new Account(),
-        runData,
+        account = new Account([
+          new Buffer([0]),
+          bignum(START_BALANCE).toBuffer()
+        ]),
+        runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
-
-      account.nonce = new Buffer([0]);
-      account.balance = bignum('1333333').toBuffer();
-      runData = testUtils.makeRunCallDataWithAccount(testData, account, block);
 
       vm.runCall(runData, function(err, results) {
         assert(!err);
