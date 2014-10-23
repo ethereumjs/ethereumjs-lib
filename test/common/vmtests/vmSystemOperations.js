@@ -173,7 +173,9 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
         block = testUtils.makeBlockFromEnv(env),
         account = new Account([
           new Buffer([0]),
-          bignum(START_BALANCE).toBuffer()
+          bignum(START_BALANCE)
+            .add(testData.pre[testData.exec.caller].balance)
+            .toBuffer()
         ]),
         runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
         vm = new VM(state);
@@ -197,10 +199,7 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
           //   .sub(START_BALANCE) //subcract
           //   .add(23) //add orignal val
 
-          account.balance = bignum.fromBuffer(account.balance)
-            .sub(START_BALANCE)
-            .add(testData.pre[testData.exec.caller].balance)
-            .toBuffer();
+          account.balance = bignum.fromBuffer(account.balance).sub(START_BALANCE).toBuffer();
 
           testUtils.verifyAccountPostConditions(state, account, acctData, done);
         });
