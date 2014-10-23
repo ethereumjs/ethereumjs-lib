@@ -1,12 +1,10 @@
 const vmSystemOperationsTest = require('ethereum-tests').vmtests.vmSystemOperationsTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
-  rlp = require('rlp'),
   Account = require('../../../lib/account.js'),
   bignum = require('bignum'),
   assert = require('assert'),
   testUtils = require('../../testUtils'),
-  utils = require('../../../lib/utils.js'),
   Trie = require('merkle-patricia-tree');
 
 // for SUICIDE tests, this is temporarily added to avoid negative balances
@@ -196,7 +194,7 @@ describe('[Common]: vmSystemOperationsTest', function() {
           function() {
             var keysOfPost = Object.keys(testData.post),
               suicideCreated = testData.exec.code.substr(4, 20 * 2);
-            assert(keysOfPost.length === 2, 'post should only have caller and suicideCreated')
+            assert(keysOfPost.length === 2, 'post should only have caller and suicideCreated');
             assert(keysOfPost.indexOf(suicideCreated) !== -1, 'suicideCreated not in post');
 
             async.each(keysOfPost, function(key, cb) {
