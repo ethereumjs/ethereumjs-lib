@@ -134,29 +134,6 @@ describe('[Common]: vmSystemOperationsTest', function() {
         runCodeData,
         vm = new VM(state);
 
-
-vm.onStep = function(info, done) {
-  console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
-
-
-  var stream = vm.trie.createReadStream();
-  stream.on("data", function(data) {
-    var account = new Account(data.value);
-    console.log("key: " + data.key.toString("hex"));
-    //console.log(data.value.toString('hex'));
-    console.log('decoded:' + bignum.fromBuffer(account.balance).toString() + '\n');
-  });
-
-  stream.on('end', done);
-
-  info.stack.reverse();
-  info.stack.forEach(function (item) {
-    console.log('vm', '    ' + item.toString('hex'));
-  });
-  info.stack.reverse();
-
-};
-
       acctData = testData.pre[testData.exec.address];
       account = new Account();
       account.nonce = testUtils.fromDecimal(acctData.nonce);
@@ -164,7 +141,6 @@ vm.onStep = function(info, done) {
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
-        console.log('err: ', err)
         assert(!err);
 
         // console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
