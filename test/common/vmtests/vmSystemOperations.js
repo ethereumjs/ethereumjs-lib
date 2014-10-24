@@ -122,11 +122,11 @@ describe('[Common]: vmSystemOperationsTest', function() {
       state = new Trie(),
       testData = vmSystemOperationsTest.CallToNameRegistratorNotMuchMemory0;
 
-    it.only(testKey + ' setup the trie', function(done) {
+    it(testKey + ' setup the trie', function(done) {
       testUtils.setupPreConditions(state, testData, done);
     });
 
-    it.only(testKey + ' run code', function(done) {
+    it(testKey + ' run code', function(done) {
       var env = testData.env,
         block = testUtils.makeBlockFromEnv(env),
         acctData,
