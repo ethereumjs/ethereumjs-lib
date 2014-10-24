@@ -1,6 +1,7 @@
 const vmSystemOperationsTest = require('ethereum-tests').vmtests.vmSystemOperationsTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
+  ERROR = require('../../../lib/vm/constants').ERROR,
   Account = require('../../../lib/account.js'),
   bignum = require('bignum'),
   assert = require('assert'),
@@ -9,6 +10,21 @@ const vmSystemOperationsTest = require('ethereum-tests').vmtests.vmSystemOperati
 
 // for SUICIDE tests, this is temporarily added to avoid negative balances
 const TMP_BAL_AVOID_NEG = '13333337';
+
+
+function expectError(testKey, error) {
+  if (testKey.match(
+    /^CallToNameRegistratorTooMuchMemory|createNameRegistratorOutOfMemoryBonds/)) {
+    assert.strictEqual(error, ERROR.OUT_OF_GAS);
+    return true;
+  } else if (testKey.match(
+    /(^createNameRegistratorValueTooHigh$)/)) {
+    assert.strictEqual(error, ERROR.STACK_UNDERFLOW);
+    return true;
+  }
+
+  return false;
+}
 
 describe('[Common]: vmSystemOperationsTest', function() {
   var suicide0 = vmSystemOperationsTest.suicide0;
@@ -22,7 +38,7 @@ describe('[Common]: vmSystemOperationsTest', function() {
   var tests = Object.keys(vmSystemOperationsTest);
   // TODO add tests
   // tests = ['CallToNameRegistrator0'];
-  tests = [];
+  // tests = [];
   tests.forEach(function(testKey) {
     var state = new Trie();
     var testData = vmSystemOperationsTest[testKey];
@@ -70,6 +86,11 @@ describe('[Common]: vmSystemOperationsTest', function() {
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
+        if (expectError(testKey, err)) {
+          done();
+          return;
+        }
+
         assert(!err);
 
         // console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
@@ -117,10 +138,10 @@ describe('[Common]: vmSystemOperationsTest', function() {
     });
   });
 
-  describe('.', function() {
-    var testKey = 'CallToNameRegistratorNotMuchMemory0',
+  describe.skip('.', function() {
+    var testKey = 'CallToNameRegistratorTooMuchMemory0',
       state = new Trie(),
-      testData = vmSystemOperationsTest.CallToNameRegistratorNotMuchMemory0;
+      testData = vmSystemOperationsTest.CallToNameRegistratorTooMuchMemory0;
 
     it(testKey + ' setup the trie', function(done) {
       testUtils.setupPreConditions(state, testData, done);
@@ -141,7 +162,7 @@ describe('[Common]: vmSystemOperationsTest', function() {
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
-        assert(!err);
+        assert(!err, err);
 
         // console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
         assert.strictEqual(results.gasUsed.toNumber(),
