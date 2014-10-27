@@ -16,17 +16,17 @@ var testUtils = exports;
  * @param {[type]}   acctData postconditions JSON from tests repo
  * @param {Function} cb       completion callback
  */
-exports.verifyAccountPostConditions = function (state, account, acctData, cb) {
+exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
   // validate the postcondition of account
   assert.strictEqual(testUtils.toDecimal(account.balance), acctData.balance, 'balance mismatch');
   assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
 
   // validate storage
   var storageKeys = Object.keys(acctData.storage);
-  if (storageKeys.length > 0 && false ) {
+  if (storageKeys.length > 0 && false) {
     state.root = account.stateRoot.toString('hex');
-    storageKeys.forEach(function (skey) {
-      state.get(testUtils.fromAddress(skey), function (err, data) {
+    storageKeys.forEach(function(skey) {
+      state.get(testUtils.fromAddress(skey), function(err, data) {
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'),
           acctData.storage[skey].slice(2), 'storage mismatch');
@@ -45,7 +45,7 @@ exports.verifyAccountPostConditions = function (state, account, acctData, cb) {
  * @param {Object} block   that the transaction belongs to
  * @return {Object}        object that will be passed to VM.runCall function
  */
-exports.makeRunCallData = function (testData, block) {
+exports.makeRunCallData = function(testData, block) {
   var exec = testData.exec,
     acctData = testData.pre[exec.caller],
     account = new Account();
@@ -56,7 +56,7 @@ exports.makeRunCallData = function (testData, block) {
   return {
     fromAccount: account,
     origin: new Buffer(exec.origin, 'hex'),
-    data: new Buffer(exec.code.slice(2), 'hex'),  // slice off 0x
+    data: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
     value: bignum(exec.value),
     from: new Buffer(exec.caller, 'hex'),
     to: new Buffer(exec.address, 'hex'),
@@ -73,12 +73,12 @@ exports.makeRunCallData = function (testData, block) {
  * @param {Object} block   that the transaction belongs to
  * @return {Object}        object that will be passed to VM.runCall function
  */
-exports.makeRunCallDataWithAccount = function (testData, account, block) {
+exports.makeRunCallDataWithAccount = function(testData, account, block) {
   var exec = testData.exec;
   return {
     fromAccount: account,
     origin: new Buffer(exec.origin, 'hex'),
-    data: new Buffer(exec.code.slice(2), 'hex'),  // slice off 0x
+    data: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
     value: bignum(exec.value),
     from: new Buffer(exec.caller, 'hex'),
     to: new Buffer(exec.address, 'hex'),
@@ -92,7 +92,7 @@ exports.makeRunCallDataWithAccount = function (testData, account, block) {
  * @param  {Buffer}
  * @return {String}
  */
-exports.toDecimal = function (buffer) {
+exports.toDecimal = function(buffer) {
   return bignum.fromBuffer(buffer).toString();
 };
 
@@ -101,7 +101,7 @@ exports.toDecimal = function (buffer) {
  * @param {String}
  *  @return {Buffer}
  */
-exports.fromDecimal = function (string) {
+exports.fromDecimal = function(string) {
   return utils.intToBuffer(parseInt(string, 10));
 };
 
@@ -110,7 +110,7 @@ exports.fromDecimal = function (string) {
  * @param  {String} hexString address for example '0x03'
  * @return {Buffer}
  */
-exports.fromAddress = function (hexString) {
+exports.fromAddress = function(hexString) {
   hexString = hexString.substring(2);
   return utils.pad256(bignum(hexString, 16).toBuffer());
 };
@@ -120,7 +120,7 @@ exports.fromAddress = function (hexString) {
  * @param {Object} env object from tests repo
  * @return {Object}  the block
  */
-exports.makeBlockFromEnv = function (env) {
+exports.makeBlockFromEnv = function(env) {
   var block = new Block();
   block.header.timestamp = testUtils.fromDecimal(env.currentTimestamp);
   block.header.gasLimit = testUtils.fromDecimal(env.currentGasLimit);
@@ -140,7 +140,7 @@ exports.makeBlockFromEnv = function (env) {
  * @param {Object} block   that the transaction belongs to
  * @return {Object}        object that will be passed to VM.runCode function
  */
-exports.makeRunCodeData = function (exec, account, block) {
+exports.makeRunCodeData = function(exec, account, block) {
   return {
     account: account,
     origin: new Buffer(exec.origin, 'hex'),
@@ -180,12 +180,12 @@ exports.storeCode = function(state, address, account, code, callback) {
  * @param {[type]}   testData - JSON from tests repo
  * @param {Function} done     - callback when function is completed
  */
-exports.setupPreConditions = function (state, testData, done) {
+exports.setupPreConditions = function(state, testData, done) {
   var keysOfPre = Object.keys(testData.pre),
     acctData,
     account;
 
-  async.eachSeries(keysOfPre, function (key, callback) {
+  async.eachSeries(keysOfPre, function(key, callback) {
     acctData = testData.pre[key];
 
     //convert to buffer
@@ -195,10 +195,16 @@ exports.setupPreConditions = function (state, testData, done) {
     account.nonce = testUtils.fromDecimal(acctData.nonce);
     account.balance = testUtils.fromDecimal(acctData.balance);
 
-    if (acctData.code.toString('hex') !== '00') {
-      testUtils.storeCode(state, key, account, acctData.code, callback);
-    } else {
-      state.put(new Buffer(key, 'hex'), account.serialize(), callback);
-    }
+    async.series([
+      function(cb2) {
+        if (acctData.code.toString('hex') !== '00') {
+          account.storeCode(state, acctData.code, cb2);
+        }
+      },
+      function(cb2){
+        state.put(new Buffer(key, 'hex'), account.serialize(), cb2);
+      }
+    ], callback);
+
   }, done);
 };
