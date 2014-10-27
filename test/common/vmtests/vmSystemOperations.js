@@ -38,7 +38,7 @@ describe('[Common]: vmSystemOperationsTest', function() {
   var tests = Object.keys(vmSystemOperationsTest);
   // TODO add tests
   // tests = ['CallToNameRegistrator0'];
-  // tests = [];
+  tests = [];
   tests.forEach(function(testKey) {
     var state = new Trie();
     var testData = vmSystemOperationsTest[testKey];
@@ -138,7 +138,7 @@ describe('[Common]: vmSystemOperationsTest', function() {
     });
   });
 
-  describe.skip('.', function() {
+  describe('.', function() {
     var testKey = 'ABAcallsSuicide0',
       state = new Trie(),
       testData = vmSystemOperationsTest.ABAcallsSuicide0;
@@ -228,7 +228,7 @@ vm.onStep = function(info, done) {
     });
   });
 
-  describe('.', function() {
+  describe.skip('.', function() {
     var testKey = 'suicide0',
       state = new Trie(),
       testData = suicide0;
@@ -270,7 +270,7 @@ vm.onStep = function(info, done) {
     });
   });
 
-  describe('.', function() {
+  describe.skip('.', function() {
     var testKey = 'suicideNotExistingAccount',
       state = new Trie(),
       testData = suicideNotExistingAccount;
@@ -333,7 +333,7 @@ vm.onStep = function(info, done) {
     });
   });
 
-  describe('.', function() {
+  describe.skip('.', function() {
     var testKey = 'suicideSendEtherToMe',
       state = new Trie(),
       testData = suicideSendEtherToMe;
