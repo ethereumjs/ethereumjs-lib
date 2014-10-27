@@ -26,7 +26,7 @@ function expectError(testKey, error) {
   return false;
 }
 
-describe.only('[Common]: vmSystemOperationsTest', function() {
+describe('[Common]: vmSystemOperationsTest', function() {
   var suicide0 = vmSystemOperationsTest.suicide0;
   var suicideNotExistingAccount = vmSystemOperationsTest.suicideNotExistingAccount;
   var suicideSendEtherToMe = vmSystemOperationsTest.suicideSendEtherToMe;
@@ -37,7 +37,7 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
 
   var tests = Object.keys(vmSystemOperationsTest);
   // TODO add tests
-  tests = ['ABAcallsSuicide0'];
+  // tests = ['CallToNameRegistrator0'];
   // tests = [];
   tests.forEach(function(testKey) {
     var state = new Trie();
@@ -56,36 +56,33 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
         vm = new VM(state);
 
 
-      vm.onStep = function(info, done2) {
-        console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
+      // vm.onStep = function(info, done) {
+      //   console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
 
 
-        var stream = vm.trie.createReadStream();
-        // stream.on("data", function(data) {
-        //   var account = new Account(data.value);
-        //   console.log("key: " + data.key.toString("hex"));
-        //   //console.log(data.value.toString('hex'));
-        //   console.log('decoded:' + bignum.fromBuffer(account.balance).toString() + '\n');
-        // });
+      //   var stream = vm.trie.createReadStream();
+      //   stream.on("data", function(data) {
+      //     var account = new Account(data.value);
+      //     console.log("key: " + data.key.toString("hex"));
+      //     //console.log(data.value.toString('hex'));
+      //     console.log('decoded:' + bignum.fromBuffer(account.balance).toString() + '\n');
+      //   });
 
-        // stream.on('end', done);
+      //   stream.on('end', done);
 
-        info.stack.reverse();
-        info.stack.forEach(function (item) {
-          console.log('vm', '    ' + item.toString('hex'));
-        });
-        info.stack.reverse();
-        done2();
+      //   // info.stack.reverse();
+      //   // info.stack.forEach(function (item) {
+      //   //   console.log('vm', '    ' + item.toString('hex'));
+      //   // });
+      //   // info.stack.reverse();
 
-      };
+      // };
 
 
       acctData = testData.pre[testData.exec.address];
       account = new Account();
       account.nonce = testUtils.fromDecimal(acctData.nonce);
       account.balance = testUtils.fromDecimal(acctData.balance);
-      //TODO
-      account.codeHash = new Buffer('b2977a4990a7656bf88cca44ff38f86a703ea0aad4469a7494cf2fba830a0dd1', 'hex');
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
@@ -141,213 +138,252 @@ describe.only('[Common]: vmSystemOperationsTest', function() {
     });
   });
 
-  // describe.skip('.', function() {
-  //   var testKey = 'CallToNameRegistratorTooMuchMemory0',
-  //     state = new Trie(),
-  //     testData = vmSystemOperationsTest.CallToNameRegistratorTooMuchMemory0;
+  describe.skip('.', function() {
+    var testKey = 'ABAcallsSuicide0',
+      state = new Trie(),
+      testData = vmSystemOperationsTest.ABAcallsSuicide0;
 
-  //   it(testKey + ' setup the trie', function(done) {
-  //     testUtils.setupPreConditions(state, testData, done);
-  //   });
+    it(testKey + ' setup the trie', function(done) {
+      testUtils.setupPreConditions(state, testData, done);
+    });
 
-  //   it(testKey + ' run code', function(done) {
-  //     var env = testData.env,
-  //       block = testUtils.makeBlockFromEnv(env),
-  //       acctData,
-  //       account,
-  //       runCodeData,
-  //       vm = new VM(state);
+    it(testKey + ' run code', function(done) {
+      var env = testData.env,
+        block = testUtils.makeBlockFromEnv(env),
+        acctData,
+        account,
+        runCodeData,
+        vm = new VM(state);
 
-  //     acctData = testData.pre[testData.exec.address];
-  //     account = new Account();
-  //     account.nonce = testUtils.fromDecimal(acctData.nonce);
-  //     account.balance = testUtils.fromDecimal(acctData.balance);
 
-  //     runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
-  //     vm.runCode(runCodeData, function(err, results) {
-  //       assert(!err, err);
+// var stream = vm.trie.createReadStream();
+// stream.on("data", function(data) {
+//   var account = new Account(data.value);
+//   console.log("key: " + data.key.toString("hex"));
+//   //console.log(data.value.toString('hex'));
+//   console.log('balance:' + bignum.fromBuffer(account.balance).toString());
+//   console.log('codeHash:' + bignum.fromBuffer(account.codeHash).toString() + '\n');
+// });
+//
+// stream.on('end', done);
+// return
 
-  //       // console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
-  //       assert.strictEqual(results.gasUsed.toNumber(),
-  //         testData.exec.gas - testData.gas, 'gas used mismatch');
 
-  //       async.series([
+vm.onStep = function(info, done) {
+  console.log('\n\nvm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
 
-  //         function() {
-  //           // validate the postcondition of other accounts
-  //           // delete testData.post[testData.exec.address];
-  //           var keysOfPost = Object.keys(testData.post);
-  //           async.eachSeries(keysOfPost, function(key, cb) {
-  //             state.get(new Buffer(key, 'hex'), function(err, raw) {
-  //               assert(!err);
 
-  //               account = new Account(raw);
-  //               acctData = testData.post[key];
-  //               testUtils.verifyAccountPostConditions(state, account, acctData, cb);
-  //             });
-  //           }, done);
-  //         }
-  //       ]);
-  //     });
-  //   });
+  // var stream = vm.trie.createReadStream();
+  // stream.on("data", function(data) {
+  //   var account = new Account(data.value);
+  //   console.log("@@@ key: " + data.key.toString("hex"));
+  //   //console.log(data.value.toString('hex'));
+  //   console.log('decoded:' + bignum.fromBuffer(account.balance).toString());
+  //   console.log('codeHash:' + bignum.fromBuffer(account.codeHash).toString());
   // });
+  //
+  // stream.on('end', done);
 
-  // describe.skip('.', function() {
-  //   var testKey = 'suicide0',
-  //     state = new Trie(),
-  //     testData = suicide0;
+  info.stack.reverse();
+  info.stack.forEach(function (item) {
+    console.log('vm', '    ' + item.toString('hex'));
+  });
+  info.stack.reverse();
+  done()
+};
 
-  //   it(testKey + ' setup the trie', function(done) {
-  //     testUtils.setupPreConditions(state, testData, done);
-  //   });
 
-  //   it(testKey + ' run call', function(done) {
-  //     var env = testData.env,
-  //       block = testUtils.makeBlockFromEnv(env),
-  //       account = new Account([
-  //         new Buffer([0]),
-  //         bignum(testData.pre[testData.exec.caller].balance)
-  //           .add(TMP_BAL_AVOID_NEG).toBuffer()
-  //       ]),
-  //       runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
-  //       vm = new VM(state);
+      acctData = testData.pre[testData.exec.address];
+      account = new Account();
+      account.nonce = testUtils.fromDecimal(acctData.nonce);
+      account.balance = testUtils.fromDecimal(acctData.balance);
+      account.codeHash = new Buffer('b2977a4990a7656bf88cca44ff38f86a703ea0aad4469a7494cf2fba830a0dd1', 'hex');
 
-  //     vm.runCall(runData, function(err, results) {
-  //       assert(!err);
-  //       assert.strictEqual(results.gasUsed.toNumber(),
-  //         testData.exec.gas - testData.gas, 'gas used mismatch');
+      runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
+      vm.runCode(runCodeData, function(err, results) {
+        assert(!err, err);
 
-  //       var suicideTo = results.vm.suicideTo.toString('hex'),
-  //         keysOfPost = Object.keys(testData.post);
-  //       assert.strictEqual(keysOfPost.length, 1, '#post mismatch');
-  //       assert.strictEqual(suicideTo, keysOfPost[0], 'suicideTo mismatch');
+        console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
+        assert.strictEqual(results.gasUsed.toNumber(),
+          testData.exec.gas - testData.gas, 'gas used mismatch');
 
-  //       state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
-  //         assert(!err);
-  //         var account = new Account(acct),
-  //           acctData = testData.post[suicideTo];
-  //         account.balance = bignum.fromBuffer(account.balance).sub(TMP_BAL_AVOID_NEG).toBuffer();
+        async.series([
 
-  //         testUtils.verifyAccountPostConditions(state, account, acctData, done);
-  //       });
-  //     });
-  //   });
-  // });
+          function() {
+            // validate the postcondition of other accounts
+            // delete testData.post[testData.exec.address];
+            var keysOfPost = Object.keys(testData.post);
+            async.eachSeries(keysOfPost, function(key, cb) {
+              state.get(new Buffer(key, 'hex'), function(err, raw) {
+                assert(!err);
 
-  // describe('.', function() {
-  //   var testKey = 'suicideNotExistingAccount',
-  //     state = new Trie(),
-  //     testData = suicideNotExistingAccount;
+                account = new Account(raw);
+                acctData = testData.post[key];
+                testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+              });
+            }, done);
+          }
+        ]);
+      });
+    });
+  });
 
-  //   it(testKey + ' setup the trie', function(done) {
-  //     testUtils.setupPreConditions(state, testData, done);
-  //   });
+  describe('.', function() {
+    var testKey = 'suicide0',
+      state = new Trie(),
+      testData = suicide0;
 
-  //   it(testKey + ' run call', function(done) {
-  //     var env = testData.env,
-  //       block = testUtils.makeBlockFromEnv(env),
-  //       account = new Account([
-  //         new Buffer([0]),
-  //         bignum(testData.pre[testData.exec.caller].balance)
-  //           .add(TMP_BAL_AVOID_NEG).toBuffer()
-  //       ]),
-  //       runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
-  //       vm = new VM(state);
+    it(testKey + ' setup the trie', function(done) {
+      testUtils.setupPreConditions(state, testData, done);
+    });
 
-  //     vm.runCall(runData, function(err, results) {
-  //       assert(!err);
-  //       assert.strictEqual(results.gasUsed.toNumber(),
-  //         testData.exec.gas - testData.gas, 'gas used mismatch');
+    it(testKey + ' run call', function(done) {
+      var env = testData.env,
+        block = testUtils.makeBlockFromEnv(env),
+        account = new Account([
+          new Buffer([0]),
+          bignum(testData.pre[testData.exec.caller].balance)
+            .add(TMP_BAL_AVOID_NEG).toBuffer()
+        ]),
+        runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
+        vm = new VM(state);
 
-  //       async.series([
-  //         function(cb) {
-  //           state.get(new Buffer(testData.exec.address, 'hex'), function(err, raw) {
-  //             assert(!err);
-  //             assert(!raw, 'contract should have been deleted by SUICIDE');
-  //             cb();
-  //           });
-  //         },
-  //         function() {
-  //           var keysOfPost = Object.keys(testData.post),
-  //             suicideCreated = testData.exec.code.substr(4, 20 * 2);
-  //           assert(keysOfPost.length === 2, 'post should only have caller and suicideCreated');
-  //           assert(keysOfPost.indexOf(suicideCreated) !== -1, 'suicideCreated not in post');
+      vm.runCall(runData, function(err, results) {
+        assert(!err);
+        assert.strictEqual(results.gasUsed.toNumber(),
+          testData.exec.gas - testData.gas, 'gas used mismatch');
 
-  //           async.each(keysOfPost, function(key, cb) {
-  //             state.get(new Buffer(key, 'hex'), function(err, raw) {
-  //               assert(!err);
-  //               var account = new Account(raw),
-  //                 acctData = testData.post[key];
+        var suicideTo = results.vm.suicideTo.toString('hex'),
+          keysOfPost = Object.keys(testData.post);
+        assert.strictEqual(keysOfPost.length, 1, '#post mismatch');
+        assert.strictEqual(suicideTo, keysOfPost[0], 'suicideTo mismatch');
 
-  //               if (key === testData.exec.caller) {
-  //                 account.balance = bignum.fromBuffer(account.balance)
-  //                   .add(testData.exec.value)
-  //                   .sub(TMP_BAL_AVOID_NEG).toBuffer();
-  //               } else if (key === suicideCreated) {
-  //                 // console.log('@@@@@@@@ val: ', testData.exec.value)
-  //                 account.balance = bignum.fromBuffer(account.balance).sub(testData.exec.value).toBuffer();
-  //               }
+        state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
+          assert(!err);
+          var account = new Account(acct),
+            acctData = testData.post[suicideTo];
+          account.balance = bignum.fromBuffer(account.balance).sub(TMP_BAL_AVOID_NEG).toBuffer();
 
-  //               testUtils.verifyAccountPostConditions(state, account, acctData, cb);
-  //             });
-  //           }, done);
-  //         }
-  //       ]);
-  //     });
-  //   });
-  // });
+          testUtils.verifyAccountPostConditions(state, account, acctData, done);
+        });
+      });
+    });
+  });
 
-  // describe('.', function() {
-  //   var testKey = 'suicideSendEtherToMe',
-  //     state = new Trie(),
-  //     testData = suicideSendEtherToMe;
+  describe('.', function() {
+    var testKey = 'suicideNotExistingAccount',
+      state = new Trie(),
+      testData = suicideNotExistingAccount;
 
-  //   it(testKey + ' setup the trie', function(done) {
-  //     testUtils.setupPreConditions(state, testData, done);
-  //   });
+    it(testKey + ' setup the trie', function(done) {
+      testUtils.setupPreConditions(state, testData, done);
+    });
 
-  //   it(testKey + ' run call', function(done) {
-  //     var env = testData.env,
-  //       block = testUtils.makeBlockFromEnv(env),
-  //       account = new Account([
-  //         new Buffer([0]),
-  //         bignum(testData.pre[testData.exec.caller].balance)
-  //           .add(TMP_BAL_AVOID_NEG).toBuffer()
-  //       ]),
-  //       runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
-  //       vm = new VM(state);
+    it(testKey + ' run call', function(done) {
+      var env = testData.env,
+        block = testUtils.makeBlockFromEnv(env),
+        account = new Account([
+          new Buffer([0]),
+          bignum(testData.pre[testData.exec.caller].balance)
+            .add(TMP_BAL_AVOID_NEG).toBuffer()
+        ]),
+        runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
+        vm = new VM(state);
 
-  //     vm.runCall(runData, function(err, results) {
-  //       assert(!err);
-  //       assert.strictEqual(results.gasUsed.toNumber(),
-  //         testData.exec.gas - testData.gas, 'gas used mismatch');
+      vm.runCall(runData, function(err, results) {
+        assert(!err);
+        assert.strictEqual(results.gasUsed.toNumber(),
+          testData.exec.gas - testData.gas, 'gas used mismatch');
 
-  //       var suicideTo = results.vm.suicideTo.toString('hex'),
-  //         keysOfPost = Object.keys(testData.post);
-  //       assert.strictEqual(keysOfPost.length, 1, '#post mismatch');
-  //       assert.notStrictEqual(suicideTo, keysOfPost[0], 'suicideTo should not exist');
+        async.series([
+          function(cb) {
+            state.get(new Buffer(testData.exec.address, 'hex'), function(err, raw) {
+              assert(!err);
+              assert(!raw, 'contract should have been deleted by SUICIDE');
+              cb();
+            });
+          },
+          function() {
+            var keysOfPost = Object.keys(testData.post),
+              suicideCreated = testData.exec.code.substr(4, 20 * 2);
+            assert(keysOfPost.length === 2, 'post should only have caller and suicideCreated');
+            assert(keysOfPost.indexOf(suicideCreated) !== -1, 'suicideCreated not in post');
 
-  //       async.series([
-  //         function(cb) {
-  //           state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
-  //             assert(!err);
-  //             assert(!acct, 'suicide account should be gone');
-  //             cb();
-  //           });
-  //         },
-  //         function() {
-  //           state.get(new Buffer(keysOfPost[0], 'hex'), function(err, acct) {
-  //             assert(!err);
-  //             var account = new Account(acct),
-  //               acctData = testData.post[keysOfPost[0]];
-  //             account.balance = bignum.fromBuffer(account.balance)
-  //               .add(testData.exec.value)
-  //               .sub(TMP_BAL_AVOID_NEG).toBuffer();
-  //             testUtils.verifyAccountPostConditions(state, account, acctData, done);
-  //           });
-  //         }
-  //       ], done);
-  //     });
-  //   });
- // });
+            async.each(keysOfPost, function(key, cb) {
+              state.get(new Buffer(key, 'hex'), function(err, raw) {
+                assert(!err);
+                var account = new Account(raw),
+                  acctData = testData.post[key];
+
+                if (key === testData.exec.caller) {
+                  account.balance = bignum.fromBuffer(account.balance)
+                    .add(testData.exec.value)
+                    .sub(TMP_BAL_AVOID_NEG).toBuffer();
+                } else if (key === suicideCreated) {
+                  // console.log('@@@@@@@@ val: ', testData.exec.value)
+                  account.balance = bignum.fromBuffer(account.balance).sub(testData.exec.value).toBuffer();
+                }
+
+                testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+              });
+            }, done);
+          }
+        ]);
+      });
+    });
+  });
+
+  describe('.', function() {
+    var testKey = 'suicideSendEtherToMe',
+      state = new Trie(),
+      testData = suicideSendEtherToMe;
+
+    it(testKey + ' setup the trie', function(done) {
+      testUtils.setupPreConditions(state, testData, done);
+    });
+
+    it(testKey + ' run call', function(done) {
+      var env = testData.env,
+        block = testUtils.makeBlockFromEnv(env),
+        account = new Account([
+          new Buffer([0]),
+          bignum(testData.pre[testData.exec.caller].balance)
+            .add(TMP_BAL_AVOID_NEG).toBuffer()
+        ]),
+        runData = testUtils.makeRunCallDataWithAccount(testData, account, block),
+        vm = new VM(state);
+
+      vm.runCall(runData, function(err, results) {
+        assert(!err);
+        assert.strictEqual(results.gasUsed.toNumber(),
+          testData.exec.gas - testData.gas, 'gas used mismatch');
+
+        var suicideTo = results.vm.suicideTo.toString('hex'),
+          keysOfPost = Object.keys(testData.post);
+        assert.strictEqual(keysOfPost.length, 1, '#post mismatch');
+        assert.notStrictEqual(suicideTo, keysOfPost[0], 'suicideTo should not exist');
+
+        async.series([
+          function(cb) {
+            state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
+              assert(!err);
+              assert(!acct, 'suicide account should be gone');
+              cb();
+            });
+          },
+          function() {
+            state.get(new Buffer(keysOfPost[0], 'hex'), function(err, acct) {
+              assert(!err);
+              var account = new Account(acct),
+                acctData = testData.post[keysOfPost[0]];
+              account.balance = bignum.fromBuffer(account.balance)
+                .add(testData.exec.value)
+                .sub(TMP_BAL_AVOID_NEG).toBuffer();
+              testUtils.verifyAccountPostConditions(state, account, acctData, done);
+            });
+          }
+        ], done);
+      });
+    });
+  });
 });
