@@ -139,6 +139,89 @@ describe('[Common]: vmSystemOperationsTest', function() {
   });
 
   describe('.', function() {
+    var testKey = 'ABAcalls0',
+      state = new Trie(),
+      testData = vmSystemOperationsTest.ABAcalls0;
+
+    it(testKey + ' setup the trie', function(done) {
+      testUtils.setupPreConditions(state, testData, done);
+    });
+
+    it(testKey + ' run code', function(done) {
+      var env = testData.env,
+        block = testUtils.makeBlockFromEnv(env),
+        acctData,
+        account,
+        runCodeData,
+        vm = new VM(state);
+
+
+// var stream = vm.trie.createReadStream();
+// stream.on("data", function(data) {
+//   var account = new Account(data.value);
+//   console.log("key: " + data.key.toString("hex"));
+//   //console.log(data.value.toString('hex'));
+//   console.log('balance:' + bignum.fromBuffer(account.balance).toString());
+//   console.log('codeHash:' + bignum.fromBuffer(account.codeHash).toString() + '\n');
+// });
+//
+// stream.on('end', done);
+// return
+
+
+vm.onStep = function(info, done) {
+  console.log('\n\nvm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
+
+
+  // var stream = vm.trie.createReadStream();
+  // stream.on("data", function(data) {
+  //   var account = new Account(data.value);
+  //   console.log("@@@ key: " + data.key.toString("hex"));
+  //   //console.log(data.value.toString('hex'));
+  //   console.log('decoded:' + bignum.fromBuffer(account.balance).toString());
+  //   console.log('codeHash:' + bignum.fromBuffer(account.codeHash).toString());
+  // });
+  //
+  // stream.on('end', done);
+
+  info.stack.reverse();
+  info.stack.forEach(function (item) {
+    console.log('vm', '    ' + item.toString('hex'));
+  });
+  info.stack.reverse();
+  done()
+};
+
+
+      acctData = testData.pre[testData.exec.address];
+      account = new Account();
+      account.nonce = testUtils.fromDecimal(acctData.nonce);
+      account.balance = testUtils.fromDecimal(acctData.balance);
+      account.codeHash = testUtils.toCodeHash(testData.exec.code);
+
+      runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
+      vm.runCode(runCodeData, function(err, results) {
+        assert(!err, err);
+
+        console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
+        assert.strictEqual(results.gasUsed.toNumber(),
+          testData.exec.gas - testData.gas, 'gas used mismatch');
+
+        var keysOfPost = Object.keys(testData.post);
+        async.eachSeries(keysOfPost, function(key, cb) {
+          state.get(new Buffer(key, 'hex'), function(err, raw) {
+            assert(!err);
+
+            account = new Account(raw);
+            acctData = testData.post[key];
+            testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+          });
+        }, done);
+      });
+    });
+  });
+
+  describe.skip('.', function() {
     var testKey = 'ABAcallsSuicide0',
       state = new Trie(),
       testData = vmSystemOperationsTest.ABAcallsSuicide0;
