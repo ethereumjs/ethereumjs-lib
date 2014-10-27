@@ -83,6 +83,7 @@ describe('[Common]: vmSystemOperationsTest', function() {
       account = new Account();
       account.nonce = testUtils.fromDecimal(acctData.nonce);
       account.balance = testUtils.fromDecimal(acctData.balance);
+      account.codeHash = testUtils.toCodeHash(testData.exec.code);
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
@@ -155,44 +156,6 @@ describe('[Common]: vmSystemOperationsTest', function() {
         runCodeData,
         vm = new VM(state);
 
-
-// var stream = vm.trie.createReadStream();
-// stream.on("data", function(data) {
-//   var account = new Account(data.value);
-//   console.log("key: " + data.key.toString("hex"));
-//   //console.log(data.value.toString('hex'));
-//   console.log('balance:' + bignum.fromBuffer(account.balance).toString());
-//   console.log('codeHash:' + bignum.fromBuffer(account.codeHash).toString() + '\n');
-// });
-//
-// stream.on('end', done);
-// return
-
-
-vm.onStep = function(info, done) {
-  console.log('\n\nvm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
-
-
-  // var stream = vm.trie.createReadStream();
-  // stream.on("data", function(data) {
-  //   var account = new Account(data.value);
-  //   console.log("@@@ key: " + data.key.toString("hex"));
-  //   //console.log(data.value.toString('hex'));
-  //   console.log('decoded:' + bignum.fromBuffer(account.balance).toString());
-  //   console.log('codeHash:' + bignum.fromBuffer(account.codeHash).toString());
-  // });
-  //
-  // stream.on('end', done);
-
-  info.stack.reverse();
-  info.stack.forEach(function (item) {
-    console.log('vm', '    ' + item.toString('hex'));
-  });
-  info.stack.reverse();
-  done()
-};
-
-
       acctData = testData.pre[testData.exec.address];
       account = new Account();
       account.nonce = testUtils.fromDecimal(acctData.nonce);
@@ -202,8 +165,6 @@ vm.onStep = function(info, done) {
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
         assert(!err, err);
-
-        console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
 
@@ -307,7 +268,7 @@ vm.onStep = function(info, done) {
     });
   });
 
-  describe.skip('.', function() {
+  describe('.', function() {
     var testKey = 'suicide0',
       state = new Trie(),
       testData = suicide0;
@@ -349,7 +310,7 @@ vm.onStep = function(info, done) {
     });
   });
 
-  describe.skip('.', function() {
+  describe('.', function() {
     var testKey = 'suicideNotExistingAccount',
       state = new Trie(),
       testData = suicideNotExistingAccount;
@@ -412,7 +373,7 @@ vm.onStep = function(info, done) {
     });
   });
 
-  describe.skip('.', function() {
+  describe('.', function() {
     var testKey = 'suicideSendEtherToMe',
       state = new Trie(),
       testData = suicideSendEtherToMe;
