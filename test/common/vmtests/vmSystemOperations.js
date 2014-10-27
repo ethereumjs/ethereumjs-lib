@@ -38,7 +38,7 @@ describe('[Common]: vmSystemOperationsTest', function() {
   var tests = Object.keys(vmSystemOperationsTest);
   // TODO add tests
   // tests = ['CallToNameRegistrator0'];
-  // tests = [];
+  tests = [];
   tests.forEach(function(testKey) {
     var state = new Trie();
     var testData = vmSystemOperationsTest[testKey];
@@ -83,6 +83,7 @@ describe('[Common]: vmSystemOperationsTest', function() {
       account = new Account();
       account.nonce = testUtils.fromDecimal(acctData.nonce);
       account.balance = testUtils.fromDecimal(acctData.balance);
+      account.codeHash = testUtils.toCodeHash(testData.exec.code);
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
@@ -134,6 +135,49 @@ describe('[Common]: vmSystemOperationsTest', function() {
             }, done);
           }
         ]);
+      });
+    });
+  });
+
+  describe('.', function() {
+    var testKey = 'ABAcalls0',
+      state = new Trie(),
+      testData = vmSystemOperationsTest.ABAcalls0;
+
+    it(testKey + ' setup the trie', function(done) {
+      testUtils.setupPreConditions(state, testData, done);
+    });
+
+    it(testKey + ' run code', function(done) {
+      var env = testData.env,
+        block = testUtils.makeBlockFromEnv(env),
+        acctData,
+        account,
+        runCodeData,
+        vm = new VM(state);
+
+      acctData = testData.pre[testData.exec.address];
+      account = new Account();
+      account.nonce = testUtils.fromDecimal(acctData.nonce);
+      account.balance = testUtils.fromDecimal(acctData.balance);
+      account.codeHash = testUtils.toCodeHash(testData.exec.code);
+
+      runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
+      vm.runCode(runCodeData, function(err, results) {
+        assert(!err, err);
+        assert.strictEqual(results.gasUsed.toNumber(),
+          testData.exec.gas - testData.gas, 'gas used mismatch');
+
+        var keysOfPost = Object.keys(testData.post);
+        async.eachSeries(keysOfPost, function(key, cb) {
+          state.get(new Buffer(key, 'hex'), function(err, raw) {
+            assert(!err);
+
+            account = new Account(raw);
+            acctData = testData.post[key];
+            testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+          });
+        }, done);
       });
     });
   });
@@ -197,7 +241,7 @@ vm.onStep = function(info, done) {
       account = new Account();
       account.nonce = testUtils.fromDecimal(acctData.nonce);
       account.balance = testUtils.fromDecimal(acctData.balance);
-      account.codeHash = new Buffer('b2977a4990a7656bf88cca44ff38f86a703ea0aad4469a7494cf2fba830a0dd1', 'hex');
+      account.codeHash = testUtils.toCodeHash(testData.exec.code);
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
@@ -207,23 +251,19 @@ vm.onStep = function(info, done) {
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
 
-        async.series([
+        var suicideTo = results.suicideTo.toString('hex'),
+          keysOfPost = Object.keys(testData.post);
+        assert.strictEqual(keysOfPost.length, 1, '#post mismatch');
+        assert.strictEqual(suicideTo, keysOfPost[0], 'suicideTo mismatch');
 
-          function() {
-            // validate the postcondition of other accounts
-            // delete testData.post[testData.exec.address];
-            var keysOfPost = Object.keys(testData.post);
-            async.eachSeries(keysOfPost, function(key, cb) {
-              state.get(new Buffer(key, 'hex'), function(err, raw) {
-                assert(!err);
+        state.get(new Buffer(suicideTo, 'hex'), function(err, acct) {
+          assert(!err);
+          var account = new Account(acct),
+            acctData = testData.post[suicideTo];
+          // account.balance = bignum.fromBuffer(account.balance).sub(TMP_BAL_AVOID_NEG).toBuffer();
 
-                account = new Account(raw);
-                acctData = testData.post[key];
-                testUtils.verifyAccountPostConditions(state, account, acctData, cb);
-              });
-            }, done);
-          }
-        ]);
+          testUtils.verifyAccountPostConditions(state, account, acctData, done);
+        });
       });
     });
   });
