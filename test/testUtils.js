@@ -199,6 +199,8 @@ exports.setupPreConditions = function(state, testData, done) {
       function(cb2) {
         if (acctData.code.toString('hex') !== '00') {
           account.storeCode(state, acctData.code, cb2);
+        } else {
+          cb2();
         }
       },
       function(cb2){
