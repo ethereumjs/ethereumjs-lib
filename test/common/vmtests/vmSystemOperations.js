@@ -233,7 +233,7 @@ vm.onStep = function(info, done) {
     console.log('vm', '    ' + item.toString('hex'));
   });
   info.stack.reverse();
-  done()
+  done();
 };
 
 
@@ -247,7 +247,7 @@ vm.onStep = function(info, done) {
       vm.runCode(runCodeData, function(err, results) {
         assert(!err, err);
 
-        console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
+        //console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - testData.gas)
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
 
