@@ -1,13 +1,14 @@
-var bignum = require('bignum'),
+const bignum = require('bignum'),
   async = require('async'),
   assert = require('assert'),
+  SHA3 = require('sha3'),
   rlp = require('rlp'),
   utils = require('../lib/utils'),
   Account = require('../lib/account.js'),
   Block = require('../lib/block.js');
 
 
-var testUtils = exports;
+const testUtils = exports;
 
 /**
  * verifyAccountPostConditions using JSON from tests repo
@@ -113,6 +114,18 @@ exports.fromDecimal = function(string) {
 exports.fromAddress = function(hexString) {
   hexString = hexString.substring(2);
   return utils.pad256(bignum(hexString, 16).toBuffer());
+};
+
+/**
+ * toCodeHash - applies sha3 to hexCode
+ * @param {String} hexCode string from tests repo
+ * @return {Buffer}
+ */
+exports.toCodeHash = function(hexCode) {
+  hexCode = hexCode.substring(2);
+  var hash = new SHA3.SHA3Hash(256);
+  hash.update(hexCode, 'hex');
+  return new Buffer(hash.digest('hex'), 'hex');
 };
 
 /**
