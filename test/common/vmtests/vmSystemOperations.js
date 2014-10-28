@@ -264,7 +264,6 @@ describe('[Common]: vmSystemOperationsTest', function() {
         runCodeData,
         vm = new VM(state);
 
-
       vm.onStep = function(info, done) {
         console.log('vm', info.depth ,  bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
 
