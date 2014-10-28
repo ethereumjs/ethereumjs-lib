@@ -247,6 +247,8 @@ describe('[Common]: vmSystemOperationsTest', function() {
   });
 
   describe('.', function() {
+
+    debugger;
     var testKey = 'CallRecursiveBomb3',
       state = new Trie(),
       testData = vmSystemOperationsTest.CallRecursiveBomb3;
@@ -265,7 +267,7 @@ describe('[Common]: vmSystemOperationsTest', function() {
 
 
       vm.onStep = function(info, done) {
-        console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
+        console.log('vm', info.depth ,  bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
 
         // var stream = vm.trie.createReadStream();
         // stream.on("data", function(data) {
