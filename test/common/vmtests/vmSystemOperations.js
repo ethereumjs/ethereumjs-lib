@@ -248,7 +248,6 @@ describe('[Common]: vmSystemOperationsTest', function() {
 
   describe('.', function() {
 
-    debugger;
     var testKey = 'CallRecursiveBomb3',
       state = new Trie(),
       testData = vmSystemOperationsTest.CallRecursiveBomb3;
