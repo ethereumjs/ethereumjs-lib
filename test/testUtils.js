@@ -35,6 +35,7 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
       });
     });
   } else {
+    console.log('no storage to verify');
     cb();
   }
 };
