@@ -68,6 +68,10 @@ vm.onStep = function(info, done) {
           },
 
           function() {
+
+            // validate the postcondition of other accounts
+            delete testData.post[testData.exec.address];
+
             var keysOfPost = Object.keys(testData.post);
             async.each(keysOfPost, function(key, cb) {
               state.get(new Buffer(key, 'hex'), function(err, raw) {
@@ -76,7 +80,7 @@ vm.onStep = function(info, done) {
                 account = new Account(raw);
                 acctData = testData.post[key];
 
-console.log('key: ', key, 'acctData: ', acctData)                
+console.log('key: ', key, 'acctData: ', acctData)
 
                 testUtils.verifyAccountPostConditions(state, account, acctData, cb);
               });
