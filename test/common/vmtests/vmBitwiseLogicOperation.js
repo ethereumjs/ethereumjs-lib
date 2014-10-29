@@ -57,8 +57,8 @@ vm.onStep = function(info, done) {
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
         assert(!err, 'err: ' + err);
-        // assert.strictEqual(results.gasUsed.toNumber(),
-        //   testData.exec.gas - testData.gas);
+        assert.strictEqual(results.gasUsed.toNumber(),
+          testData.exec.gas - testData.gas);
 
         async.series([
           function(cb) {
@@ -79,9 +79,6 @@ vm.onStep = function(info, done) {
 
                 account = new Account(raw);
                 acctData = testData.post[key];
-
-console.log('key: ', key, 'acctData: ', acctData)
-
                 testUtils.verifyAccountPostConditions(state, account, acctData, cb);
               });
             }, done);
