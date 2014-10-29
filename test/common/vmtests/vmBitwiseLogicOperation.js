@@ -33,7 +33,7 @@ describe('[Common]: vmBitwiseLogicOperationTest', function () {
       vm.runCode(runCodeData, function(err, results) {
         assert(!err, 'err: ' + err);
         assert.strictEqual(results.gasUsed.toNumber(),
-          testData.exec.gas - testData.gas, 'gas used mismatch');
+          testData.exec.gas - testData.gas);
 
         async.series([
           function(cb) {
