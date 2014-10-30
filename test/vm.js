@@ -140,7 +140,8 @@ describe('[VM]: Basic functions', function () {
       block: block
     };
     vm.runCode(runCodeData, function(err, results) {
-
+      // TODO
+      done();
     });
   });
 
