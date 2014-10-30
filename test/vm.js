@@ -165,6 +165,7 @@ describe('[VM]: Basic functions', function () {
     var block = testUtils.makeBlockFromEnv(env);
 
     var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f156000547f000000000000000000000000000000000000000000000000000000000000001c6020547fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e103006040547f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f6060546020600060806000601360016009f1';
+    var expPubkey = '0424cb2aad569903db22cbd05cb8b633a93cb5d3ce5687906d34b478d36e148fc218cb0ba14ae6fd49caa5245dcf357750bbab4c6e1b84ec078a604daaadcb7586';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
@@ -176,8 +177,10 @@ describe('[VM]: Basic functions', function () {
 
 
     /*
->>> sha256('priv')
+>>> priv = sha256('priv')
 '3b9aa142fefa44aab83ab1c0909f6929fd53656b895ec2fc0e47d412ea62ba54'
+>>> privtopub(priv)
+'0424cb2aad569903db22cbd05cb8b633a93cb5d3ce5687906d34b478d36e148fc218cb0ba14ae6fd49caa5245dcf357750bbab4c6e1b84ec078a604daaadcb7586'
 >>> sha256('msghash')
 '148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15'
 
