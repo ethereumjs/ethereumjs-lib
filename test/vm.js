@@ -149,7 +149,18 @@ describe('[VM]: Basic functions', function () {
 
     vm.runCode(runCodeData, function(err, results) {
       // TODO
-      done();
+
+      internals.state.get(new Buffer(exec.address, 'hex'), function(err, raw) {
+        assert(!err);
+
+        account = new Account(raw);
+        internals.state.root = account.stateRoot.toString('hex');
+        internals.state.get(exec.address, function(err, data) {
+          assert(!err);
+          assert.strictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
+          done();
+        });
+      });
     });
   });
 
