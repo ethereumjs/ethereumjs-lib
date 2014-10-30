@@ -174,6 +174,36 @@ describe('[VM]: Basic functions', function () {
     var runCodeData = testUtils.makeRunCodeData(exec, account, block);
     runCodeData.code = new Buffer(theCode.slice(2), 'hex'); // slice off 0x
 
+
+    /*
+>>> sha256('priv')
+'3b9aa142fefa44aab83ab1c0909f6929fd53656b895ec2fc0e47d412ea62ba54'
+>>> sha256('msghash')
+'148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15'
+
+> priv = new Buffer('3b9aa142fefa44aab83ab1c0909f6929fd53656b895ec2fc0e47d412ea62ba54','hex')
+<Buffer 3b 9a a1 42 fe fa 44 aa b8 3a b1 c0 90 9f 69 29 fd 53 65 6b 89 5e c2 fc 0e 47 d4 12 ea 62 ba 54>
+> msghash = new Buffer('148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15', 'hex')
+<Buffer 14 8c 12 7f 88 ab 9e 15 75 2c 8f 54 1f 86 f1 87 c6 83 1c 66 6e ce 57 06 61 3a 2a b2 71 d9 5f 15>
+> ecdsa.signCompact(priv, msghash)
+{ recoveryId: 1,
+  signature: <SlowBuffer db 3e cb e6 f6 a4 7e 1c c2 5f ec e0 29 27 70 b5 54 d8 7c 10 a2 1c 66 f1 6d 91 fb 96 05 e1 03 00 0c 8c 3f 31 12 c3 65 dd 8c 6a 21 d6 fc 5f a1 51 c3 0e 3a ...>,
+  r: <Buffer db 3e cb e6 f6 a4 7e 1c c2 5f ec e0 29 27 70 b5 54 d8 7c 10 a2 1c 66 f1 6d 91 fb 96 05 e1 03 00>,
+  s: <Buffer 0c 8c 3f 31 12 c3 65 dd 8c 6a 21 d6 fc 5f a1 51 c3 0e 3a 18 87 54 dc f7 45 7f 10 6a 49 1a 07 1f> }
+> sig = ecdsa.signCompact(priv, msghash)
+{ recoveryId: 1,
+  signature: <SlowBuffer db 3e cb e6 f6 a4 7e 1c c2 5f ec e0 29 27 70 b5 54 d8 7c 10 a2 1c 66 f1 6d 91 fb 96 05 e1 03 00 0c 8c 3f 31 12 c3 65 dd 8c 6a 21 d6 fc 5f a1 51 c3 0e 3a ...>,
+  r: <Buffer db 3e cb e6 f6 a4 7e 1c c2 5f ec e0 29 27 70 b5 54 d8 7c 10 a2 1c 66 f1 6d 91 fb 96 05 e1 03 00>,
+  s: <Buffer 0c 8c 3f 31 12 c3 65 dd 8c 6a 21 d6 fc 5f a1 51 c3 0e 3a 18 87 54 dc f7 45 7f 10 6a 49 1a 07 1f> }
+> sig.r.toString('hex')
+'db3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e10300'
+> sig.s.toString('hex')
+'0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f'
+> sig.signature.toString('hex')
+'db3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e103000c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f'
+
+    */
+
     vm.runCode(runCodeData, function(err, results) {
       // TODO
       done();
