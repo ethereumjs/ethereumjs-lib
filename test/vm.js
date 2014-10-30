@@ -167,7 +167,7 @@ describe('[VM]: Basic functions', function () {
     block.header.number = testUtils.fromDecimal('0');
 
 
-    var theCode = '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6000547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6020547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6040547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6060546020600060206000601360026009f1';
+    var theCode = '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6000547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6020547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6040547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6060546020600060806000601360016009f1';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
