@@ -120,7 +120,7 @@ describe('[VM]: Basic functions', function () {
     block.header.number = testUtils.fromDecimal('0');
 
 
-    var theCode = '0x60016000546020600060206000601360026009f1';
+    var theCode = '0x60016000546020600060206000601360036009f1';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
