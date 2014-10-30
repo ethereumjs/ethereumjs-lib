@@ -120,12 +120,14 @@ describe('[VM]: Basic functions', function () {
     block.header.number = testUtils.fromDecimal('0');
 
 
-    var theCode = '0x60016000546020600060206000601360036009f1';
+    var theCode = '0x60016000546020600060206000601360026009f1';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
     account.balance = testUtils.fromDecimal('1000000000000000000');
     account.codeHash = testUtils.toCodeHash(theCode);
+
+    var expSha256Of1 = '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b';
 
     runCodeData = {
       account: account,
