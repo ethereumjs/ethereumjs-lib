@@ -101,7 +101,7 @@ describe('[VM]: Basic functions', function () {
     });
   });
 
-  it('sha256', function (done) {
+  it('sha', function (done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -121,6 +121,53 @@ describe('[VM]: Basic functions', function () {
 
 
     var theCode = '0x60016000546020600060206000601360026009f1';
+
+    var account = new Account();
+    account.nonce = testUtils.fromDecimal('0');
+    account.balance = testUtils.fromDecimal('1000000000000000000');
+    account.codeHash = testUtils.toCodeHash(theCode);
+
+    var expSha256Of1 = '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b';
+    var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
+
+    runCodeData = {
+      account: account,
+      origin: new Buffer('cd1722f3947def4cf144679da39c4c32bdc35681', 'hex'),
+      code: new Buffer(theCode.slice(2), 'hex'), // slice off 0x
+      value: testUtils.fromDecimal('13'),
+      address: new Buffer('0f572e5295c57f15886f9b263e2f6d2d6c7b5ec6', 'hex'),
+      from: new Buffer('cd1722f3947def4cf144679da39c4c32bdc35681', 'hex'),
+      data: new Buffer('0x'.slice(2), 'hex'), // slice off 0x
+      gasLimit: '10000000000000',
+      gasPrice: testUtils.fromDecimal('100000000000000'),
+      block: block
+    };
+    vm.runCode(runCodeData, function(err, results) {
+      // TODO
+      done();
+    });
+  });
+
+  it('ecrec', function (done) {
+    stateDB = levelup('', {
+      db: require('memdown')
+    });
+
+    internals.state = new Trie(stateDB);
+
+    var vm = new VM(internals.state);
+
+    // from CallToReturn1
+    var block = new Block();
+    block.header.timestamp = testUtils.fromDecimal('1');
+    block.header.gasLimit = testUtils.fromDecimal('10000000');
+    block.header.parentHash = new Buffer('5e20a0453cecd065ea59c37ac63e079ee08998b6045136a8ce6635c7912ec0b6', 'hex');
+    block.header.coinbase = new Buffer('2adc25665018aa1fe0e6bc666dac8fc2697ff9ba', 'hex');
+    block.header.difficulty = testUtils.fromDecimal('256');
+    block.header.number = testUtils.fromDecimal('0');
+
+
+    var theCode = '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6000547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6020547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6040547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6060546020600060206000601360026009f1';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
