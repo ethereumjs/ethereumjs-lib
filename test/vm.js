@@ -128,6 +128,7 @@ describe('[VM]: Basic functions', function () {
     account.codeHash = testUtils.toCodeHash(theCode);
 
     var expSha256Of1 = '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b';
+    var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
 
     runCodeData = {
       account: account,
