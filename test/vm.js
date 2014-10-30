@@ -101,7 +101,18 @@ describe('[VM]: Basic functions', function () {
     });
   });
 
-  it('sha', function (done) {
+
+  // from CallToReturn1
+  var env = {
+    "currentCoinbase" : "2adc25665018aa1fe0e6bc666dac8fc2697ff9ba",
+    "currentDifficulty" : "256",
+    "currentGasLimit" : "10000000",
+    "currentNumber" : "0",
+    "currentTimestamp" : "1",
+    "previousHash" : "5e20a0453cecd065ea59c37ac63e079ee08998b6045136a8ce6635c7912ec0b6"
+  };
+
+  it('t256sha', function (done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -110,14 +121,11 @@ describe('[VM]: Basic functions', function () {
 
     var vm = new VM(internals.state);
 
-    // from CallToReturn1
-    var block = new Block();
-    block.header.timestamp = testUtils.fromDecimal('1');
-    block.header.gasLimit = testUtils.fromDecimal('10000000');
-    block.header.parentHash = new Buffer('5e20a0453cecd065ea59c37ac63e079ee08998b6045136a8ce6635c7912ec0b6', 'hex');
-    block.header.coinbase = new Buffer('2adc25665018aa1fe0e6bc666dac8fc2697ff9ba', 'hex');
-    block.header.difficulty = testUtils.fromDecimal('256');
-    block.header.number = testUtils.fromDecimal('0');
+    var block = testUtils.makeBlockFromEnv(env);
+
+
+
+    // makeRunCodeData = function(exec, account, block)
 
 
     var theCode = '0x60016000546020600060206000601360026009f1';
