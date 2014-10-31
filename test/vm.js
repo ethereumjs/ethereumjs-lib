@@ -134,7 +134,7 @@ describe('[VM]: Basic functions', function () {
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    var theCode = '0x60016000546020600060206000601360026009f160009057';
+    var theCode = '0x60016000546020600060206000601360026009f153600057';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
@@ -150,16 +150,15 @@ describe('[VM]: Basic functions', function () {
     vm.runCode(runCodeData, function(err, results) {
       // TODO
 
-      internals.state.get(new Buffer(exec.address, 'hex'), function(err, raw) {
-        assert(!err);
+console.log('results.account.stateRoot: ', results.account.stateRoot)
 
-        account = new Account(raw);
-        internals.state.root = account.stateRoot.toString('hex');
-        internals.state.get(exec.address, function(err, data) {
-          assert(!err);
-          assert.strictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
-          done();
-        });
+      internals.state.root = results.account.stateRoot.toString('hex');
+// console.log('account.stateRoot: ', account.stateRoot)
+
+      internals.state.get(new Buffer([0]), function(err, data) {  // check storage at 0
+        assert(!err);
+        assert.strictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
+        done();
       });
     });
   });
