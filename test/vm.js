@@ -135,7 +135,7 @@ describe('[VM]: Basic functions', function () {
     var block = testUtils.makeBlockFromEnv(env);
 
     // TODO update to poc7 opcodes: 60016000526020600060206000601360026009f151600054
-    var theCode = '0x60016000546020600060206000601360026009f153600057';
+    var theCode = '0x600160005460206000602060006013600260fff153600057';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
@@ -156,7 +156,7 @@ console.log('results.account.stateRoot: ', results.account.stateRoot)
       internals.state.root = results.account.stateRoot.toString('hex');
 // console.log('account.stateRoot: ', account.stateRoot)
 
-      internals.state.get(new Buffer([0]), function(err, data) {  // check storage at 0
+      internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
         done();
