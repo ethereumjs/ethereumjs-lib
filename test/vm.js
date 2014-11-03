@@ -134,6 +134,7 @@ describe('[VM]: Basic functions', function () {
 
     var block = testUtils.makeBlockFromEnv(env);
 
+    // TODO update to poc7 opcodes: 60016000526020600060206000601360026009f151600054
     var theCode = '0x60016000546020600060206000601360026009f153600057';
 
     var account = new Account();
