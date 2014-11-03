@@ -100,8 +100,10 @@ describe('[VM]: Basic functions', function () {
       });
     });
   });
+});
 
 
+describe('[VM]: Extensions', function() {
   // from CallToReturn1
   var env = {
     "currentCoinbase" : "2adc25665018aa1fe0e6bc666dac8fc2697ff9ba",
@@ -123,7 +125,41 @@ describe('[VM]: Basic functions', function () {
     "value" : "100000"
   };
 
-  it('t256sha', function (done) {
+  it('CALL to SHA256', function (done) {
+    stateDB = levelup('', {
+      db: require('memdown')
+    });
+
+    internals.state = new Trie(stateDB);
+
+    var vm = new VM(internals.state);
+
+    var block = testUtils.makeBlockFromEnv(env);
+
+    // TODO update to poc7 opcodes: 600160005260206000602060006013600260fff151600054
+    var theCode = '0x600160005460206000602060006013600260fff153600057';
+
+    var account = new Account();
+    account.nonce = testUtils.fromDecimal('0');
+    account.balance = testUtils.fromDecimal('1000000000000000000');
+    account.codeHash = testUtils.toCodeHash(theCode);
+
+    var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
+
+    var runCodeData = testUtils.makeRunCodeData(exec, account, block);
+    runCodeData.code = new Buffer(theCode.slice(2), 'hex'); // slice off 0x
+
+    vm.runCode(runCodeData, function(err, results) {
+      internals.state.root = results.account.stateRoot.toString('hex');
+      internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
+        assert(!err);
+        assert.strictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
+        done();
+      });
+    });
+  });
+
+  it('CALL to SHA256 - OOG', function (done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -135,14 +171,13 @@ describe('[VM]: Basic functions', function () {
     var block = testUtils.makeBlockFromEnv(env);
 
     // TODO update to poc7 opcodes: 60016000526020600060206000601360026009f151600054
-    var theCode = '0x600160005460206000602060006013600260fff153600057';
+    var theCode = '0x60016000546020600060206000601360026009f153600057';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
     account.balance = testUtils.fromDecimal('1000000000000000000');
     account.codeHash = testUtils.toCodeHash(theCode);
 
-    var expSha256Of1 = '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b';
     var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
 
     var runCodeData = testUtils.makeRunCodeData(exec, account, block);
@@ -158,7 +193,8 @@ console.log('results.account.stateRoot: ', results.account.stateRoot)
 
       internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
         assert(!err);
-        assert.strictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
+        assert.notStrictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
+        assert.strictEqual(rlp.decode(data).toString('hex'), '01');
         done();
       });
     });
