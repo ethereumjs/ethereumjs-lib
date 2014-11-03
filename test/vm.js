@@ -138,13 +138,12 @@ describe('[VM]: Extensions', function() {
 
     // TODO update to poc7 opcodes: 600160005260206000602060006013600260fff151600054
     var theCode = '0x600160005460206000602060006013600260fff153600057';
+    var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
     account.balance = testUtils.fromDecimal('1000000000000000000');
     account.codeHash = testUtils.toCodeHash(theCode);
-
-    var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
 
     var runCodeData = testUtils.makeRunCodeData(exec, account, block);
     runCodeData.code = new Buffer(theCode.slice(2), 'hex'); // slice off 0x
@@ -172,25 +171,18 @@ describe('[VM]: Extensions', function() {
 
     // TODO update to poc7 opcodes: 60016000526020600060206000601360026009f151600054
     var theCode = '0x60016000546020600060206000601360026009f153600057';
+    var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
     account.balance = testUtils.fromDecimal('1000000000000000000');
     account.codeHash = testUtils.toCodeHash(theCode);
 
-    var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
-
     var runCodeData = testUtils.makeRunCodeData(exec, account, block);
     runCodeData.code = new Buffer(theCode.slice(2), 'hex'); // slice off 0x
 
     vm.runCode(runCodeData, function(err, results) {
-      // TODO
-
-console.log('results.account.stateRoot: ', results.account.stateRoot)
-
       internals.state.root = results.account.stateRoot.toString('hex');
-// console.log('account.stateRoot: ', account.stateRoot)
-
       internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
         assert(!err);
         assert.notStrictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
@@ -211,7 +203,8 @@ console.log('results.account.stateRoot: ', results.account.stateRoot)
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f156000547f000000000000000000000000000000000000000000000000000000000000001c6020547fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e103006040547f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f6060546020600060806000601360016009f1';
+    // TODO poc7 opcodes
+    var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f156000547f000000000000000000000000000000000000000000000000000000000000001c6020547fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e103006040547f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f60605460206000608060006013600161fffff153600057';
     var expPubkey = '0424cb2aad569903db22cbd05cb8b633a93cb5d3ce5687906d34b478d36e148fc218cb0ba14ae6fd49caa5245dcf357750bbab4c6e1b84ec078a604daaadcb7586';
 
     var account = new Account();
@@ -255,9 +248,41 @@ v is recoveryId + 27
     */
 
     vm.runCode(runCodeData, function(err, results) {
+      internals.state.root = results.account.stateRoot.toString('hex');
+      internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
+        assert(!err);
+        assert.strictEqual(rlp.decode(data).toString('hex'), expPubkey);
+        done();
+      });
+    });
+  });
+
+  it('ecoog', function (done) {
+    stateDB = levelup('', {
+      db: require('memdown')
+    });
+
+    internals.state = new Trie(stateDB);
+
+    var vm = new VM(internals.state);
+
+    var block = testUtils.makeBlockFromEnv(env);
+
+    // TODO poc7 opcodes
+    var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f156000547f000000000000000000000000000000000000000000000000000000000000001c6020547fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e103006040547f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f6060546020600060806000601360016009f153600057';
+    var expPubkey = '0424cb2aad569903db22cbd05cb8b633a93cb5d3ce5687906d34b478d36e148fc218cb0ba14ae6fd49caa5245dcf357750bbab4c6e1b84ec078a604daaadcb7586';
+
+    var account = new Account();
+    account.nonce = testUtils.fromDecimal('0');
+    account.balance = testUtils.fromDecimal('1000000000000000000');
+    account.codeHash = testUtils.toCodeHash(theCode);
+
+    var runCodeData = testUtils.makeRunCodeData(exec, account, block);
+    runCodeData.code = new Buffer(theCode.slice(2), 'hex'); // slice off 0x
+
+    vm.runCode(runCodeData, function(err, results) {
       // TODO
       done();
     });
   });
-
 });
