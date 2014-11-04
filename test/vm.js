@@ -156,6 +156,7 @@ describe('[VM]: Extensions', function() {
       internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
+        assert.strictEqual(rlp.decode(data).length, 32);
         done();
       });
     });
@@ -225,6 +226,8 @@ describe('[VM]: Extensions', function() {
       internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'), expRipeOf32bitsWith1);
+        // TODO: should verify 32 bytes
+        // assert.strictEqual(rlp.decode(data).length, 32);
         done();
       });
     });
