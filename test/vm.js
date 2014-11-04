@@ -230,7 +230,7 @@ describe('[VM]: Extensions', function() {
     });
   });
 
-  it.skip('ECRECOVER at address 1', function (done) {
+  it('ECRECOVER at address 1', function (done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -241,9 +241,12 @@ describe('[VM]: Extensions', function() {
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    // TODO poc7 opcodes
     // gas is 0x01f4 (500), the minimum needed
-    var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f156000547f000000000000000000000000000000000000000000000000000000000000001c6020547fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e103006040547f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f6060546020600060806000601360016101f4f153600057';
+    var theCode ='0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15600052'  // mstore msgHash x0
+      + '7f000000000000000000000000000000000000000000000000000000000000001c602052' // mstore v x20
+      + '7fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e10300604052' // mstore r x40
+      + '7f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f606052' // mstore s 60
+      + '6020600060806000601360016101f4f151600055';  // call mload and then sstore x0
     var expAddress = 'a15e77198f5c70da99d6c4477fa9f7f215e0cbfa';
 
     var account = new Account();
