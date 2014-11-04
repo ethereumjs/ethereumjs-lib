@@ -104,7 +104,7 @@ describe('[VM]: Basic functions', function () {
 });
 
 
-describe.skip('[VM]: Extensions', function() {
+describe('[VM]: Extensions', function() {
   // from CallToReturn1
   var env = {
     'currentCoinbase' : '2adc25665018aa1fe0e6bc666dac8fc2697ff9ba',
@@ -137,9 +137,9 @@ describe.skip('[VM]: Extensions', function() {
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    // TODO update to poc7 opcodes: 60016000526020600060206000601360026064f151600054
     // gas is 0x64 (100), the minimum needed
-    var theCode = '0x60016000546020600060206000601360026064f153600057';
+    // TODO fix gas to x64
+    var theCode = '0x60016000526020600060206000601360026064f151600055';
     var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
 
     var account = new Account();
@@ -172,9 +172,8 @@ describe.skip('[VM]: Extensions', function() {
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    // TODO update to poc7 opcodes: 60016000526020600060206000601360026063f151600054
     // gas is 0x63 (99), one less than the minimum needed
-    var theCode = '0x60016000546020600060206000601360026063f153600057';
+    var theCode = '0x60016000526020600060206000601360026063f151600055';
     var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
 
     var account = new Account();
@@ -208,9 +207,8 @@ describe.skip('[VM]: Extensions', function() {
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    // TODO update to poc7 opcodes: 60016000526020600060206000601360036064f151600054
     // gas is 0x64 (100), the minimum needed
-    var theCode = '0x60016000546020600060206000601360036064f153600057';
+    var theCode = '0x60016000526020600060206000601360036064f151600055';
     var expRipeOf32bitsWith1 = 'fe5b57bd1aea1003b8fe9623814cb341c24dfc03';
 
     var account = new Account();
@@ -232,7 +230,7 @@ describe.skip('[VM]: Extensions', function() {
     });
   });
 
-  it('ECRECOVER at address 1', function (done) {
+  it.skip('ECRECOVER at address 1', function (done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -302,7 +300,7 @@ v is recoveryId + 27
     });
   });
 
-  it('ECRECOVER - OOG', function (done) {
+  it.skip('ECRECOVER - OOG', function (done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
