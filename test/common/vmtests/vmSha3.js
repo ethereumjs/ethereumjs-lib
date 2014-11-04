@@ -1,4 +1,4 @@
-var vmSha3Test = require('ethereum-tests').vmtests.vmSha3Test,
+var vmSha3Test = require('ethereum-tests').VMTests.vmSha3Test,
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
