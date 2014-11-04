@@ -104,7 +104,7 @@ describe('[VM]: Basic functions', function () {
 });
 
 
-describe('[VM]: Extensions', function() {
+describe.skip('[VM]: Extensions', function() {
   // from CallToReturn1
   var env = {
     'currentCoinbase' : '2adc25665018aa1fe0e6bc666dac8fc2697ff9ba',

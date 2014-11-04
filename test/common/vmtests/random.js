@@ -1,4 +1,4 @@
-var testData = require('ethereum-tests').vmtests.random,
+var testData = require('ethereum-tests').randomTests[201410211705],
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
@@ -16,7 +16,7 @@ var internals = {},
 internals.state = new Trie(stateDB);
 testData = testData.random;
 
-describe('[Common]: VM tests', function () {
+describe.skip('[Common]: VM tests', function () {
 
   describe('random.json', function () {
     it('setup the trie', function (done) {
