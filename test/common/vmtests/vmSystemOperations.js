@@ -56,7 +56,7 @@ describe('[Common]: vmSystemOperationsTest', function() {
         vm = new VM(state);
 
 
-      // vm.onStep = function(info, done) {
+      // vm.onStepZZZ = function(info, done) {
       //   console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
 
 
@@ -200,7 +200,7 @@ describe('[Common]: vmSystemOperationsTest', function() {
         vm = new VM(state);
 
 
-      // vm.onStep = function(info, done) {
+      // vm.onStepZZZ = function(info, done) {
       //   console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
 
       //   // var stream = vm.trie.createReadStream();
@@ -267,7 +267,7 @@ console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - t
         runCodeData,
         vm = new VM(state);
 
-      vm.onStep = function(info, done) {
+      vm.onStepZZZ = function(info, done) {
         console.log('vm', info.depth ,  bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
 
         // var stream = vm.trie.createReadStream();
@@ -346,7 +346,7 @@ console.log('gas: ', results.gasUsed.toNumber(), 'exp: ',  testData.exec.gas - t
 // return
 
 
-vm.onStep = function(info, done) {
+vm.onStepZZZ = function(info, done) {
   console.log('\n\nvm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
 
 
@@ -419,7 +419,7 @@ vm.onStep = function(info, done) {
         runCodeData,
         vm = new VM(state);
 
-      vm.onStep = function(info, done) {
+      vm.onStepZZZ = function(info, done) {
         console.log('vm', info.depth ,  bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
 
         // var stream = vm.trie.createReadStream();
@@ -483,7 +483,7 @@ vm.onStep = function(info, done) {
         runCodeData,
         vm = new VM(state);
 
-      vm.onStep = function(info, done) {
+      vm.onStepZZZ = function(info, done) {
         console.log('vm', info.depth ,  bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
 
         // var stream = vm.trie.createReadStream();
