@@ -137,8 +137,9 @@ describe('[VM]: Extensions', function() {
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    // TODO update to poc7 opcodes: 600160005260206000602060006013600260fff151600054
-    var theCode = '0x600160005460206000602060006013600260fff153600057';
+    // TODO update to poc7 opcodes: 60016000526020600060206000601360026064f151600054
+    // gas is 100, the minimum needed
+    var theCode = '0x60016000546020600060206000601360026064f153600057';
     var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
 
     var account = new Account();
@@ -171,8 +172,9 @@ describe('[VM]: Extensions', function() {
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    // TODO update to poc7 opcodes: 60016000526020600060206000601360026009f151600054
-    var theCode = '0x60016000546020600060206000601360026009f153600057';
+    // TODO update to poc7 opcodes: 60016000526020600060206000601360026063f151600054
+    // gas is 99, one less than the minimum needed
+    var theCode = '0x60016000546020600060206000601360026063f153600057';
     var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
 
     var account = new Account();
@@ -206,8 +208,9 @@ describe('[VM]: Extensions', function() {
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    // TODO update to poc7 opcodes: 600160005260206000602060006013600360fff151600054
-    var theCode = '0x600160005460206000602060006013600360fff153600057';
+    // TODO update to poc7 opcodes: 60016000526020600060206000601360036064f151600054
+    // gas is 100, the minimum needed
+    var theCode = '0x60016000546020600060206000601360036064f153600057';
     var expRipeOf32bitsWith1 = 'fe5b57bd1aea1003b8fe9623814cb341c24dfc03';
 
     var account = new Account();
