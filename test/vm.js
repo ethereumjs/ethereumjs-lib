@@ -195,6 +195,40 @@ describe('[VM]: Extensions', function() {
     });
   });
 
+  it('RIPEMD160 at address 3', function (done) {
+    stateDB = levelup('', {
+      db: require('memdown')
+    });
+
+    internals.state = new Trie(stateDB);
+
+    var vm = new VM(internals.state);
+
+    var block = testUtils.makeBlockFromEnv(env);
+
+    // TODO update to poc7 opcodes: 600160005260206000602060006013600360fff151600054
+    var theCode = '0x600160005460206000602060006013600360fff153600057';
+    var expRipeOf32bitsWith1 = 'fe5b57bd1aea1003b8fe9623814cb341c24dfc03';
+
+    var account = new Account();
+    account.nonce = testUtils.fromDecimal('0');
+    account.balance = testUtils.fromDecimal('1000000000000000000');
+    account.codeHash = testUtils.toCodeHash(theCode);
+
+    var runCodeData = testUtils.makeRunCodeData(exec, account, block);
+    runCodeData.code = new Buffer(theCode.slice(2), 'hex'); // slice off 0x
+
+    vm.runCode(runCodeData, function(err, results) {
+      assert(!err);
+      internals.state.root = results.account.stateRoot.toString('hex');
+      internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
+        assert(!err);
+        assert.strictEqual(rlp.decode(data).toString('hex'), expRipeOf32bitsWith1);
+        done();
+      });
+    });
+  });
+
   it('ECRECOVER at address 1', function (done) {
     stateDB = levelup('', {
       db: require('memdown')
