@@ -1,4 +1,4 @@
-var vmPushDupSwapTest = require('ethereum-tests').vmtests.vmPushDupSwapTest,
+var vmPushDupSwapTest = require('ethereum-tests').VMTests.vmPushDupSwapTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
