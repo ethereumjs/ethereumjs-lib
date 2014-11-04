@@ -104,7 +104,7 @@ describe('[VM]: Basic functions', function () {
 });
 
 
-describe.skip('[VM]: Extensions', function() {
+describe('[VM]: Extensions', function() {
   // from CallToReturn1
   var env = {
     'currentCoinbase' : '2adc25665018aa1fe0e6bc666dac8fc2697ff9ba',
@@ -137,9 +137,9 @@ describe.skip('[VM]: Extensions', function() {
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    // TODO update to poc7 opcodes: 60016000526020600060206000601360026064f151600054
     // gas is 0x64 (100), the minimum needed
-    var theCode = '0x60016000546020600060206000601360026064f153600057';
+    // TODO fix gas to x64
+    var theCode = '0x60016000526020600060206000601360026064f151600055';
     var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
 
     var account = new Account();
@@ -172,9 +172,8 @@ describe.skip('[VM]: Extensions', function() {
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    // TODO update to poc7 opcodes: 60016000526020600060206000601360026063f151600054
     // gas is 0x63 (99), one less than the minimum needed
-    var theCode = '0x60016000546020600060206000601360026063f153600057';
+    var theCode = '0x60016000526020600060206000601360026063f151600055';
     var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
 
     var account = new Account();
@@ -208,9 +207,8 @@ describe.skip('[VM]: Extensions', function() {
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    // TODO update to poc7 opcodes: 60016000526020600060206000601360036064f151600054
     // gas is 0x64 (100), the minimum needed
-    var theCode = '0x60016000546020600060206000601360036064f153600057';
+    var theCode = '0x60016000526020600060206000601360036064f151600055';
     var expRipeOf32bitsWith1 = 'fe5b57bd1aea1003b8fe9623814cb341c24dfc03';
 
     var account = new Account();
@@ -243,9 +241,12 @@ describe.skip('[VM]: Extensions', function() {
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    // TODO poc7 opcodes
     // gas is 0x01f4 (500), the minimum needed
-    var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f156000547f000000000000000000000000000000000000000000000000000000000000001c6020547fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e103006040547f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f6060546020600060806000601360016101f4f153600057';
+    var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15600052'  // mstore msgHash x0
+      + '7f000000000000000000000000000000000000000000000000000000000000001c602052' // mstore v x20
+      + '7fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e10300604052' // mstore r x40
+      + '7f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f606052' // mstore s 60
+      + '6020600060806000601360016101f4f151600055';  // call mload and then sstore x0
     var expAddress = 'a15e77198f5c70da99d6c4477fa9f7f215e0cbfa';
 
     var account = new Account();
@@ -313,9 +314,12 @@ v is recoveryId + 27
 
     var block = testUtils.makeBlockFromEnv(env);
 
-    // TODO poc7 opcodes
     // gas is 0x01f3 (499), one less than the minimum needed
-    var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f156000547f000000000000000000000000000000000000000000000000000000000000001c6020547fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e103006040547f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f6060546020600060806000601360016101f3f153600057';
+    var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15600052'  // mstore msgHash x0
+      + '7f000000000000000000000000000000000000000000000000000000000000001c602052' // mstore v x20
+      + '7fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e10300604052' // mstore r x40
+      + '7f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f606052' // mstore s 60
+      + '6020600060806000601360016101f3f151600055';  // call mload and then sstore x0
     var msgHash = '148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15';
     var expAddress = 'a15e77198f5c70da99d6c4477fa9f7f215e0cbfa';
 
