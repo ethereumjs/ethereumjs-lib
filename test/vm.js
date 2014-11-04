@@ -125,7 +125,7 @@ describe('[VM]: Extensions', function() {
     "value" : "100000"
   };
 
-  it('CALL to SHA256', function (done) {
+  it('SHA256 at address 2', function (done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -158,7 +158,7 @@ describe('[VM]: Extensions', function() {
     });
   });
 
-  it('CALL to SHA256 - OOG', function (done) {
+  it('SHA256 - OOG', function (done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -192,7 +192,7 @@ describe('[VM]: Extensions', function() {
     });
   });
 
-  it('ecrec', function (done) {
+  it('ECRECOVER at address 1', function (done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -214,7 +214,6 @@ describe('[VM]: Extensions', function() {
 
     var runCodeData = testUtils.makeRunCodeData(exec, account, block);
     runCodeData.code = new Buffer(theCode.slice(2), 'hex'); // slice off 0x
-
 
     /*
 >>> priv = sha256('priv')
@@ -254,12 +253,14 @@ v is recoveryId + 27
       internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'), expAddress);
+        // TODO: should verify 32 bytes
+        // assert.strictEqual(rlp.decode(data).length, 32);
         done();
       });
     });
   });
 
-  it('ecoog', function (done) {
+  it('ECRECOVER - OOG', function (done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -273,7 +274,7 @@ v is recoveryId + 27
     // TODO poc7 opcodes
     var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f156000547f000000000000000000000000000000000000000000000000000000000000001c6020547fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e103006040547f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f6060546020600060806000601360016009f153600057';
     var msgHash = '148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15'
-    var expPubkey = '0424cb2aad569903db22cbd05cb8b633a93cb5d3ce5687906d34b478d36e148fc218cb0ba14ae6fd49caa5245dcf357750bbab4c6e1b84ec078a604daaadcb7586';
+    var expAddress = 'a15e77198f5c70da99d6c4477fa9f7f215e0cbfa';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
@@ -287,7 +288,7 @@ v is recoveryId + 27
       internals.state.root = results.account.stateRoot.toString('hex');
       internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
         assert(!err);
-        assert.notStrictEqual(rlp.decode(data).toString('hex'), expPubkey);
+        assert.notStrictEqual(rlp.decode(data).toString('hex'), expAddress);
         assert.strictEqual(rlp.decode(data).toString('hex'), msgHash);
         done();
       });
