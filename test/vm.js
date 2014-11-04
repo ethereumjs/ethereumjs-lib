@@ -106,23 +106,23 @@ describe('[VM]: Basic functions', function () {
 describe('[VM]: Extensions', function() {
   // from CallToReturn1
   var env = {
-    "currentCoinbase" : "2adc25665018aa1fe0e6bc666dac8fc2697ff9ba",
-    "currentDifficulty" : "256",
-    "currentGasLimit" : "10000000",
-    "currentNumber" : "0",
-    "currentTimestamp" : "1",
-    "previousHash" : "5e20a0453cecd065ea59c37ac63e079ee08998b6045136a8ce6635c7912ec0b6"
+    'currentCoinbase' : '2adc25665018aa1fe0e6bc666dac8fc2697ff9ba',
+    'currentDifficulty' : '256',
+    'currentGasLimit' : '10000000',
+    'currentNumber' : '0',
+    'currentTimestamp' : '1',
+    'previousHash' : '5e20a0453cecd065ea59c37ac63e079ee08998b6045136a8ce6635c7912ec0b6'
   };
 
   var exec = {
-    "address" : "0f572e5295c57f15886f9b263e2f6d2d6c7b5ec6",
-    "caller" : "cd1722f3947def4cf144679da39c4c32bdc35681",
-    "code" : "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6000547faaffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffaa6020546002600060406000601773945304eb96065b2a98b57a48a06ae28d285a71b5620f4240f1600057",
-    "data" : "0x",
-    "gas" : "10000000000000",
-    "gasPrice" : "100000000000000",
-    "origin" : "cd1722f3947def4cf144679da39c4c32bdc35681",
-    "value" : "100000"
+    'address' : '0f572e5295c57f15886f9b263e2f6d2d6c7b5ec6',
+    'caller' : 'cd1722f3947def4cf144679da39c4c32bdc35681',
+    'code' : '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6000547faaffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffaa6020546002600060406000601773945304eb96065b2a98b57a48a06ae28d285a71b5620f4240f1600057',
+    'data' : '0x',
+    'gas' : '10000000000000',
+    'gasPrice' : '100000000000000',
+    'origin' : 'cd1722f3947def4cf144679da39c4c32bdc35681',
+    'value' : '100000'
   };
 
   it('SHA256 at address 2', function (done) {
