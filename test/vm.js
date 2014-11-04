@@ -251,6 +251,7 @@ describe('[VM]: Extensions', function() {
       + '7f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f606052' // mstore s 60
       + '6020600060806000601360016101f4f151600055';  // call mload and then sstore x0
     var expAddress = 'a15e77198f5c70da99d6c4477fa9f7f215e0cbfa';
+    var expBalance = '19'; // 0x13
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
@@ -295,14 +296,28 @@ v is recoveryId + 27
 
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
-      internals.state.root = results.account.stateRoot.toString('hex');
-      internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
-        assert(!err);
-        assert.strictEqual(rlp.decode(data).toString('hex'), expAddress);
-        // TODO: should verify 32 bytes
-        // assert.strictEqual(rlp.decode(data).length, 32);
-        done();
-      });
+
+      async.series([
+        function(cb) {
+          var addrOne = utils.pad160(new Buffer([1]));
+          internals.state.get(addrOne, function(err, raw) {
+            assert(!err);
+            account = new Account(raw);
+            assert.strictEqual(testUtils.toDecimal(account.balance), expBalance);
+            cb();
+          });
+        },
+        function() {
+          internals.state.root = results.account.stateRoot.toString('hex');
+          internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
+            assert(!err);
+            assert.strictEqual(rlp.decode(data).toString('hex'), expAddress);
+            // TODO: should verify 32 bytes
+            // assert.strictEqual(rlp.decode(data).length, 32);
+            done();
+          });
+        }
+      ]);
     });
   });
 
