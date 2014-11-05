@@ -15,7 +15,7 @@ function expectError(testKey, error) {
     return true;
   } else if (testKey.match(
     /(^jump0_jumpdest3$|^jumpi2$)/)) {
-    assert.strictEqual(error, ERROR.MISSING_JUMPDEST);
+    assert.strictEqual(error, ERROR.INVALID_JUMP);
     return true;
   } else if (testKey.match(
     /(^pop1$)/)) {
