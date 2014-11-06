@@ -5,10 +5,28 @@ const bignum = require('bignum'),
   rlp = require('rlp'),
   utils = require('../lib/utils'),
   Account = require('../lib/account.js'),
+  Transaction = require('../lib/transaction.js'),
   Block = require('../lib/block.js');
 
 
 const testUtils = exports;
+
+exports.makeTx = function(txData) {
+  var tx = new Transaction([
+    bignum.fromBuffer(txData.nonce),
+    bignum.fromBuffer(txData.gasPrice),
+    bignum.fromBuffer(txData.gasLimit),
+    txData.to,
+    bignum.fromBuffer(txData.value),
+    bignum.fromBuffer(txData.data),
+  ]);
+
+  var privKey = new Buffer(txData.secretKey, 'hex');
+  tx.sign(privKey);
+
+console.log('v: ', tx.v, "r: ", tx.r, "s: ", tx.s)
+  return tx;
+}
 
 /**
  * verifyAccountPostConditions using JSON from tests repo
