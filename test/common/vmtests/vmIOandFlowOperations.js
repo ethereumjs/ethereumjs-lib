@@ -14,7 +14,7 @@ function expectError(testKey, error) {
     assert.strictEqual(error, ERROR.INVALID_OPCODE);
     return true;
   } else if (testKey.match(
-    /(^jump0_jumpdest3$|^jumpi2$)/)) {
+    /(^jump0_jumpdest3$|^jump1$|^jumpi2$)/)) {
     assert.strictEqual(error, ERROR.INVALID_JUMP);
     return true;
   } else if (testKey.match(
