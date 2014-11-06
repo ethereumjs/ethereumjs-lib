@@ -1,17 +1,23 @@
 var vmSha3Test = require('ethereum-tests').VMTests.vmSha3Test,
   async = require('async'),
   VM = require('../../../lib/vm'),
+  ERROR = require('../../../lib/vm/constants').ERROR,
   Account = require('../../../lib/account.js'),
   assert = require('assert'),
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
-describe('[Common]: vmSha3', function () {
-  // TODO
-  delete vmSha3Test.sha3_4;
-  delete vmSha3Test.sha3_5;
-  delete vmSha3Test.sha3_6;
+function expectError(testKey, error) {
+  if (testKey.match(
+    /(^sha3_3$|^sha3_4$|^sha3_5$|^sha3_6$)/)) {
+    assert.strictEqual(error, ERROR.OUT_OF_GAS);
+    return true;
+  }
 
+  return false;
+}
+
+describe('[Common]: vmSha3', function () {
   var tests = Object.keys(vmSha3Test);
   tests.forEach(function(testKey) {
     var state = new Trie();
@@ -47,8 +53,7 @@ describe('[Common]: vmSha3', function () {
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
-        if (testKey === 'sha3_3') {
-          assert(err === 'out of gas');
+        if (expectError(testKey, err)) {
           done();
           return;
         }
