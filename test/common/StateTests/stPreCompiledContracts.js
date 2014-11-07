@@ -30,47 +30,23 @@ describe('[Common]: stPreCompiledContracts', function () {
 
       var fromAddr = tx.getSenderAddress().toString('hex');
 
-      // acctData = testData.pre[testData.exec.address];
-      // account = new Account();
-      // account.nonce = testUtils.fromDecimal(acctData.nonce);
-      // account.balance = testUtils.fromDecimal(acctData.balance);
-      //
-      // runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
-
       vm.runTx(tx, block, function(err, results) {
         assert(!err);
         // assert.strictEqual(results.gasUsed.toNumber(),
         //   testData.exec.gas - testData.gas, 'gas used mismatch');
 
-        async.series([
-          function(cb) {
-            cb()
-            return
+        delete testData.post[testData.env.currentCoinbase];  // coinbase is only done in runBlock
+        var keysOfPost = Object.keys(testData.post);
+        async.eachSeries(keysOfPost, function(key, cb) {
+          state.get(new Buffer(key, 'hex'), function(err, raw) {
+            assert(!err);
 
-            account = results.fromAccount;
-            acctData = testData.post[fromAddr];
+            account = new Account(raw);
+            acctData = testData.post[key];
+      // console.log('bal: ', testUtils.toDecimal(account.balance), 'exp: ', acctData.balance)
             testUtils.verifyAccountPostConditions(state, account, acctData, cb);
-            console.log('from done')
-          },
-
-          function() {
-            // validate the postcondition of other accounts
-            // delete testData.post[fromAddr];
-            var keysOfPost = Object.keys(testData.post);
-            async.eachSeries(keysOfPost, function(key, cb) {
-              state.get(new Buffer(key, 'hex'), function(err, raw) {
-                assert(!err);
-
-                account = new Account(raw);
-                acctData = testData.post[key];
-console.log('bal: ', testUtils.toDecimal(account.balance), 'exp: ', acctData.balance)
-cb()
-           
-                // testUtils.verifyAccountPostConditions(state, account, acctData, cb);
-              });
-            }, done);
-          }
-        ]);
+          });
+        }, done);
       });
     });
   });

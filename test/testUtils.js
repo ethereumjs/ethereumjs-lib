@@ -46,7 +46,7 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
       state.get(testUtils.fromAddress(skey), function(err, data) {
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'),
-          acctData.storage[skey].slice(2), 'storage mismatch');
+          acctData.storage[skey].slice(2));
         cb2();
       });
     }, function() {

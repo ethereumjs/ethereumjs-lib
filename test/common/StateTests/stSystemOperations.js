@@ -27,16 +27,6 @@ describe('[Common]: stSystemOperationsTest', function () {
         vm = new VM(state),
         tx = testUtils.makeTx(testData.transaction);
 
-
-      var fromAddr = tx.getSenderAddress().toString('hex');
-
-      // acctData = testData.pre[testData.exec.address];
-      // account = new Account();
-      // account.nonce = testUtils.fromDecimal(acctData.nonce);
-      // account.balance = testUtils.fromDecimal(acctData.balance);
-      //
-      // runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
-
       vm.runTx(tx, block, function(err, results) {
         assert(!err);
         // assert.strictEqual(results.gasUsed.toNumber(),
