@@ -9,7 +9,7 @@ var stPreCompiledContracts = require('ethereum-tests').StateTests.stPreCompiledC
 
 describe('[Common]: stPreCompiledContracts', function () {
   var tests = Object.keys(stPreCompiledContracts);
-  // tests = ['CallEcrecover0_0input']
+  tests = ['CallEcrecover2']
   // tests = tests.filter(function(t) {
   //   return t.indexOf('CallEcrecover1') >= 0;
   // })
@@ -47,7 +47,6 @@ describe('[Common]: stPreCompiledContracts', function () {
 
             account = new Account(raw);
             acctData = testData.post[key];
-      console.log('bal: ', testUtils.toDecimal(account.balance), 'exp: ', acctData.balance)
             testUtils.verifyAccountPostConditions(state, account, acctData, cb);
           });
         }, done);

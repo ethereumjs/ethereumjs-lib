@@ -33,7 +33,11 @@ exports.makeTx = function(txData) {
  * @param {Function} cb       completion callback
  */
 exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
-  // validate the postcondition of account
+  if (testUtils.verifyEmptyAccount(account, acctData)) {
+    cb();
+    return;
+  }
+
   assert.strictEqual(testUtils.toDecimal(account.balance), acctData.balance, 'balance mismatch');
   assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
 
@@ -56,6 +60,16 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
   } else {
     console.log('no storage to verify');
     cb();
+  }
+};
+
+exports.verifyEmptyAccount = function(account, acctData) {
+  if (acctData.balance === '0' &&
+      acctData.code === '0x' &&
+      acctData.nonce === '0' &&
+      JSON.stringify(acctData.storage) === '{}') {
+    assert.strictEqual(JSON.stringify(account), '["00","00","00","00"]');
+    return true;
   }
 };
 
