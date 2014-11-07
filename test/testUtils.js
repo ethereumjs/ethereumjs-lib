@@ -17,7 +17,7 @@ exports.makeTx = function(txData) {
       bignum(txData.nonce).toBuffer(),
       bignum(txData.gasPrice).toBuffer(),
       bignum(txData.gasLimit).toBuffer(),
-      txData.to,
+      new Buffer(txData.to, 'hex'),
       bignum(txData.value).toBuffer(),
       bignum(txData.data).toBuffer(),
     ]);
