@@ -11,7 +11,7 @@ describe('[Common]: stPreCompiledContracts', function () {
   var tests = Object.keys(stPreCompiledContracts);
   // tests = ['CallSha256_0']
   tests = tests.filter(function(t) {
-    return t.indexOf('CallSha256') >= 0;
+    return t.indexOf('CallRipemd160') >= 0;
   })
 
   tests.forEach(function(testKey) {
