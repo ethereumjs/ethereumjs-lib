@@ -9,7 +9,7 @@ var stSystemOperationsTest = require('ethereum-tests').StateTests.stSystemOperat
 
 describe('[Common]: stSystemOperationsTest', function () {
   var tests = Object.keys(stSystemOperationsTest);
-  // tests = ['CallToReturn1']
+  tests = ['CallToNameRegistrator0']
   tests.forEach(function(testKey) {
     var state = new Trie();
     var testData = stSystemOperationsTest[testKey];
@@ -42,35 +42,20 @@ describe('[Common]: stSystemOperationsTest', function () {
         // assert.strictEqual(results.gasUsed.toNumber(),
         //   testData.exec.gas - testData.gas, 'gas used mismatch');
 
-        async.series([
-          function(cb) {
-            cb()
-            return
+        // delete testData.post[testData.env.currentCoinbase];  // coinbase is only done in runBlock
+        var keysOfPost = Object.keys(testData.post);
+        async.eachSeries(keysOfPost, function(key, cb) {
+          state.get(new Buffer(key, 'hex'), function(err, raw) {
+            assert(!err);
 
-            account = results.fromAccount;
-            acctData = testData.post[fromAddr];
-            testUtils.verifyAccountPostConditions(state, account, acctData, cb);
-            console.log('from done')
-          },
+            account = new Account(raw);
+            acctData = testData.post[key];
+console.log('bal: ', testUtils.toDecimal(account.balance), 'exp: ', acctData.balance)
+cb()
 
-          function() {
-            // validate the postcondition of other accounts
-            // delete testData.post[fromAddr];
-            var keysOfPost = Object.keys(testData.post);
-            async.eachSeries(keysOfPost, function(key, cb) {
-              state.get(new Buffer(key, 'hex'), function(err, raw) {
-                assert(!err);
-
-                account = new Account(raw);
-                acctData = testData.post[key];
-// console.log('bal: ', testUtils.toDecimal(account.balance), 'exp: ', acctData.balance)
-// cb()
-
-                testUtils.verifyAccountPostConditions(state, account, acctData, cb);
-              });
-            }, done);
-          }
-        ]);
+            // testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+          });
+        }, done);
       });
     });
   });
