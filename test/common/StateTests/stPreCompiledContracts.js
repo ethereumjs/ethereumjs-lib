@@ -9,10 +9,10 @@ var stPreCompiledContracts = require('ethereum-tests').StateTests.stPreCompiledC
 
 describe('[Common]: stPreCompiledContracts', function () {
   var tests = Object.keys(stPreCompiledContracts);
-  // tests = ['CallSha256_0']
-  tests = tests.filter(function(t) {
-    return t.indexOf('CallRipemd160') >= 0;
-  })
+  // tests = ['CallEcrecover0']
+  // tests = tests.filter(function(t) {
+  //   return t.indexOf('CallEcrecover1') >= 0;
+  // })
 
   tests.forEach(function(testKey) {
     var state = new Trie();
