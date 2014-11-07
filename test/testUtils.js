@@ -12,19 +12,16 @@ const bignum = require('bignum'),
 const testUtils = exports;
 
 exports.makeTx = function(txData) {
-  var tx = new Transaction([
-    bignum.fromBuffer(txData.nonce),
-    bignum.fromBuffer(txData.gasPrice),
-    bignum.fromBuffer(txData.gasLimit),
-    txData.to,
-    bignum.fromBuffer(txData.value),
-    bignum.fromBuffer(txData.data),
-  ]);
-
-  var privKey = new Buffer(txData.secretKey, 'hex');
+  var privKey = new Buffer(txData.secretKey, 'hex'),
+    tx = new Transaction([
+      bignum(txData.nonce).toBuffer(),
+      bignum(txData.gasPrice).toBuffer(),
+      bignum(txData.gasLimit).toBuffer(),
+      txData.to,
+      bignum(txData.value).toBuffer(),
+      bignum(txData.data).toBuffer(),
+    ]);
   tx.sign(privKey);
-
-console.log('v: ', tx.v, "r: ", tx.r, "s: ", tx.s)
   return tx;
 }
 
