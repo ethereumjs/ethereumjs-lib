@@ -70,7 +70,7 @@ describe('[VM]: Extensions', function() {
     // gas is 0x64 (100), the minimum needed
     // TODO fix gas to x64
     var theCode = '0x60016000526020600060206000601360026064f151600055';
-    var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
+    var expSha256Of32bitsWith1 = 'ec4916dd28fc4c10d78e287ca5d9cc51ee1ae73cbfde08c6b37324cbfaac8bc5';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
@@ -102,7 +102,7 @@ describe('[VM]: Extensions', function() {
 
     // gas is 0x63 (99), one less than the minimum needed
     var theCode = '0x60016000526020600060206000601360026063f151600055';
-    var expSha256Of32bitsWith1 = 'c386d8e8d07342f2e39e189c8e6c57bb205bb373fe4e3a6f69404a8bb767b417';
+    var expSha256Of32bitsWith1 = 'ec4916dd28fc4c10d78e287ca5d9cc51ee1ae73cbfde08c6b37324cbfaac8bc5';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
