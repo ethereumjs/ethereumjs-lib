@@ -38,16 +38,20 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
   assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
 
   // validate storage
-  var storageKeys = Object.keys(acctData.storage);
+  var origRoot = state.root;
+    storageKeys = Object.keys(acctData.storage);
   if (storageKeys.length > 0) {
     state.root = account.stateRoot.toString('hex');
-    storageKeys.forEach(function(skey) {
+    async.eachSeries(storageKeys, function(skey, cb2) {
       state.get(testUtils.fromAddress(skey), function(err, data) {
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'),
           acctData.storage[skey].slice(2), 'storage mismatch');
-        cb();
+        cb2();
       });
+    }, function() {
+      state.root = origRoot;
+      cb();
     });
   } else {
     console.log('no storage to verify');

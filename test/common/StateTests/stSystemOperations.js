@@ -42,7 +42,7 @@ describe('[Common]: stSystemOperationsTest', function () {
         // assert.strictEqual(results.gasUsed.toNumber(),
         //   testData.exec.gas - testData.gas, 'gas used mismatch');
 
-        // delete testData.post[testData.env.currentCoinbase];  // coinbase is only done in runBlock
+        delete testData.post[testData.env.currentCoinbase];  // coinbase is only done in runBlock
         var keysOfPost = Object.keys(testData.post);
         async.eachSeries(keysOfPost, function(key, cb) {
           state.get(new Buffer(key, 'hex'), function(err, raw) {
@@ -50,10 +50,8 @@ describe('[Common]: stSystemOperationsTest', function () {
 
             account = new Account(raw);
             acctData = testData.post[key];
-console.log('bal: ', testUtils.toDecimal(account.balance), 'exp: ', acctData.balance)
-cb()
-
-            // testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+// console.log('bal: ', testUtils.toDecimal(account.balance), 'exp: ', acctData.balance)
+            testUtils.verifyAccountPostConditions(state, account, acctData, cb);
           });
         }, done);
       });
