@@ -21,7 +21,7 @@
     "ecurve": "^0.6.0",
     "merkle-patricia-tree": "^0.1.9",
     "rlp": "0.0.8",
-    "secp256k1": "0.0.9",
+    "secp256k1": "0.0.8",
     "sha3": "~1.0.0",
     "underscore": "~1.6.0"
   },
