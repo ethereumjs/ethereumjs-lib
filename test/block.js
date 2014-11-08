@@ -1,5 +1,4 @@
 var Block = require('../lib/block.js'),
-  blockFixtures = require('./fixtures/blocks.json').slice().reverse(),
   async = require('async'),
   assert = require('assert'),
   Blockchain = require('../lib/blockchain.js'),
@@ -8,7 +7,8 @@ var Block = require('../lib/block.js'),
   levelup = require('levelup');
 
 var trie = new Trie(),
-  vm = new VM(trie);
+  vm = new VM(trie),
+  blockFixtures = require('./fixtures/blocks.json').slice().reverse();
 
 var blockDB = levelup('', {
     db: require('memdown')
