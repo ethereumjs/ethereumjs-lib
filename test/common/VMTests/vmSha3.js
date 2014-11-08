@@ -1,4 +1,4 @@
-var vmIOandFlowOperationsTest = require('ethereum-tests').VMTests.vmIOandFlowOperationsTest,
+var vmSha3Test = require('ethereum-tests').VMTests.vmSha3Test,
   async = require('async'),
   VM = require('../../../lib/vm'),
   ERROR = require('../../../lib/vm/constants').ERROR,
@@ -7,39 +7,35 @@ var vmIOandFlowOperationsTest = require('ethereum-tests').VMTests.vmIOandFlowOpe
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
-
 function expectError(testKey, error) {
   if (testKey.match(
-    /(^dupAt51doesNotExistAnymore$|^swapAt52doesNotExistAnymore$)/)) {
-    assert.strictEqual(error, ERROR.INVALID_OPCODE);
-    return true;
-  } else if (testKey.match(
-    /(^jump0$|^jump0_jumpdest1$|^jumpi0$|^jumpi2$)/)) {
-    assert.strictEqual(error, ERROR.MISSING_JUMPDEST);
-    return true;
-  } else if (testKey.match(
-    /(^pop1$)/)) {
-    assert.strictEqual(error, ERROR.STACK_UNDERFLOW);
+    /(^sha3_3$|^sha3_4$|^sha3_5$|^sha3_6$)/)) {
+    assert.strictEqual(error, ERROR.OUT_OF_GAS);
     return true;
   }
 
   return false;
 }
 
-describe('[Common]: vmIOandFlowOperationsTest', function () {
-  // var jump0_foreverOutOfGas = vmIOandFlowOperationsTest.jump0_foreverOutOfGas;
-  // var mloadOutOfGasError2 = vmIOandFlowOperationsTest.mloadOutOfGasError2;
-
-  delete vmIOandFlowOperationsTest.jump0_foreverOutOfGas;
-  delete vmIOandFlowOperationsTest.mloadOutOfGasError2;
-
-  var tests = Object.keys(vmIOandFlowOperationsTest);
+describe('[Common]: vmSha3', function () {
+  var tests = Object.keys(vmSha3Test);
   tests.forEach(function(testKey) {
     var state = new Trie();
-    var testData = vmIOandFlowOperationsTest[testKey];
+    var testData = vmSha3Test[testKey];
 
-    it(testKey + ' setup the pre', function (done) {
-      testUtils.setupPreConditions(state, testData, done);
+    it(testKey + ' setup the trie', function (done) {
+      var keysOfPre = Object.keys(testData.pre),
+        acctData,
+        account;
+
+      async.each(keysOfPre, function(key, callback) {
+        acctData = testData.pre[key];
+
+        account = new Account();
+        account.nonce = testUtils.fromDecimal(acctData.nonce);
+        account.balance = testUtils.fromDecimal(acctData.balance);
+        state.put(new Buffer(key, 'hex'), account.serialize(), callback);
+      }, done);
     });
 
     it(testKey + ' run code', function(done) {
@@ -62,9 +58,9 @@ describe('[Common]: vmIOandFlowOperationsTest', function () {
           return;
         }
 
-        assert(!err, 'err: ' + err);
-        assert.strictEqual(results.gasUsed.toNumber(),
-          testData.exec.gas - testData.gas, 'gas used mismatch');
+        assert(!err);
+        assert(results.gasUsed.toNumber()
+          === (testData.exec.gas - testData.gas), 'gas used mismatch');
 
         async.series([
           function(cb) {
@@ -79,7 +75,7 @@ describe('[Common]: vmIOandFlowOperationsTest', function () {
             var keysOfPost = Object.keys(testData.post);
             async.each(keysOfPost, function(key, cb) {
               state.get(new Buffer(key, 'hex'), function(err, raw) {
-                assert(!err, 'err: ' + err);
+                assert(!err);
 
                 account = new Account(raw);
                 acctData = testData.post[key];
@@ -92,5 +88,4 @@ describe('[Common]: vmIOandFlowOperationsTest', function () {
     });
   });
 
-  it('TODO: out of gas error tests');
 });
