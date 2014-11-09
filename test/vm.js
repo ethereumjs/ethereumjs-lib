@@ -10,24 +10,22 @@ var async = require('async'),
   testUtils = require('./testUtils'),
   vmTests = require('./fixtures/vmTests.json');
 
-var internals = {},
-  stateDB = levelup('', {
+var stateDB = levelup('', {
     db: require('memdown')
-  });
-
-internals.state = new Trie(stateDB);
+  }),
+  state = new Trie(stateDB);
 
 describe('[VM]: Basic functions', function() {
 
   it('setup the trie', function(done) {
     var test = vmTests.txTest;
     var account = new Account(test.preFromAccount);
-    internals.state.put(new Buffer(test.from, 'hex'), account.serialize(), done);
+    state.put(new Buffer(test.from, 'hex'), account.serialize(), done);
   });
 
   it('it should run a transaction', function(done) {
     var test = vmTests.txTest;
-    var vm = new VM(internals.state);
+    var vm = new VM(state);
 
     vm.runTx(new Tx(test.tx), function(err, results) {
       assert(results.gasUsed.toNumber() === test.gasUsed, 'invalid gasUsed amount');
@@ -35,70 +33,6 @@ describe('[VM]: Basic functions', function() {
       assert(results.fromAccount.raw[1].toString('hex') === test.postFromAccount[1], 'invalid balance on from account');
       assert(results.toAccount.raw[1].toString('hex') === test.postToAccount[1], 'invalid balance on to account');
       done(err);
-    });
-  });
-
-
-  it('it should run the CALL op code', function(done) {
-    var test = require('./fixtures/vm/call.json');
-    stateDB = levelup('', {
-      db: require('memdown')
-    });
-
-    internals.state = new Trie(stateDB);
-
-    async.each(test.preAccounts, function(accountInfo, done) {
-      var account = new Account(accountInfo.account);
-
-      async.parallel([
-        async.apply(internals.state.put.bind(internals.state), new Buffer(accountInfo.address, 'hex'), account.serialize()),
-        function(done2) {
-          if (accountInfo.code) {
-            internals.state.db.put(account.codeHash, new Buffer(accountInfo.code, 'hex'), {
-              encoding: 'binary'
-            }, done2);
-          } else {
-            done2();
-          }
-        },
-        function(done2) {
-          var memTrie = new Trie(stateDB);
-          if (accountInfo.memory) {
-            async.each(accountInfo.memory, function(mem, done3) {
-              memTrie.put(new Buffer(mem.key, 'hex'), new Buffer(mem.value, 'hex'), done3);
-            }, function() {
-              done2();
-            });
-          } else {
-            done2();
-          }
-        }
-
-      ], done);
-
-    }, function() {
-
-      var vm = new VM(internals.state),
-        tx = new Tx(test.tx);
-
-      vm.runTx(tx, function(err, results) {
-        assert(!err);
-        assert(results.gasUsed.toNumber() === test.gasUsed, 'invalid gasUsed amount');
-
-        async.each(test.postAccounts, function(accountInfo, done2) {
-          var address = new Buffer(accountInfo.address, 'hex');
-          internals.state.get(address, function(err, account) {
-            assert(!err);
-            account = new Account(account);
-            //console.log(address.toString('hex'));
-            assert(account.nonce.toString('hex') === accountInfo.account[0], 'invalid nonce');
-            assert(account.balance.toString('hex') === accountInfo.account[1], 'invalid balance');
-            assert(account.stateRoot.toString('hex') === accountInfo.account[2], 'invaid state root');
-            assert(account.codeHash.toString('hex') === accountInfo.account[3], 'invaid state root');
-            done2();
-          });
-        }, done);
-      });
     });
   });
 });
@@ -127,13 +61,9 @@ describe('[VM]: Extensions', function() {
   };
 
   it('SHA256 at address 2', function(done) {
-    stateDB = levelup('', {
-      db: require('memdown')
-    });
+    state = new Trie();
 
-    internals.state = new Trie(stateDB);
-
-    var vm = new VM(internals.state);
+    var vm = new VM(state);
 
     var block = testUtils.makeBlockFromEnv(env);
 
@@ -152,8 +82,8 @@ describe('[VM]: Extensions', function() {
 
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
-      internals.state.root = results.account.stateRoot.toString('hex');
-      internals.state.get(utils.zero256(), function(err, data) { // check storage at 0
+      state.root = results.account.stateRoot.toString('hex');
+      state.get(utils.zero256(), function(err, data) { // check storage at 0
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
         assert.strictEqual(rlp.decode(data).length, 32);
@@ -163,13 +93,10 @@ describe('[VM]: Extensions', function() {
   });
 
   it('SHA256 - OOG', function(done) {
-    stateDB = levelup('', {
-      db: require('memdown')
-    });
 
-    internals.state = new Trie(stateDB);
+    state = new Trie();
 
-    var vm = new VM(internals.state);
+    var vm = new VM(state);
 
     var block = testUtils.makeBlockFromEnv(env);
 
@@ -187,8 +114,8 @@ describe('[VM]: Extensions', function() {
 
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
-      internals.state.root = results.account.stateRoot.toString('hex');
-      internals.state.get(utils.zero256(), function(err, data) { // check storage at 0
+      state.root = results.account.stateRoot.toString('hex');
+      state.get(utils.zero256(), function(err, data) { // check storage at 0
         assert(!err);
         assert.notStrictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
         assert.strictEqual(rlp.decode(data).toString('hex'), '01');
@@ -198,13 +125,10 @@ describe('[VM]: Extensions', function() {
   });
 
   it('RIPEMD160 at address 3', function(done) {
-    stateDB = levelup('', {
-      db: require('memdown')
-    });
 
-    internals.state = new Trie(stateDB);
+    state = new Trie();
 
-    var vm = new VM(internals.state);
+    var vm = new VM(state);
 
     var block = testUtils.makeBlockFromEnv(env);
 
@@ -222,8 +146,8 @@ describe('[VM]: Extensions', function() {
 
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
-      internals.state.root = results.account.stateRoot.toString('hex');
-      internals.state.get(utils.zero256(), function(err, data) { // check storage at 0
+      state.root = results.account.stateRoot.toString('hex');
+      state.get(utils.zero256(), function(err, data) { // check storage at 0
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'), expRipeOf32bitsWith1);
         // TODO: should verify 32 bytes
@@ -234,13 +158,10 @@ describe('[VM]: Extensions', function() {
   });
 
   it('ECRECOVER at address 1', function(done) {
-    stateDB = levelup('', {
-      db: require('memdown')
-    });
 
-    internals.state = new Trie(stateDB);
+    state = new Trie();
 
-    var vm = new VM(internals.state);
+    var vm = new VM(state);
 
     var block = testUtils.makeBlockFromEnv(env);
 
@@ -300,7 +221,7 @@ v is recoveryId + 27
       async.series([
         function(cb) {
           var addrOne = utils.pad160(new Buffer([1]));
-          internals.state.get(addrOne, function(err, raw) {
+          state.get(addrOne, function(err, raw) {
             assert(!err);
             account = new Account(raw);
             assert.strictEqual(testUtils.toDecimal(account.balance), expBalance);
@@ -308,8 +229,8 @@ v is recoveryId + 27
           });
         },
         function() {
-          internals.state.root = results.account.stateRoot.toString('hex');
-          internals.state.get(utils.zero256(), function(err, data) { // check storage at 0
+          state.root = results.account.stateRoot.toString('hex');
+          state.get(utils.zero256(), function(err, data) { // check storage at 0
             assert(!err);
             assert.strictEqual(rlp.decode(data).toString('hex'), expAddress);
             // TODO: should verify 32 bytes
@@ -322,13 +243,10 @@ v is recoveryId + 27
   });
 
   it('ECRECOVER - OOG', function(done) {
-    stateDB = levelup('', {
-      db: require('memdown')
-    });
 
-    internals.state = new Trie(stateDB);
+    state = new Trie();
 
-    var vm = new VM(internals.state);
+    var vm = new VM(state);
 
     var block = testUtils.makeBlockFromEnv(env);
 
@@ -351,8 +269,8 @@ v is recoveryId + 27
 
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
-      internals.state.root = results.account.stateRoot.toString('hex');
-      internals.state.get(utils.zero256(), function(err, data) { // check storage at 0
+      state.root = results.account.stateRoot.toString('hex');
+      state.get(utils.zero256(), function(err, data) { // check storage at 0
         assert(!err);
         assert.notStrictEqual(rlp.decode(data).toString('hex'), expAddress);
         assert.strictEqual(rlp.decode(data).toString('hex'), msgHash);
