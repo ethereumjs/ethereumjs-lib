@@ -17,19 +17,19 @@ var internals = {},
 
 internals.state = new Trie(stateDB);
 
-describe('[VM]: Basic functions', function () {
+describe('[VM]: Basic functions', function() {
 
-  it('setup the trie', function (done) {
+  it('setup the trie', function(done) {
     var test = vmTests.txTest;
     var account = new Account(test.preFromAccount);
     internals.state.put(new Buffer(test.from, 'hex'), account.serialize(), done);
   });
 
-  it('it should run a transaction', function (done) {
+  it('it should run a transaction', function(done) {
     var test = vmTests.txTest;
     var vm = new VM(internals.state);
 
-    vm.runTx(new Tx(test.tx), function (err, results) {
+    vm.runTx(new Tx(test.tx), function(err, results) {
       assert(results.gasUsed.toNumber() === test.gasUsed, 'invalid gasUsed amount');
       assert(results.fromAccount.raw[0].toString('hex') === test.postFromAccount[0], 'invalid nonce on from account');
       assert(results.fromAccount.raw[1].toString('hex') === test.postFromAccount[1], 'invalid balance on from account');
@@ -39,7 +39,7 @@ describe('[VM]: Basic functions', function () {
   });
 
 
-  it('it should run the CALL op code', function (done) {
+  it('it should run the CALL op code', function(done) {
     var test = require('./fixtures/vm/call.json');
     stateDB = levelup('', {
       db: require('memdown')
@@ -47,12 +47,12 @@ describe('[VM]: Basic functions', function () {
 
     internals.state = new Trie(stateDB);
 
-    async.each(test.preAccounts, function (accountInfo, done) {
+    async.each(test.preAccounts, function(accountInfo, done) {
       var account = new Account(accountInfo.account);
 
       async.parallel([
         async.apply(internals.state.put.bind(internals.state), new Buffer(accountInfo.address, 'hex'), account.serialize()),
-        function (done2) {
+        function(done2) {
           if (accountInfo.code) {
             internals.state.db.put(account.codeHash, new Buffer(accountInfo.code, 'hex'), {
               encoding: 'binary'
@@ -61,12 +61,12 @@ describe('[VM]: Basic functions', function () {
             done2();
           }
         },
-        function (done2) {
+        function(done2) {
           var memTrie = new Trie(stateDB);
           if (accountInfo.memory) {
-            async.each(accountInfo.memory, function (mem, done3) {
+            async.each(accountInfo.memory, function(mem, done3) {
               memTrie.put(new Buffer(mem.key, 'hex'), new Buffer(mem.value, 'hex'), done3);
-            }, function () {
+            }, function() {
               done2();
             });
           } else {
@@ -76,18 +76,18 @@ describe('[VM]: Basic functions', function () {
 
       ], done);
 
-    }, function () {
+    }, function() {
 
       var vm = new VM(internals.state),
         tx = new Tx(test.tx);
 
-      vm.runTx(tx, function (err, results) {
+      vm.runTx(tx, function(err, results) {
         assert(!err);
         assert(results.gasUsed.toNumber() === test.gasUsed, 'invalid gasUsed amount');
 
-        async.each(test.postAccounts, function (accountInfo, done2) {
+        async.each(test.postAccounts, function(accountInfo, done2) {
           var address = new Buffer(accountInfo.address, 'hex');
-          internals.state.get(address, function (err, account) {
+          internals.state.get(address, function(err, account) {
             assert(!err);
             account = new Account(account);
             //console.log(address.toString('hex'));
@@ -107,26 +107,26 @@ describe('[VM]: Basic functions', function () {
 describe('[VM]: Extensions', function() {
   // from CallToReturn1
   var env = {
-    'currentCoinbase' : '2adc25665018aa1fe0e6bc666dac8fc2697ff9ba',
-    'currentDifficulty' : '256',
-    'currentGasLimit' : '10000000',
-    'currentNumber' : '0',
-    'currentTimestamp' : '1',
-    'previousHash' : '5e20a0453cecd065ea59c37ac63e079ee08998b6045136a8ce6635c7912ec0b6'
+    'currentCoinbase': '2adc25665018aa1fe0e6bc666dac8fc2697ff9ba',
+    'currentDifficulty': '256',
+    'currentGasLimit': '10000000',
+    'currentNumber': '0',
+    'currentTimestamp': '1',
+    'previousHash': '5e20a0453cecd065ea59c37ac63e079ee08998b6045136a8ce6635c7912ec0b6'
   };
 
   var exec = {
-    'address' : '0f572e5295c57f15886f9b263e2f6d2d6c7b5ec6',
-    'caller' : 'cd1722f3947def4cf144679da39c4c32bdc35681',
-    'code' : '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6000547faaffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffaa6020546002600060406000601773945304eb96065b2a98b57a48a06ae28d285a71b5620f4240f1600057',
-    'data' : '0x',
-    'gas' : '10000000000000',
-    'gasPrice' : '100000000000000',
-    'origin' : 'cd1722f3947def4cf144679da39c4c32bdc35681',
-    'value' : '100000'
+    'address': '0f572e5295c57f15886f9b263e2f6d2d6c7b5ec6',
+    'caller': 'cd1722f3947def4cf144679da39c4c32bdc35681',
+    'code': '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6000547faaffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffaa6020546002600060406000601773945304eb96065b2a98b57a48a06ae28d285a71b5620f4240f1600057',
+    'data': '0x',
+    'gas': '10000000000000',
+    'gasPrice': '100000000000000',
+    'origin': 'cd1722f3947def4cf144679da39c4c32bdc35681',
+    'value': '100000'
   };
 
-  it('SHA256 at address 2', function (done) {
+  it('SHA256 at address 2', function(done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -153,7 +153,7 @@ describe('[VM]: Extensions', function() {
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
       internals.state.root = results.account.stateRoot.toString('hex');
-      internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
+      internals.state.get(utils.zero256(), function(err, data) { // check storage at 0
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
         assert.strictEqual(rlp.decode(data).length, 32);
@@ -162,7 +162,7 @@ describe('[VM]: Extensions', function() {
     });
   });
 
-  it('SHA256 - OOG', function (done) {
+  it('SHA256 - OOG', function(done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -188,7 +188,7 @@ describe('[VM]: Extensions', function() {
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
       internals.state.root = results.account.stateRoot.toString('hex');
-      internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
+      internals.state.get(utils.zero256(), function(err, data) { // check storage at 0
         assert(!err);
         assert.notStrictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
         assert.strictEqual(rlp.decode(data).toString('hex'), '01');
@@ -197,7 +197,7 @@ describe('[VM]: Extensions', function() {
     });
   });
 
-  it('RIPEMD160 at address 3', function (done) {
+  it('RIPEMD160 at address 3', function(done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -223,7 +223,7 @@ describe('[VM]: Extensions', function() {
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
       internals.state.root = results.account.stateRoot.toString('hex');
-      internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
+      internals.state.get(utils.zero256(), function(err, data) { // check storage at 0
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'), expRipeOf32bitsWith1);
         // TODO: should verify 32 bytes
@@ -233,7 +233,7 @@ describe('[VM]: Extensions', function() {
     });
   });
 
-  it('ECRECOVER at address 1', function (done) {
+  it('ECRECOVER at address 1', function(done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -245,11 +245,11 @@ describe('[VM]: Extensions', function() {
     var block = testUtils.makeBlockFromEnv(env);
 
     // gas is 0x01f4 (500), the minimum needed
-    var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15600052'  // mstore msgHash x0
+    var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15600052' // mstore msgHash x0
       + '7f000000000000000000000000000000000000000000000000000000000000001c602052' // mstore v x20
       + '7fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e10300604052' // mstore r x40
       + '7f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f606052' // mstore s 60
-      + '6020600060806000601360016101f4f151600055';  // call mload and then sstore x0
+      + '6020600060806000601360016101f4f151600055'; // call mload and then sstore x0
     var expAddress = 'a15e77198f5c70da99d6c4477fa9f7f215e0cbfa';
     var expBalance = '19'; // 0x13
 
@@ -309,7 +309,7 @@ v is recoveryId + 27
         },
         function() {
           internals.state.root = results.account.stateRoot.toString('hex');
-          internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
+          internals.state.get(utils.zero256(), function(err, data) { // check storage at 0
             assert(!err);
             assert.strictEqual(rlp.decode(data).toString('hex'), expAddress);
             // TODO: should verify 32 bytes
@@ -321,7 +321,7 @@ v is recoveryId + 27
     });
   });
 
-  it('ECRECOVER - OOG', function (done) {
+  it('ECRECOVER - OOG', function(done) {
     stateDB = levelup('', {
       db: require('memdown')
     });
@@ -333,11 +333,11 @@ v is recoveryId + 27
     var block = testUtils.makeBlockFromEnv(env);
 
     // gas is 0x01f3 (499), one less than the minimum needed
-    var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15600052'  // mstore msgHash x0
+    var theCode = '0x7f148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15600052' // mstore msgHash x0
       + '7f000000000000000000000000000000000000000000000000000000000000001c602052' // mstore v x20
       + '7fdb3ecbe6f6a47e1cc25fece0292770b554d87c10a21c66f16d91fb9605e10300604052' // mstore r x40
       + '7f0c8c3f3112c365dd8c6a21d6fc5fa151c30e3a188754dcf7457f106a491a071f606052' // mstore s 60
-      + '6020600060806000601360016101f3f151600055';  // call mload and then sstore x0
+      + '6020600060806000601360016101f3f151600055'; // call mload and then sstore x0
     var msgHash = '148c127f88ab9e15752c8f541f86f187c6831c666ece5706613a2ab271d95f15';
     var expAddress = 'a15e77198f5c70da99d6c4477fa9f7f215e0cbfa';
 
@@ -352,7 +352,7 @@ v is recoveryId + 27
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
       internals.state.root = results.account.stateRoot.toString('hex');
-      internals.state.get(utils.zero256(), function(err, data) {  // check storage at 0
+      internals.state.get(utils.zero256(), function(err, data) { // check storage at 0
         assert(!err);
         assert.notStrictEqual(rlp.decode(data).toString('hex'), expAddress);
         assert.strictEqual(rlp.decode(data).toString('hex'), msgHash);
