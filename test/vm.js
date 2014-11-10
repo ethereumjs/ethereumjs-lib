@@ -134,7 +134,7 @@ describe('[VM]: Extensions', function() {
 
     // gas is 0x64 (100), the minimum needed
     var theCode = '0x60016000526020600060206000601360036064f151600055';
-    var expRipeOf32bitsWith1 = 'fe5b57bd1aea1003b8fe9623814cb341c24dfc03';
+    var expRipeOf32bitsWith1 = 'ae387fcfeb723c3f5964509af111cf5a67f30661';
 
     var account = new Account();
     account.nonce = testUtils.fromDecimal('0');
