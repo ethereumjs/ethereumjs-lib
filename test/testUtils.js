@@ -27,11 +27,11 @@ exports.makeTx = function(txData) {
       bignum(txData.gasLimit).toBuffer(),
       new Buffer(txData.to, 'hex'),
       bignum(txData.value).toBuffer(),
-      bignum(txData.data).toBuffer(),
+      bignum(txData.data).toBuffer()
     ]);
   tx.sign(privKey);
   return tx;
-}
+};
 
 /**
  * verifyAccountPostConditions using JSON from tests repo
@@ -50,7 +50,7 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
   assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
 
   // validate storage
-  var origRoot = state.root;
+  var origRoot = state.root,
     storageKeys = Object.keys(acctData.storage);
   if (storageKeys.length > 0) {
     state.root = account.stateRoot.toString('hex');
