@@ -27,7 +27,7 @@ describe('[Common]: stPreCompiledContracts', function () {
 
       vm.runTx(tx, block, function(err, results) {
         assert(!err);
-        assert(results);
+        assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2));
         // TODO assert.strictEqual(results.gasUsed.toNumber(),
         //   testData.exec.gas - testData.gas, 'gas used mismatch');
 
