@@ -5,10 +5,33 @@ const bignum = require('bignum'),
   rlp = require('rlp'),
   utils = require('../lib/utils'),
   Account = require('../lib/account.js'),
+  Transaction = require('../lib/transaction.js'),
   Block = require('../lib/block.js');
 
 
 const testUtils = exports;
+
+const EMPTY_ACCOUNT_JSON = JSON.stringify([
+  '00',
+  '00',
+  utils.emptyRlpHash().toString('hex'),
+  utils.emptyHash().toString('hex')
+]);
+
+
+exports.makeTx = function(txData) {
+  var privKey = new Buffer(txData.secretKey, 'hex'),
+    tx = new Transaction([
+      bignum(txData.nonce).toBuffer(),
+      bignum(txData.gasPrice).toBuffer(),
+      bignum(txData.gasLimit).toBuffer(),
+      new Buffer(txData.to, 'hex'),
+      bignum(txData.value).toBuffer(),
+      bignum(txData.data).toBuffer()
+    ]);
+  tx.sign(privKey);
+  return tx;
+};
 
 /**
  * verifyAccountPostConditions using JSON from tests repo
@@ -18,25 +41,43 @@ const testUtils = exports;
  * @param {Function} cb       completion callback
  */
 exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
-  // validate the postcondition of account
+  if (testUtils.verifyEmptyAccount(account, acctData)) {
+    cb();
+    return;
+  }
+
   assert.strictEqual(testUtils.toDecimal(account.balance), acctData.balance, 'balance mismatch');
   assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
 
   // validate storage
-  var storageKeys = Object.keys(acctData.storage);
+  var origRoot = state.root,
+    storageKeys = Object.keys(acctData.storage);
   if (storageKeys.length > 0) {
     state.root = account.stateRoot.toString('hex');
-    storageKeys.forEach(function(skey) {
+    async.eachSeries(storageKeys, function(skey, cb2) {
       state.get(testUtils.fromAddress(skey), function(err, data) {
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'),
-          acctData.storage[skey].slice(2), 'storage mismatch');
-        cb();
+          acctData.storage[skey].slice(2));
+        cb2();
       });
+    }, function() {
+      state.root = origRoot;
+      cb();
     });
   } else {
     console.log('no storage to verify');
     cb();
+  }
+};
+
+exports.verifyEmptyAccount = function(account, acctData) {
+  if (acctData.balance === '0' &&
+      acctData.code === '0x' &&
+      acctData.nonce === '0' &&
+      JSON.stringify(acctData.storage) === '{}') {
+    assert.strictEqual(JSON.stringify(account), EMPTY_ACCOUNT_JSON);
+    return true;
   }
 };
 

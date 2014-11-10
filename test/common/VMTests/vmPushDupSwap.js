@@ -54,7 +54,7 @@ describe('[Common]: vmPushDupSwapTest', function () {
             // validate the postcondition of other accounts
             delete testData.post[testData.exec.address];
             var keysOfPost = Object.keys(testData.post);
-            async.each(keysOfPost, function(key, cb) {
+            async.eachSeries(keysOfPost, function(key, cb) {
               state.get(new Buffer(key, 'hex'), function(err, raw) {
                 assert(!err, 'err: ' + err);
 
