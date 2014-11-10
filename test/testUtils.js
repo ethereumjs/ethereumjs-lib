@@ -11,6 +11,14 @@ const bignum = require('bignum'),
 
 const testUtils = exports;
 
+const EMPTY_ACCOUNT_JSON = JSON.stringify([
+  '00',
+  '00',
+  utils.emptyRlpHash().toString('hex'),
+  utils.emptyHash().toString('hex')
+]);
+
+
 exports.makeTx = function(txData) {
   var privKey = new Buffer(txData.secretKey, 'hex'),
     tx = new Transaction([
@@ -68,7 +76,7 @@ exports.verifyEmptyAccount = function(account, acctData) {
       acctData.code === '0x' &&
       acctData.nonce === '0' &&
       JSON.stringify(acctData.storage) === '{}') {
-    assert.strictEqual(JSON.stringify(account), '["00","00","00","00"]');
+    assert.strictEqual(JSON.stringify(account), EMPTY_ACCOUNT_JSON);
     return true;
   }
 };
