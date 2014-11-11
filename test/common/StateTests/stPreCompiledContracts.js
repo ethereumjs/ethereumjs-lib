@@ -25,9 +25,14 @@ describe('[Common]: stPreCompiledContracts', function () {
         vm = new VM(state),
         tx = testUtils.makeTx(testData.transaction);
 
+      // testUtils.enableVMtracing(vm);
+
       vm.runTx(tx, block, function(err, results) {
         assert(!err);
-        assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2));
+
+        if (testData.out.slice(2)) {
+          assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2));
+        }
         // TODO assert.strictEqual(results.gasUsed.toNumber(),
         //   testData.exec.gas - testData.gas, 'gas used mismatch');
 
