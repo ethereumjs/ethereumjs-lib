@@ -27,7 +27,7 @@ exports.makeTx = function(txData) {
       bignum(txData.gasLimit).toBuffer(),
       new Buffer(txData.to, 'hex'),
       bignum(txData.value).toBuffer(),
-      bignum(txData.data).toBuffer()
+      new Buffer(txData.data.slice(2), 'hex')  // slice off 0x
     ]);
   tx.sign(privKey);
   return tx;
