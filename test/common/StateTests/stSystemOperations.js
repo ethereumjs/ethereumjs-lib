@@ -6,6 +6,15 @@ var stSystemOperationsTest = require('ethereum-tests').StateTests.stSystemOperat
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
+function expectError(testKey) {
+  if (testKey.match(
+    /^createNameRegistratorValueTooHigh/)) {
+    return true;
+  }
+
+  return false;
+}
+
 describe('[Common]: stSystemOperationsTest', function () {
   var tests = Object.keys(stSystemOperationsTest);
 
@@ -31,8 +40,13 @@ describe('[Common]: stSystemOperationsTest', function () {
         tx = testUtils.makeTx(testData.transaction);
 
       vm.runTx(tx, block, function(err, results) {
-        assert(!err);
-        assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2));
+        if (!expectError(testKey)) {
+          assert(!err);
+        }
+
+        if (testData.out.slice(2)) {
+          assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2));
+        }
         // TODO assert.strictEqual(results.gasUsed.toNumber(),
         //   testData.exec.gas - testData.gas, 'gas used mismatch');
 
