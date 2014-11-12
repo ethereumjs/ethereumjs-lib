@@ -52,13 +52,14 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
   // validate storage
   var origRoot = state.root,
     storageKeys = Object.keys(acctData.storage);
+
   if (storageKeys.length > 0) {
     state.root = account.stateRoot.toString('hex');
     async.eachSeries(storageKeys, function(skey, cb2) {
       state.get(testUtils.fromAddress(skey), function(err, data) {
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'),
-          acctData.storage[skey].slice(2));
+          acctData.storage[skey].slice(2), 'invalid storage result');
         cb2();
       });
     }, function() {
