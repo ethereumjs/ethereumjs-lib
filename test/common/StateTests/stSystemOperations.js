@@ -16,9 +16,6 @@ function expectError(testKey) {
 
 describe('[Common]: stSystemOperationsTest', function () {
   var tests = Object.keys(stSystemOperationsTest);
-
-  tests = ['callcodeToNameRegistrator0'];
-
   tests.forEach(function(testKey) {
     // TODO
     if (testKey.match(
@@ -40,18 +37,7 @@ describe('[Common]: stSystemOperationsTest', function () {
         vm = new VM(state),
         tx = testUtils.makeTx(testData.transaction);
 
-        var bignum = require('bignum');
-        vm.onStep = function (info, done) {
-          console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
-
-          info.stack.reverse();
-          info.stack.forEach(function (item) {
-            console.log('vm', '    ' + item.toString('hex'));
-          });
-          info.stack.reverse();
-
-          done();
-        };
+      // testUtils.enableVMtracing(vm);
 
       vm.runTx(tx, block, function(err, results) {
         if (!expectError(testKey)) {
