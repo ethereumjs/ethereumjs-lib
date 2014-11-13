@@ -16,14 +16,11 @@ function expectError(testKey) {
 
 describe('[Common]: stSystemOperationsTest', function () {
   var tests = Object.keys(stSystemOperationsTest);
-
-  // tests = ['callcodeToNameRegistrator0'];
-
   tests.forEach(function(testKey) {
     // TODO
-    // if (testKey.match(
-    //   /^ABAcalls|^CallRecursiveBomb/
-    // )) { return; }
+    if (testKey.match(
+      /^ABAcalls|^CallRecursiveBomb/
+    )) { return; }
 
     var state = new Trie();
     var testData = stSystemOperationsTest[testKey];
@@ -40,7 +37,7 @@ describe('[Common]: stSystemOperationsTest', function () {
         vm = new VM(state),
         tx = testUtils.makeTx(testData.transaction);
 
-      testUtils.enableVMtracing(vm);
+      // testUtils.enableVMtracing(vm);
 
       vm.runTx(tx, block, function(err, results) {
         if (!expectError(testKey)) {
