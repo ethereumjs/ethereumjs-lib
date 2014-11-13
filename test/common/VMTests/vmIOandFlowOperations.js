@@ -10,10 +10,6 @@ var vmIOandFlowOperationsTest = require('ethereum-tests').VMTests.vmIOandFlowOpe
 
 function expectError(testKey, error) {
   if (testKey.match(
-    /(^dupAt51doesNotExistAnymore$|^swapAt52doesNotExistAnymore$)/)) {
-    assert.strictEqual(error, ERROR.INVALID_OPCODE);
-    return true;
-  } else if (testKey.match(
     /(^jump0_foreverOutOfGas$|^mloadOutOfGasError2$)/)) {
     assert.strictEqual(error, ERROR.OUT_OF_GAS);
     return true;
@@ -22,7 +18,7 @@ function expectError(testKey, error) {
     assert.strictEqual(error, ERROR.INVALID_JUMP);
     return true;
   } else if (testKey.match(
-    /(^pop1$)/)) {
+    /(^pop1$|^swapAt52becameMstore$)/)) {
     assert.strictEqual(error, ERROR.STACK_UNDERFLOW);
     return true;
   }
