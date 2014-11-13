@@ -14,6 +14,10 @@ function expectError(testKey, error) {
     assert.strictEqual(error, ERROR.INVALID_OPCODE);
     return true;
   } else if (testKey.match(
+    /(^jump0_foreverOutOfGas$|^mloadOutOfGasError2$)/)) {
+    assert.strictEqual(error, ERROR.OUT_OF_GAS);
+    return true;
+  } else if (testKey.match(
     /(^jump0_jumpdest3$|^jump1$|^jumpi2$)/)) {
     assert.strictEqual(error, ERROR.INVALID_JUMP);
     return true;
@@ -27,12 +31,6 @@ function expectError(testKey, error) {
 }
 
 describe('[Common]: vmIOandFlowOperationsTest', function () {
-  // var jump0_foreverOutOfGas = vmIOandFlowOperationsTest.jump0_foreverOutOfGas;
-  // var mloadOutOfGasError2 = vmIOandFlowOperationsTest.mloadOutOfGasError2;
-
-  delete vmIOandFlowOperationsTest.jump0_foreverOutOfGas;
-  delete vmIOandFlowOperationsTest.mloadOutOfGasError2;
-
   var tests = Object.keys(vmIOandFlowOperationsTest);
   tests.forEach(function(testKey) {
     var state = new Trie();
