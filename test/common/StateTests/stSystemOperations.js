@@ -8,27 +8,27 @@ var stSystemOperationsTest = require('ethereum-tests').StateTests.stSystemOperat
 
 function expectError(testKey) {
   if (testKey.match(
-      /^createNameRegistratorValueTooHigh/)) {
+    /^createNameRegistratorValueTooHigh/)) {
     return true;
   }
   return false;
 }
 
-describe('[Common]: stSystemOperationsTest', function() {
+describe('[Common]: stSystemOperationsTest', function () {
   var tests = Object.keys(stSystemOperationsTest);
+
+  tests = ['callcodeToNameRegistrator0'];
 
   tests.forEach(function(testKey) {
     // TODO
     if (testKey.match(
-        /^ABAcalls|^CallRecursiveBomb/
-      )) {
-      return;
-    }
+      /^ABAcalls|^CallRecursiveBomb/
+    )) { return; }
 
     var state = new Trie();
     var testData = stSystemOperationsTest[testKey];
 
-    it(testKey + ' setup the trie', function(done) {
+    it(testKey + ' setup the trie', function (done) {
       testUtils.setupPreConditions(state, testData, done);
     });
 
@@ -39,6 +39,19 @@ describe('[Common]: stSystemOperationsTest', function() {
         account,
         vm = new VM(state),
         tx = testUtils.makeTx(testData.transaction);
+
+        var bignum = require('bignum');
+        vm.onStep = function (info, done) {
+          console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
+
+          info.stack.reverse();
+          info.stack.forEach(function (item) {
+            console.log('vm', '    ' + item.toString('hex'));
+          });
+          info.stack.reverse();
+
+          done();
+        };
 
       vm.runTx(tx, block, function(err, results) {
         if (!expectError(testKey)) {
@@ -51,20 +64,16 @@ describe('[Common]: stSystemOperationsTest', function() {
         // TODO assert.strictEqual(results.gasUsed.toNumber(),
         //   testData.exec.gas - testData.gas, 'gas used mismatch');
 
-
-        delete testData.post[testData.env.currentCoinbase]; // coinbase is only done in runBlock
+        delete testData.post[testData.env.currentCoinbase];  // coinbase is only done in runBlock
 
         var keysOfPost = Object.keys(testData.post);
         async.eachSeries(keysOfPost, function(key, cb) {
           state.get(new Buffer(key, 'hex'), function(err, raw) {
-
             assert(!err);
 
             account = new Account(raw);
-
             acctData = testData.post[key];
             testUtils.verifyAccountPostConditions(state, account, acctData, cb);
-
           });
         }, done);
       });
