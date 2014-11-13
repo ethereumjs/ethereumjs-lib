@@ -11,12 +11,13 @@ function expectError(testKey) {
     /^createNameRegistratorValueTooHigh/)) {
     return true;
   }
-
   return false;
 }
 
 describe('[Common]: stSystemOperationsTest', function () {
   var tests = Object.keys(stSystemOperationsTest);
+
+  tests = ['callcodeToNameRegistrator0'];
 
   tests.forEach(function(testKey) {
     // TODO
@@ -39,18 +40,32 @@ describe('[Common]: stSystemOperationsTest', function () {
         vm = new VM(state),
         tx = testUtils.makeTx(testData.transaction);
 
+        var bignum = require('bignum');
+        vm.onStep = function (info, done) {
+          console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
+
+          info.stack.reverse();
+          info.stack.forEach(function (item) {
+            console.log('vm', '    ' + item.toString('hex'));
+          });
+          info.stack.reverse();
+
+          done();
+        };
+
       vm.runTx(tx, block, function(err, results) {
         if (!expectError(testKey)) {
           assert(!err);
         }
 
         if (testData.out.slice(2)) {
-          assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2));
+          assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2), 'invalid return value');
         }
         // TODO assert.strictEqual(results.gasUsed.toNumber(),
         //   testData.exec.gas - testData.gas, 'gas used mismatch');
 
         delete testData.post[testData.env.currentCoinbase];  // coinbase is only done in runBlock
+
         var keysOfPost = Object.keys(testData.post);
         async.eachSeries(keysOfPost, function(key, cb) {
           state.get(new Buffer(key, 'hex'), function(err, raw) {
