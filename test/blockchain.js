@@ -81,7 +81,7 @@ describe('[Blockchain]: Basic functions', function() {
     });
   });
 
-  it('it should fetch a block from the DB', function(done) {
+  it('it should fetch blocks from the DB', function(done) {
     internals.blockchain.getBlocks( [new Buffer(blockFixtures[4].hash, 'hex')], function(errs, blocks) {
       assert(blocks.length === 1);
       assert(blockFixtures[4].hash === blocks[0].hash().toString('hex'));
