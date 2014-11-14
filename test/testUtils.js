@@ -19,6 +19,11 @@ const EMPTY_ACCOUNT_JSON = JSON.stringify([
 ]);
 
 
+/**
+ * makeTx using JSON from tests repo
+ * @param {[type]} txData the transaction object from tests repo
+ * @return {Object}        object that will be passed to VM.runTx function
+ */
 exports.makeTx = function(txData) {
   var privKey = new Buffer(txData.secretKey, 'hex'),
     tx = new Transaction([
@@ -72,6 +77,11 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
   }
 };
 
+/**
+ * verifyEmptyAccount using JSON from tests repo
+ * @param {[type]}   account  to verify
+ * @param {[type]}   acctData postconditions JSON from tests repo
+ */
 exports.verifyEmptyAccount = function(account, acctData) {
   if (acctData.balance === '0' &&
       acctData.code === '0x' &&
