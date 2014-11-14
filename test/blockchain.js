@@ -81,6 +81,14 @@ describe('[Blockchain]: Basic functions', function() {
     });
   });
 
+  it('it should fetch a block from the DB', function(done) {
+    internals.blockchain.getBlocks( [new Buffer(blockFixtures[4].hash, 'hex')], function(errs, blocks) {
+      assert(blocks.length === 1);
+      assert(blockFixtures[4].hash === blocks[0].hash().toString('hex'));
+      done();
+    });
+  });
+
   it('should retrieve all the blocks in order from newest to oldest', function(done) {
     internals.blockchain.getBlockChain(blockFixtures[0].hash, blockFixtures.length, function(err, results) {
       assert(results.length === blockFixtures.length - 1, 'should have correct number of blocks');
