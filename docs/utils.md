@@ -1,5 +1,5 @@
 ### properties
- - `MAX_INTERGER`  - The max interger that the VM can handle
+ - `MAX_INTEGER`  - The max interger that the VM can handle
 
 ## methods 
 ### `zero256()`
