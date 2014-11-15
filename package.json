@@ -19,7 +19,7 @@
     "bignum": "^0.7.0",
     "ecdsa": "^0.5.3",
     "ecurve": "^0.6.0",
-    "merkle-patricia-tree": "^0.1.9",
+    "merkle-patricia-tree": "^0.1.10",
     "rlp": "0.0.8",
     "secp256k1": "0.0.10",
     "sha3": "~1.0.0",
