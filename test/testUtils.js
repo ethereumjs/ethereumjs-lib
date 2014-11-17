@@ -78,6 +78,28 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
 };
 
 /**
+ * verifyGas by computing the difference of coinbase account balance
+ * @param {Object} results  to verify
+ * @param {Object} testData from tests repo
+ */
+exports.verifyGas = function(results, testData) {
+  var coinbaseAddr = testData.env.currentCoinbase,
+    preBal = testData.pre[coinbaseAddr] ? testData.pre[coinbaseAddr].balance : 0,
+    postBal,
+    gasUsed;
+
+  if (!testData.post[coinbaseAddr]) {
+    assert.deepEqual(testData.pre, testData.post);
+    console.log('gas NOT checked: invalid tx');
+    return;
+  }
+
+  postBal = bignum(testData.post[coinbaseAddr].balance);
+  gasUsed = postBal.sub(preBal).toString();
+  assert.strictEqual(results.gasUsed.toString(), gasUsed);
+};
+
+/**
  * verifyEmptyAccount using JSON from tests repo
  * @param {[type]}   account  to verify
  * @param {[type]}   acctData postconditions JSON from tests repo
@@ -277,22 +299,21 @@ exports.storeCode = function(state, address, account, code, callback) {
 exports.setupPreConditions = function(state, testData, done) {
   var keysOfPre = Object.keys(testData.pre),
     acctData,
-    account;
+    account,
+    codeBuf;
 
   async.eachSeries(keysOfPre, function(key, callback) {
     acctData = testData.pre[key];
-
-    //convert to buffer
-    acctData.code = bignum(acctData.code.slice(2), 16).toBuffer();
 
     account = new Account();
     account.nonce = testUtils.fromDecimal(acctData.nonce);
     account.balance = testUtils.fromDecimal(acctData.balance);
 
+    codeBuf = bignum(acctData.code.slice(2), 16).toBuffer();
     async.series([
       function(cb2) {
-        if (acctData.code.toString('hex') !== '00') {
-          account.storeCode(state, acctData.code, cb2);
+        if (codeBuf.toString('hex') !== '00') {
+          account.storeCode(state, codeBuf, cb2);
         } else {
           cb2();
         }
