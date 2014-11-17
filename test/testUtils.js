@@ -78,6 +78,19 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
 };
 
 /**
+ * verifyGas by computing the difference of coinbase account balance
+ * @param {Object} results  to verify
+ * @param {Object} testData from tests repo
+ */
+exports.verifyGas = function(results, testData) {
+  var coinbaseAddr = testData.env.currentCoinbase,
+    preBal = testData.pre[coinbaseAddr] ? testData.pre[coinbaseAddr].balance : 0,
+    postBal = bignum(testData.post[coinbaseAddr].balance),
+    gasUsed = postBal.sub(preBal).toString();
+  assert.strictEqual(results.gasUsed.toString(), gasUsed);
+};
+
+/**
  * verifyEmptyAccount using JSON from tests repo
  * @param {[type]}   account  to verify
  * @param {[type]}   acctData postconditions JSON from tests repo

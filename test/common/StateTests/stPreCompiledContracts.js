@@ -3,7 +3,6 @@ var stPreCompiledContracts = require('ethereum-tests').StateTests.stPreCompiledC
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
   assert = require('assert'),
-  bignum = require('bignum'),
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
@@ -35,11 +34,7 @@ describe('[Common]: stPreCompiledContracts', function () {
           assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2));
         }
 
-        var coinbaseAddr = testData.env.currentCoinbase;
-        var preBal = testData.pre[coinbaseAddr] ? testData.pre[coinbaseAddr].balance : 0;
-        var postBal = bignum(testData.post[coinbaseAddr].balance);
-        var gasUsed = postBal.sub(preBal).toString();
-        assert.strictEqual(results.gasUsed.toString(), gasUsed);
+        testUtils.verifyGas(results, testData);
 
         delete testData.post[testData.env.currentCoinbase];  // coinbase is only done in runBlock
         var keysOfPost = Object.keys(testData.post);
