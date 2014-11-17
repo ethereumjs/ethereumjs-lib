@@ -46,8 +46,8 @@ describe('[Common]: stSystemOperationsTest FAST ONLY', function () {
         if (testData.out.slice(2)) {
           assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2), 'invalid return value');
         }
-        // TODO assert.strictEqual(results.gasUsed.toNumber(),
-        //   testData.exec.gas - testData.gas, 'gas used mismatch');
+
+        testUtils.verifyGas(results, testData);
 
         delete testData.post[testData.env.currentCoinbase];  // coinbase is only done in runBlock
 
@@ -95,8 +95,8 @@ describe.skip('[Common]: stSystemOperationsTest ALL', function () {
         if (testData.out.slice(2)) {
           assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2), 'invalid return value');
         }
-        // TODO assert.strictEqual(results.gasUsed.toNumber(),
-        //   testData.exec.gas - testData.gas, 'gas used mismatch');
+
+        testUtils.verifyGas(results, testData);
 
         delete testData.post[testData.env.currentCoinbase];  // coinbase is only done in runBlock
 

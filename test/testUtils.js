@@ -85,8 +85,16 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
 exports.verifyGas = function(results, testData) {
   var coinbaseAddr = testData.env.currentCoinbase,
     preBal = testData.pre[coinbaseAddr] ? testData.pre[coinbaseAddr].balance : 0,
-    postBal = bignum(testData.post[coinbaseAddr].balance),
-    gasUsed = postBal.sub(preBal).toString();
+    postBal,
+    gasUsed;
+
+  if (!testData.post[coinbaseAddr]) {
+    console.log('gas NOT checked: invalid tx');
+    return;
+  }
+
+  postBal = bignum(testData.post[coinbaseAddr].balance);
+  gasUsed = postBal.sub(preBal).toString();
   assert.strictEqual(results.gasUsed.toString(), gasUsed);
 };
 
