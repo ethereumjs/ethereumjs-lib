@@ -1,4 +1,4 @@
-var stSystemOperationsTest = require('ethereum-tests').StateTests.stSystemOperationsTest,
+var stRecursiveCreate = require('ethereum-tests').StateTests.stRecursiveCreate,
   async = require('async'),
   VM = require('../../../lib/vm'),
   Account = require('../../../lib/account.js'),
@@ -6,23 +6,12 @@ var stSystemOperationsTest = require('ethereum-tests').StateTests.stSystemOperat
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
-function expectError(testKey) {
-  if (testKey.match(
-    /^createNameRegistratorValueTooHigh/)) {
-    return true;
-  }
-  return false;
-}
+describe('[Common]: stRecursiveCreate', function () {
+  var tests = Object.keys(stRecursiveCreate);
 
-describe('[Common]: stSystemOperationsTest FAST ONLY', function () {
-  var tests = Object.keys(stSystemOperationsTest);
   tests.forEach(function(testKey) {
-    if (testKey.match(
-      /^ABAcalls1$|^ABAcalls2$|^ABAcalls3$|^CallRecursiveBomb/
-    )) { return; }
-
     var state = new Trie();
-    var testData = stSystemOperationsTest[testKey];
+    var testData = stRecursiveCreate[testKey];
 
     it(testKey + ' setup the trie', function (done) {
       testUtils.setupPreConditions(state, testData, done);
@@ -39,18 +28,15 @@ describe('[Common]: stSystemOperationsTest FAST ONLY', function () {
       // testUtils.enableVMtracing(vm);
 
       vm.runTx(tx, block, function(err, results) {
-        if (!expectError(testKey)) {
-          assert(!err);
-        }
+        assert(!err);
 
         if (testData.out.slice(2)) {
-          assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2), 'invalid return value');
+          assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2));
         }
 
         testUtils.verifyGas(results, testData);
 
         delete testData.post[testData.env.currentCoinbase];  // coinbase is only done in runBlock
-
         var keysOfPost = Object.keys(testData.post);
         async.eachSeries(keysOfPost, function(key, cb) {
           state.get(new Buffer(key, 'hex'), function(err, raw) {
