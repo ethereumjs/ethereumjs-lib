@@ -6,7 +6,7 @@ var stRecursiveCreate = require('ethereum-tests').StateTests.stRecursiveCreate,
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
-describe.skip('[Common]: stRecursiveCreate', function () {
+describe('[Common]: stRecursiveCreate', function () {
   var tests = Object.keys(stRecursiveCreate);
 
   tests.forEach(function(testKey) {
