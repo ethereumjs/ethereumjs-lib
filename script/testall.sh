@@ -9,4 +9,4 @@ EOF
 
 ./script/eslint.sh
 
-mocha --timeout 5000 --reporter spec $files
+mocha --timeout 999900000 --reporter spec $files
