@@ -14,10 +14,11 @@ function expectError(testKey) {
   return false;
 }
 
-describe('[Common]: stSystemOperationsTest FAST ONLY', function () {
+// these need mocha --timeout 900000
+describe('[Common]: stSystemOperationsTest ALL tests', function () {
   var tests = Object.keys(stSystemOperationsTest);
   tests.forEach(function(testKey) {
-    if (testKey.match(
+    if (!testKey.match(
       /^ABAcalls1$|^ABAcalls2$|^ABAcalls3$|^CallRecursiveBomb/
     )) { return; }
 
