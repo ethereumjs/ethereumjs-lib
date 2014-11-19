@@ -1,19 +1,28 @@
 var vmPushDupSwapTest = require('ethereum-tests').VMTests.vmPushDupSwapTest,
   async = require('async'),
   VM = require('../../../lib/vm'),
+  ERROR = require('../../../lib/vm/constants').ERROR,
   Account = require('../../../lib/account.js'),
   assert = require('assert'),
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
+function expectError(testKey, error) {
+  if (testKey.match(
+    /(^swap2error$)/)) {
+    assert.strictEqual(error, ERROR.STACK_UNDERFLOW);
+    return true;
+  }
+
+  return false;
+}
+
 describe('[Common]: vmPushDupSwapTest', function () {
   // var dup2error = vmPushDupSwapTest.dup2error;
   // var push32error = vmPushDupSwapTest.push32error;
-  // var swap2error = vmPushDupSwapTest.swap2error;
 
   delete vmPushDupSwapTest.dup2error;
   delete vmPushDupSwapTest.push32error;
-  delete vmPushDupSwapTest.swap2error;
 
   var tests = Object.keys(vmPushDupSwapTest);
   tests.forEach(function(testKey) {
@@ -39,6 +48,11 @@ describe('[Common]: vmPushDupSwapTest', function () {
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
+        if (expectError(testKey, err)) {
+          done();
+          return;
+        }
+
         assert(!err, 'err: ' + err);
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
