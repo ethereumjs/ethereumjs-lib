@@ -41,6 +41,7 @@ describe('[Network]: Connect functions', function () {
     socket.once('close', function () {
       done();
     });
+
     network.stop();
   });
 });
