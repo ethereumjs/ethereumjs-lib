@@ -52,7 +52,7 @@ describe('[Common]: vmPushDupSwapTest', function () {
           testData.exec.gas - testData.gas, 'gas used mismatch');
 
         // split this into a function if the number of special cases increases
-        if (testKey === 'push32error') {
+        if (testKey === 'push32AndSuicide') {
           assert.strictEqual(results.suicide, true);
           assert.strictEqual(Object.keys(testData.post).length, 1);
           assert.strictEqual(results.suicideTo.toString('hex'),
