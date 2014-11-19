@@ -85,6 +85,4 @@ describe('[Common]: vmIOandFlowOperationsTest', function () {
       });
     });
   });
-
-  it('TODO: out of gas error tests');
 });
