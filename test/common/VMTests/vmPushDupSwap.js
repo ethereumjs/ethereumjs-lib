@@ -18,10 +18,6 @@ function expectError(testKey, error) {
 }
 
 describe('[Common]: vmPushDupSwapTest', function () {
-  // var push32error = vmPushDupSwapTest.push32error;
-
-  delete vmPushDupSwapTest.push32error;
-
   var tests = Object.keys(vmPushDupSwapTest);
   tests.forEach(function(testKey) {
     var state = new Trie();
@@ -55,6 +51,16 @@ describe('[Common]: vmPushDupSwapTest', function () {
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
 
+        // split this into a function if the number of special cases increases
+        if (testKey === 'push32error') {
+          assert.strictEqual(results.suicide, true);
+          assert.strictEqual(Object.keys(testData.post).length, 1);
+          assert.strictEqual(results.suicideTo.toString('hex'),
+            Object.keys(testData.post)[0]);
+          done();
+          return;
+        }
+
         async.series([
           function(cb) {
             account = results.account;
@@ -80,6 +86,4 @@ describe('[Common]: vmPushDupSwapTest', function () {
       });
     });
   });
-
-  it('TODO: error tests');
 });
