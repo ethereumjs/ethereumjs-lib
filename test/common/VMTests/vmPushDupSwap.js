@@ -9,7 +9,7 @@ var vmPushDupSwapTest = require('ethereum-tests').VMTests.vmPushDupSwapTest,
 
 function expectError(testKey, error) {
   if (testKey.match(
-    /(^swap2error$)/)) {
+    /(^dup2error$|^swap2error$)/)) {
     assert.strictEqual(error, ERROR.STACK_UNDERFLOW);
     return true;
   }
@@ -18,10 +18,8 @@ function expectError(testKey, error) {
 }
 
 describe('[Common]: vmPushDupSwapTest', function () {
-  // var dup2error = vmPushDupSwapTest.dup2error;
   // var push32error = vmPushDupSwapTest.push32error;
 
-  delete vmPushDupSwapTest.dup2error;
   delete vmPushDupSwapTest.push32error;
 
   var tests = Object.keys(vmPushDupSwapTest);
