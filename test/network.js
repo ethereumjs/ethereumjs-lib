@@ -63,11 +63,11 @@ describe('[Network]: Peer Messages', function () {
     });
 
     network2.on('connect', function (peer) {
-      peer.sendHello(new Buffer('test'), new Buffer(32), new Buffer(32));
+      peer.hello(new Buffer('test'), new Buffer(32), new Buffer(32));
     });
 
     network.on('connect', function (peer) {
-      peer.sendHello(new Buffer('test'), new Buffer(32), new Buffer(32));
+      peer.hello(new Buffer('test'), new Buffer(32), new Buffer(32));
     });
 
     network.connect(internals.port + 1, internals.host);
@@ -83,7 +83,7 @@ describe('[Network]: Peer Messages', function () {
     network.once('message.ping', function () {
       done();
     });
-    peer2._sendPing();
+    peer2.ping();
   });
 
   it('should send a pong', function (done) {
@@ -91,28 +91,28 @@ describe('[Network]: Peer Messages', function () {
       done();
     });
     peer = network.peers[0];
-    peer._sendPing();
+    peer.ping();
   });
 
   it('should send get peers', function (done) {
     network.once('message.getPeers', function () {
       done();
     });
-    peer2._sendGetPeers();
+    peer2.getPeers();
   });
 
   it('should send disconnect', function (done) {
     network.once('message.disconnect', function () {
       done();
     });
-    peer2.sendDisconnect(0x08);
+    peer2.disconnect(0x08);
   });
 
   it('should be not send anymore packets after dissconect', function (done) {
     network.once('message.ping', function () {
       throw ('packet was sent');
     });
-    peer2._sendPing();
+    peer2.ping();
     done();
   });
 
