@@ -248,6 +248,17 @@ exports.makeBlockFromEnv = function(env) {
   return block;
 };
 
+exports.makeExecAccount = function(state, testData, done) {
+  var address = testData.exec.address,
+    code = testData.exec.code,
+    acctData = testData.pre[address],
+    account = new Account();
+
+  account.nonce = testUtils.fromDecimal(acctData.nonce);
+  account.balance = testUtils.fromDecimal(acctData.balance);
+  testUtils.storeCode(state, address, account, code, done);
+}
+
 /**
  * makeRunCodeData - helper to create the object for VM.runCode using
  *   the exec object specified in the tests repo
