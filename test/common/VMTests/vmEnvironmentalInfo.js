@@ -37,6 +37,11 @@ describe('[Common]: vmEnvironmentalInfoTest', function () {
 
         async.series([
           function(cb) {
+            // validate the toAccount's postcondition.
+            // toAccount is the account executing the code, ie testData.exec.address.
+            // accounts are only saved in runCall(), so to check the toAccount,
+            // results.account has to be used.  (results.account would have
+            // been saved if runCall() had been called)
             account = results.account;
             acctData = testData.post[testData.exec.address];
             testUtils.verifyAccountPostConditions(state, account, acctData, cb);
