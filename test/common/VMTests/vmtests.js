@@ -37,6 +37,18 @@ describe('[Common]: vmtests', function () {
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');
 
+        // split this into a function if the number of special cases increases
+        if (testKey === 'suicide') {
+          assert.strictEqual(results.suicide, true);
+          assert.strictEqual(Object.keys(testData.post).length, 1);
+          assert.strictEqual(results.suicideTo.toString('hex'),
+            Object.keys(testData.post)[0]);
+          assert.strictEqual(testData.post[testData.exec.caller].balance,
+            testData.pre[testData.exec.address].balance);
+          done();
+          return;
+        }
+
         async.series([
           function(cb) {
             var account = results.account,

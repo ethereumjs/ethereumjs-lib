@@ -105,10 +105,11 @@ exports.verifyGas = function(results, testData) {
  * @param {[type]}   acctData postconditions JSON from tests repo
  */
 exports.verifyEmptyAccount = function(account, acctData) {
-  if (acctData.balance === '0' &&
+  if (!acctData ||
+      (acctData.balance === '0' &&
       acctData.code === '0x' &&
       acctData.nonce === '0' &&
-      JSON.stringify(acctData.storage) === '{}') {
+      JSON.stringify(acctData.storage) === '{}')) {
     assert.strictEqual(JSON.stringify(account), EMPTY_ACCOUNT_JSON);
     return true;
   }
