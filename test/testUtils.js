@@ -256,12 +256,12 @@ exports.makeExecAccount = function(state, testData, done) {
 
   account.nonce = testUtils.fromDecimal(acctData.nonce);
   account.balance = testUtils.fromDecimal(acctData.balance);
-  testUtils.storeCode(state, address, account, code, function(err) {
+  testUtils.storeCode(state, address, account, code, function(err, execAcct) {
     if (err) {
       done(err);
       return;
     }
-    done(null, account);
+    done(null, execAcct);
   });
 }
 
@@ -302,7 +302,14 @@ exports.storeCode = function(state, address, account, code, callback) {
       callback(err);
     } else {
       account.codeHash = codeHash;
-      state.put(new Buffer(address, 'hex'), account.serialize(), callback);
+      state.put(new Buffer(address, 'hex'), account.serialize(), function(err) {
+        if (err) {
+          callback(err);
+          return;
+        }
+        account.stateRoot = state.root;
+        callback(null, account);
+      });
     }
   });
 };
