@@ -1,17 +1,10 @@
 var vmtests = require('ethereum-tests').VMTests.vmtests,
   async = require('async'),
   VM = require('../../../lib/vm'),
-  ERROR = require('../../../lib/vm/constants').ERROR,
   Account = require('../../../lib/account.js'),
   assert = require('assert'),
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
-
-
-function expectError(testKey, error) {
-
-  return false;
-}
 
 describe('[Common]: vmtests', function () {
   var tests = Object.keys(vmtests);
@@ -40,11 +33,6 @@ describe('[Common]: vmtests', function () {
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
-        if (expectError(testKey, err)) {
-          done();
-          return;
-        }
-
         assert(!err, 'err: ' + err);
         assert.strictEqual(results.gasUsed.toNumber(),
           testData.exec.gas - testData.gas, 'gas used mismatch');

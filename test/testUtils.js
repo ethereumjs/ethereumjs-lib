@@ -263,7 +263,7 @@ exports.makeExecAccount = function(state, testData, done) {
     }
     done(null, execAcct);
   });
-}
+};
 
 /**
  * makeRunCodeData - helper to create the object for VM.runCode using
