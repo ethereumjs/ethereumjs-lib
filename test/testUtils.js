@@ -250,13 +250,19 @@ exports.makeBlockFromEnv = function(env) {
 
 exports.makeExecAccount = function(state, testData, done) {
   var address = testData.exec.address,
-    code = testData.exec.code,
+    code = new Buffer(testData.exec.code.slice(2), 'hex'), // slice off 0x
     acctData = testData.pre[address],
     account = new Account();
 
   account.nonce = testUtils.fromDecimal(acctData.nonce);
   account.balance = testUtils.fromDecimal(acctData.balance);
-  testUtils.storeCode(state, address, account, code, done);
+  testUtils.storeCode(state, address, account, code, function(err) {
+    if (err) {
+      done(err);
+      return;
+    }
+    done(null, account);
+  });
 }
 
 /**
@@ -284,10 +290,10 @@ exports.makeRunCodeData = function(exec, account, block) {
 
 /**
  * storeCode for a given account
- * @param {[type]}   state    trie/DB
- * @param {[type]}   address  of account
- * @param {[type]}   account  for which code belongs to
- * @param {[type]}   code     to store
+ * @param {Trie}   state    trie/DB
+ * @param {String}   address  of account
+ * @param {Account}   account  for which code belongs to
+ * @param {Buffer}   code     to store
  * @param {Function} callback completion
  */
 exports.storeCode = function(state, address, account, code, callback) {

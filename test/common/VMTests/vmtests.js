@@ -25,7 +25,11 @@ describe('[Common]: vmtests', function () {
     });
 
     it(testKey + ' setup the exec account', function (done) {
-      testUtils.makeExecAccount(state, testData, done);
+      testUtils.makeExecAccount(state, testData, function(err, execAcct) {
+        assert(!err);
+        account = execAcct;
+        done();
+      });
     });
 
     it(testKey + ' run code', function(done) {
