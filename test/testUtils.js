@@ -105,10 +105,11 @@ exports.verifyGas = function(results, testData) {
  * @param {[type]}   acctData postconditions JSON from tests repo
  */
 exports.verifyEmptyAccount = function(account, acctData) {
-  if (acctData.balance === '0' &&
+  if (!acctData ||
+      (acctData.balance === '0' &&
       acctData.code === '0x' &&
       acctData.nonce === '0' &&
-      JSON.stringify(acctData.storage) === '{}') {
+      JSON.stringify(acctData.storage) === '{}')) {
     assert.strictEqual(JSON.stringify(account), EMPTY_ACCOUNT_JSON);
     return true;
   }
@@ -248,6 +249,23 @@ exports.makeBlockFromEnv = function(env) {
   return block;
 };
 
+exports.makeExecAccount = function(state, testData, done) {
+  var address = testData.exec.address,
+    code = new Buffer(testData.exec.code.slice(2), 'hex'), // slice off 0x
+    acctData = testData.pre[address],
+    account = new Account();
+
+  account.nonce = testUtils.fromDecimal(acctData.nonce);
+  account.balance = testUtils.fromDecimal(acctData.balance);
+  testUtils.storeCode(state, address, account, code, function(err, execAcct) {
+    if (err) {
+      done(err);
+      return;
+    }
+    done(null, execAcct);
+  });
+};
+
 /**
  * makeRunCodeData - helper to create the object for VM.runCode using
  *   the exec object specified in the tests repo
@@ -273,10 +291,10 @@ exports.makeRunCodeData = function(exec, account, block) {
 
 /**
  * storeCode for a given account
- * @param {[type]}   state    trie/DB
- * @param {[type]}   address  of account
- * @param {[type]}   account  for which code belongs to
- * @param {[type]}   code     to store
+ * @param {Trie}   state    trie/DB
+ * @param {String}   address  of account
+ * @param {Account}   account  for which code belongs to
+ * @param {Buffer}   code     to store
  * @param {Function} callback completion
  */
 exports.storeCode = function(state, address, account, code, callback) {
@@ -285,7 +303,14 @@ exports.storeCode = function(state, address, account, code, callback) {
       callback(err);
     } else {
       account.codeHash = codeHash;
-      state.put(new Buffer(address, 'hex'), account.serialize(), callback);
+      state.put(new Buffer(address, 'hex'), account.serialize(), function(err) {
+        if (err) {
+          callback(err);
+          return;
+        }
+        account.stateRoot = state.root;
+        callback(null, account);
+      });
     }
   });
 };
