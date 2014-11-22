@@ -1,7 +1,7 @@
 var genesisData = require('ethereum-tests').genesishashes,
   assert = require('assert'),
-  Blockchain = require('../../lib/blockchain.js'),
-  Block = require('../../lib/block.js'),
+  Blockchain = require('../../../lib/blockchain.js'),
+  Block = require('../../../lib/block.js'),
   levelup = require('levelup');
 
 var blockDB = levelup('', {
@@ -18,7 +18,6 @@ describe('[Common]: genesis hashes tests', function () {
     blockchain.init(done);
   });
 
-  // TODO: activate when test data has the correct genesis hash
   it('should have added the genesis correctly', function () {
     var blockGenesis = new Block(),
       rlpGenesis;
