@@ -58,7 +58,7 @@ describe('[Network]: Peer Messages', function () {
   });
 
   it('should send a hello message on connect', function (done) {
-    network.once('message.hello', function () {
+    network.once('hello', function () {
       done();
     });
 
@@ -80,14 +80,14 @@ describe('[Network]: Peer Messages', function () {
   });
 
   it('should send a ping', function (done) {
-    network.once('message.ping', function () {
+    network.once('ping', function () {
       done();
     });
     peer2.ping();
   });
 
   it('should send a pong', function (done) {
-    network.once('message.pong', function () {
+    network.once('pong', function () {
       done();
     });
     peer = network.peers[0];
@@ -95,21 +95,21 @@ describe('[Network]: Peer Messages', function () {
   });
 
   it('should send get peers', function (done) {
-    network.once('message.getPeers', function () {
+    network.once('getPeers', function () {
       done();
     });
     peer2.getPeers();
   });
 
   it('should send disconnect', function (done) {
-    network.once('message.disconnect', function () {
+    network.once('disconnect', function () {
       done();
     });
     peer2.disconnect(0x08);
   });
 
   it('should be not send anymore packets after dissconect', function (done) {
-    network.once('message.ping', function () {
+    network.once('ping', function () {
       throw ('packet was sent');
     });
     peer2.ping();
