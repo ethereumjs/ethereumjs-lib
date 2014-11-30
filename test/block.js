@@ -18,7 +18,7 @@ var blockDB = levelup('', {
   }),
   blockchain = new Blockchain(blockDB, detailsDB);
 
-describe('[Block]: Basic functions', function() {
+describe.skip('[Block]: Basic functions', function() {
   var blocks = [];
 
   it('should create a new block chain', function(done) {
