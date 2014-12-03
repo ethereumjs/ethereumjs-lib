@@ -15,7 +15,7 @@ var stateDB = levelup('', {
   }),
   state = new Trie(stateDB);
 
-describe('[VM]: Basic functions', function() {
+describe.skip('[VM]: Basic functions', function() {
 
   it('setup the trie', function(done) {
     var test = vmTests.txTest;

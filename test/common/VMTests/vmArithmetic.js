@@ -6,13 +6,13 @@ var vmArithmeticTest = require('ethereum-tests').VMTests.vmArithmeticTest,
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
-describe('[Common]: vmArithmeticTest', function () {
+describe('[Common]: vmArithmeticTest', function() {
   var tests = Object.keys(vmArithmeticTest);
   tests.forEach(function(testKey) {
     var state = new Trie();
     var testData = vmArithmeticTest[testKey];
 
-    it(testKey + ' setup the pre', function (done) {
+    it(testKey + ' setup the pre', function(done) {
       testUtils.setupPreConditions(state, testData, done);
     });
 
@@ -31,9 +31,13 @@ describe('[Common]: vmArithmeticTest', function () {
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
       vm.runCode(runCodeData, function(err, results) {
+
+        var rGasUsed = results.gasUsed.toNumber();
+        var tGasUsed = testData.exec.gas - testData.gas;
+
         assert(!err, 'err: ' + err);
-        assert.strictEqual(results.gasUsed.toNumber(),
-          testData.exec.gas - testData.gas, 'gas used mismatch');
+        assert.strictEqual(rGasUsed,
+          tGasUsed, 'gas used mismatch; got: ' + rGasUsed + ' expected: ' + tGasUsed);
 
         async.series([
           function(cb) {
