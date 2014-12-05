@@ -2,7 +2,7 @@
 var bigi = require('bigi');
 
 var bi = function (i, r) {
-  if ('number' == typeof i) {
+  if (typeof i === 'number' ) {
     i = i.toString();
   } else if (bigi.isBigInteger(i)) {
     return i;
@@ -10,6 +10,13 @@ var bi = function (i, r) {
 
   return bigi(i, r);
 };
+
+function wrap(f2) {
+  return function (i) {
+    return this[f2](bi(i));
+  };
+}
+
 
 bi.fromBuffer =  bigi.fromBuffer;
 bigi.prototype.mul = wrap('multiply');
@@ -29,6 +36,14 @@ bigi.prototype.ge = function (n) {
   return false;
 };
 
+bigi.prototype.gt = function (n) {
+  var c = this.compareTo(n);
+  if (c > 0) {
+    return true;
+  }
+  return false;
+};
+
 bigi.prototype.lt = function (n) {
   var c = this.compareTo(n);
   if (c < 0) {
@@ -36,11 +51,5 @@ bigi.prototype.lt = function (n) {
   }
   return false;
 };
-
-function wrap(f2) {
-  return function (i) {
-    return this[f2](bi(i));
-  };
-}
 
 module.exports = bi;
