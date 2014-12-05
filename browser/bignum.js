@@ -1,3 +1,8 @@
+if (typeof setImmediate !== 'function'){
+   setImmediate = setTimeout;
+}
+
+
 //horrible horrible shims to get bigi to act like bignum
 var bigi = require('bigi');
 
