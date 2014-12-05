@@ -29,7 +29,7 @@ bigi.prototype.toNumber = function () {
 };
 
 bigi.prototype.ge = function (n) {
-  var c = this.compareTo(n);
+  var c = this.compareTo(bi(n));
   if (c >= 0) {
     return true;
   }
@@ -37,7 +37,7 @@ bigi.prototype.ge = function (n) {
 };
 
 bigi.prototype.gt = function (n) {
-  var c = this.compareTo(n);
+  var c = this.compareTo(bi(n));
   if (c > 0) {
     return true;
   }
@@ -45,7 +45,7 @@ bigi.prototype.gt = function (n) {
 };
 
 bigi.prototype.lt = function (n) {
-  var c = this.compareTo(n);
+  var c = this.compareTo(bi(n));
   if (c < 0) {
     return true;
   }
