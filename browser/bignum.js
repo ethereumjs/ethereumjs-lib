@@ -1,5 +1,5 @@
 if (typeof setImmediate !== 'function'){
-   setImmediate = setTimeout;
+  setImmediate = setTimeout;
 }
 
 
