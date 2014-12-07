@@ -6,13 +6,14 @@ var vmEnvironmentalInfoTest = require('ethereum-tests').VMTests.vmEnvironmentalI
   testUtils = require('../../testUtils'),
   Trie = require('merkle-patricia-tree');
 
-describe('[Common]: vmEnvironmentalInfoTest', function () {
+describe('[Common]: vmEnvironmentalInfoTest', function() {
   var tests = Object.keys(vmEnvironmentalInfoTest);
+
   tests.forEach(function(testKey) {
     var state = new Trie();
     var testData = vmEnvironmentalInfoTest[testKey];
 
-    it(testKey + ' setup the pre', function (done) {
+    it(testKey + ' setup the pre', function(done) {
       testUtils.setupPreConditions(state, testData, done);
     });
 
@@ -30,10 +31,13 @@ describe('[Common]: vmEnvironmentalInfoTest', function () {
       account.balance = testUtils.fromDecimal(acctData.balance);
 
       runCodeData = testUtils.makeRunCodeData(testData.exec, account, block);
+
       vm.runCode(runCodeData, function(err, results) {
+
+        var gasAmount = testData.exec.gas - testData.gas;
         assert(!err, 'err: ' + err);
         assert.strictEqual(results.gasUsed.toNumber(),
-          testData.exec.gas - testData.gas, 'gas used mismatch');
+          testData.exec.gas - testData.gas, 'gas used mismatch, wanted : ' + gasAmount + ' got:' + results.gasUsed.toNumber());
 
         async.series([
           function(cb) {
