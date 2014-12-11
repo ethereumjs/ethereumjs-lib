@@ -7,6 +7,4 @@ read -d '' files << EOF
 ./test/common/StateTests/*.long
 EOF
 
-./script/eslint.sh
-
 mocha --timeout 999900000 --reporter spec $files
