@@ -32,6 +32,7 @@
     "ethrereum-tests": "git+https://github.com/ethereum/tests.git#develop",
     "levelup": "^0.19.0",
     "memdown": "^0.10.2",
+    "minimist": "^1.1.0",
     "mocha": ">=1.15.1",
     "uglifyjs": "^2.3.6"
   },
@@ -52,7 +53,7 @@
   },
   "scripts": {
     "testall": "./script/testall.sh",
-    "test": "./script/eslint.sh && mocha --timeout 5000 --reporter spec ./test/ ./test/common/**",
+    "test": "./script/eslint.sh && mocha --timeout 60000 --reporter spec ./test/ ./test/common/**",
     "compile": "./node_modules/browserify/bin/cmd.js index.js -s Ethereum | node ./node_modules/uglifyjs/index.js > ethereum-min.js"
   },
   "author": {

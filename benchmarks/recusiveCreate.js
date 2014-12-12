@@ -1,8 +1,5 @@
 var stRecursiveCreate = require('ethereum-tests').StateTests.stRecursiveCreate,
-  async = require('async'),
   VM = require('../lib/vm'),
-  Account = require('../lib/account.js'),
-  assert = require('assert'),
   testUtils = require('../test/testUtils'),
   Trie = require('merkle-patricia-tree');
 
@@ -19,7 +16,7 @@ testUtils.setupPreConditions(state, testData, function(){
 
   // testUtils.enableVMtracing(vm);
 
-  vm.runTx(tx, block, function(err, results) {
+  vm.runTx(tx, block, function() {
       var hrend = process.hrtime(hrstart);
       console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000);
   });
