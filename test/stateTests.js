@@ -21,11 +21,11 @@ for(var test in stateTests){
 
   var testDef = stateTests[test];
   
-  //for running a sinlge test from a :w
+  //for running a sinlge test
   if(argv.test){
     var q = {};
-    q[argv.test] = stateTests[argv.test];
-    stateTests = i;
+    q[argv.test] = testDef[argv.test];
+    testDef = q;
   }
 
   describe('[state test]: file ' + test, function() {
@@ -47,7 +47,9 @@ for(var test in stateTests){
           vm = new VM(state),
           tx = testUtils.makeTx(testData.transaction);
 
-        // testUtils.enableVMtracing(vm);
+        if(argv.vmtrace){
+          testUtils.enableVMtracing(vm, argv.vmtrace);
+        }
 
         vm.runTx(tx, block, function(err, results) {
 

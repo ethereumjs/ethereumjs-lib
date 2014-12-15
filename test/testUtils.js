@@ -1,8 +1,10 @@
 const bignum = require('bignum'),
+  fs = require('fs'),
   async = require('async'),
   assert = require('assert'),
   SHA3 = require('sha3'),
   rlp = require('rlp'),
+  JSONStream = require('JSONStream'),
   utils = require('../lib/utils'),
   Account = require('../lib/account.js'),
   Transaction = require('../lib/transaction.js'),
@@ -167,11 +169,30 @@ exports.makeRunCallDataWithAccount = function(testData, account, block) {
 /**
  * enableVMtracing - set up handler to output VM trace on console
  * @param {[type]} vm - the VM object
+ * @param file
  */
-exports.enableVMtracing = function(vm) {
-  vm.onStep = function(info, done) {
-    console.log('vm', bignum(info.pc).toString(16) + ' Opcode: ' + info.opcode + ' Gas: ' + info.gasLeft.toString());
+exports.enableVMtracing = function(vm, file) {
+  
+  var stringify = JSONStream.stringify();
+  stringify.pipe(fs.createWriteStream(file));
 
+  vm.onStep = function(info, done) {
+
+    var logObj = {
+      pc: bignum(info.pc).toString(16),
+      opcode: info.opcode,
+      gas: info.gasLeft.toString(),
+      stack: []
+    };
+
+    var stack = info.stack.slice().reverse();
+    stack.forEach(function (item) {
+      logObj.stack.push(item.toString('hex'));
+    });
+
+
+    stringify.write(logObj);
+    
     // for debugging storage
     // var stream = vm.trie.createReadStream();
     // stream.on("data", function(data) {
@@ -183,11 +204,6 @@ exports.enableVMtracing = function(vm) {
     //
     // stream.on('end', done);
 
-    info.stack.reverse();
-    info.stack.forEach(function (item) {
-      console.log('vm', '    ' + item.toString('hex'));
-    });
-    info.stack.reverse();
     done();
   };
 };

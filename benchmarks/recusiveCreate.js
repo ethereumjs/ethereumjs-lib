@@ -8,7 +8,7 @@ var testKey = 'recursiveCreate';
 var testData = stRecursiveCreate[testKey];
 var hrstart = process.hrtime();
 
-testUtils.setupPreConditions(state, testData, function(){
+testUtils.setupPreConditions(state, testData, function() {
   var env = testData.env,
     block = testUtils.makeBlockFromEnv(env),
     vm = new VM(state),
@@ -17,7 +17,7 @@ testUtils.setupPreConditions(state, testData, function(){
   // testUtils.enableVMtracing(vm);
 
   vm.runTx(tx, block, function() {
-      var hrend = process.hrtime(hrstart);
-      console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000);
+    var hrend = process.hrtime(hrstart);
+    console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000);
   });
 });
