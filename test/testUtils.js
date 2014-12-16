@@ -172,40 +172,39 @@ exports.makeRunCallDataWithAccount = function(testData, account, block) {
  * @param file
  */
 exports.enableVMtracing = function(vm, file) {
-  
+
   var stringify = JSONStream.stringify();
   stringify.pipe(fs.createWriteStream(file));
 
   vm.onStep = function(info, done) {
 
     var logObj = {
-      pc: bignum(info.pc).toString(16),
+      pc: bignum(info.pc).toNumber(),
+      depth: info.depth,
       opcode: info.opcode,
-      gas: info.gasLeft.toString(),
-      stack: []
+      gas: info.gasLeft.toNumber(),
+      memory: '', //info.memory,
+      storage: [],
+      address: info.address.toString('hex')
     };
 
-    var stack = info.stack.slice().reverse();
-    stack.forEach(function (item) {
-      logObj.stack.push(item.toString('hex'));
+    logObj.stack = info.stack.map(function (item) {
+      return utils.pad256(item).toString('hex');
     });
 
+    var stream = info.storageTrie.createReadStream();
 
-    stringify.write(logObj);
-    
-    // for debugging storage
-    // var stream = vm.trie.createReadStream();
-    // stream.on("data", function(data) {
-    //   var account = new Account(data.value);
-    //   console.log("key: " + data.key.toString("hex"));
-    //   //console.log(data.value.toString('hex'));
-    //   console.log('decoded:' + bignum.fromBuffer(account.balance).toString() + '\n');
-    // });
-    //
-    // stream.on('end', done);
+    stream.on('data', function(data) {
+      logObj.storage.push([utils.unpad(data.key).toString('hex') ,data.value.toString('hex')]);
+    });
 
-    done();
+    stream.on('end', function(){
+      stringify.write(logObj);
+      done();
+    });
   };
+
+  return stringify;
 };
 
 /**

@@ -20,7 +20,7 @@ if(argv.file){
 for(var test in stateTests){
 
   var testDef = stateTests[test];
-  
+
   //for running a sinlge test
   if(argv.test){
     var q = {};
@@ -48,10 +48,12 @@ for(var test in stateTests){
           tx = testUtils.makeTx(testData.transaction);
 
         if(argv.vmtrace){
-          testUtils.enableVMtracing(vm, argv.vmtrace);
+          var sstream = testUtils.enableVMtracing(vm, argv.vmtrace);
         }
 
         vm.runTx(tx, block, function(err, results) {
+
+          if(sstream) sstream.end();
 
           if(err) console.log('error: ' + err);
 
