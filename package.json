@@ -53,7 +53,6 @@
     ]
   },
   "scripts": {
-    "testall": "./script/testall.sh",
     "test": "./script/eslint.sh && mocha --timeout 60000 --reporter spec ./test/ ./test/common/**",
     "compile": "./node_modules/browserify/bin/cmd.js index.js -s Ethereum | node ./node_modules/uglifyjs/index.js > ethereum-min.js"
   },

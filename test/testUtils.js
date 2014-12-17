@@ -298,7 +298,7 @@ exports.makeRunCodeData = function(exec, account, block) {
     address: new Buffer(exec.address, 'hex'),
     from: new Buffer(exec.caller, 'hex'),
     data: new Buffer(exec.data.slice(2), 'hex'), // slice off 0x
-    gasLimit: exec.gas,
+    gasLimit: bignum(exec.gas),
     gasPrice: testUtils.fromDecimal(exec.gasPrice),
     block: block
   };

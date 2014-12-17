@@ -28,7 +28,7 @@ for(var test in stateTests){
     testDef = q;
   }
 
-  describe('[state test]: file ' + test, function() {
+  describe('[state test] file ' + test, function() {
     var tests = Object.keys(testDef);
 
     tests.forEach(function(testKey) {
