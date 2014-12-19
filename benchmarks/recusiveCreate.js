@@ -14,8 +14,6 @@ testUtils.setupPreConditions(state, testData, function() {
     vm = new VM(state),
     tx = testUtils.makeTx(testData.transaction);
 
-  // testUtils.enableVMtracing(vm);
-
   vm.runTx(tx, block, function() {
     var hrend = process.hrtime(hrstart);
     console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000);

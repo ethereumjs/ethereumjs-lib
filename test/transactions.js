@@ -54,7 +54,7 @@ describe('[Transaction]: Basic functions', function () {
     done();
   });
 
-  it('should verify tx', function (done) {
+  it.skip('should verify tx', function (done) {
     transactions.forEach(function (tx) {
       assert(tx.validate() === true);
     });

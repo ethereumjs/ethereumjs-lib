@@ -19,7 +19,7 @@
     "bignum": "^0.7.0",
     "ecdsa": "^0.5.3",
     "ecurve": "^0.6.0",
-    "merkle-patricia-tree": "^0.1.17",
+    "merkle-patricia-tree": "^0.1.19",
     "rlp": "0.0.8",
     "secp256k1": "0.0.12",
     "sha3": "~1.0.0",
@@ -27,7 +27,6 @@
   },
   "devDependencies": {
     "JSONStream": "^0.10.0",
-    "browserify": "^5.12.0",
     "crypto-js": "^3.1.2-5",
     "eslint": "^0.8.2",
     "ethrereum-tests": "git+https://github.com/ethereum/tests.git#develop",
@@ -49,12 +48,13 @@
       "test/transactions.js",
       "test/runBlock.js",
       "test/block.js",
-      "test/blockchain.js"
+      "test/blockchain.js",
+      "test/stateTests.js"
     ]
   },
   "scripts": {
     "test": "./script/eslint.sh && mocha --timeout 60000 --reporter spec ./test/ ./test/common/**",
-    "compile": "./node_modules/browserify/bin/cmd.js index.js -s Ethereum | node ./node_modules/uglifyjs/index.js > ethereum-min.js"
+    "compile": "browserify index.js -s Ethereum | node ./node_modules/uglifyjs/index.js > ethereum-min.js"
   },
   "author": {
     "name": "Ethereum",

@@ -74,7 +74,6 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
       cb();
     });
   } else {
-    console.log('no storage to verify');
     cb();
   }
 };
@@ -86,9 +85,7 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
  */
 exports.verifyGas = function(results, testData) {
   var coinbaseAddr = testData.env.currentCoinbase,
-    preBal = testData.pre[coinbaseAddr] ? testData.pre[coinbaseAddr].balance : 0,
-    postBal,
-    gasUsed;
+    preBal = testData.pre[coinbaseAddr] ? testData.pre[coinbaseAddr].balance : 0;
 
   if (!testData.post[coinbaseAddr]) {
     assert.deepEqual(testData.pre, testData.post);
@@ -96,9 +93,10 @@ exports.verifyGas = function(results, testData) {
     return;
   }
 
-  postBal = bignum(testData.post[coinbaseAddr].balance);
-  gasUsed = postBal.sub(preBal).toString();
-  assert.strictEqual(results.gasUsed.toString(), gasUsed);
+  var postBal = bignum(testData.post[coinbaseAddr].balance);
+  var balance = postBal.sub(preBal).toString();
+  var amountSpent = results.gasUsed.mul(bignum(testData.transaction.gasPrice));
+  assert.strictEqual(amountSpent.toString(), balance);
 };
 
 /**
