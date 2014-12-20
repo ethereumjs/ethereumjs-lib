@@ -193,7 +193,7 @@ exports.enableVMtracing = function(vm, file) {
     var stream = info.storageTrie.createReadStream();
 
     stream.on('data', function(data) {
-      logObj.storage.push([utils.unpad(data.key).toString('hex') ,data.value.toString('hex')]);
+      logObj.storage.push([utils.unpad(data.key).toString('hex') ,rlp.decode(data.value).toString('hex')]);
     });
 
     stream.on('end', function(){
@@ -262,22 +262,6 @@ exports.makeBlockFromEnv = function(env) {
   return block;
 };
 
-exports.makeExecAccount = function(state, testData, done) {
-  var address = testData.exec.address,
-    code = new Buffer(testData.exec.code.slice(2), 'hex'), // slice off 0x
-    acctData = testData.pre[address],
-    account = new Account();
-
-  account.nonce = testUtils.fromDecimal(acctData.nonce);
-  account.balance = testUtils.fromDecimal(acctData.balance);
-  testUtils.storeCode(state, address, account, code, function(err, execAcct) {
-    if (err) {
-      done(err);
-      return;
-    }
-    done(null, execAcct);
-  });
-};
 
 /**
  * makeRunCodeData - helper to create the object for VM.runCode using
@@ -303,52 +287,36 @@ exports.makeRunCodeData = function(exec, account, block) {
 };
 
 /**
- * storeCode for a given account
- * @param {Trie}   state    trie/DB
- * @param {String}   address  of account
- * @param {Account}   account  for which code belongs to
- * @param {Buffer}   code     to store
- * @param {Function} callback completion
- */
-exports.storeCode = function(state, address, account, code, callback) {
-  account.storeCode(state, code, function(err, codeHash) {
-    if (err) {
-      callback(err);
-    } else {
-      account.codeHash = codeHash;
-      state.put(new Buffer(address, 'hex'), account.serialize(), function(err) {
-        if (err) {
-          callback(err);
-          return;
-        }
-        account.stateRoot = state.root;
-        callback(null, account);
-      });
-    }
-  });
-};
-
-/**
  * setupPreConditions given JSON testData
  * @param {[type]}   state    - the state DB/trie
  * @param {[type]}   testData - JSON from tests repo
  * @param {Function} done     - callback when function is completed
  */
 exports.setupPreConditions = function(state, testData, done) {
-  var keysOfPre = Object.keys(testData.pre),
-    acctData,
-    account,
-    codeBuf;
+  var keysOfPre = Object.keys(testData.pre);
 
   async.eachSeries(keysOfPre, function(key, callback) {
-    acctData = testData.pre[key];
+    var acctData = testData.pre[key];
+    var account = new Account();
 
-    account = new Account();
     account.nonce = testUtils.fromDecimal(acctData.nonce);
     account.balance = testUtils.fromDecimal(acctData.balance);
 
-    codeBuf = bignum(acctData.code.slice(2), 16).toBuffer();
+    var codeBuf = bignum(acctData.code.slice(2), 16).toBuffer();
+    var storageTrie = state.copy();
+
     async.series([
+      function(cb2){
+        var keys = Object.keys(acctData.storage);
+
+        async.forEachSeries(keys, function(key, cb3){
+          var val = acctData.storage[key];
+          val = rlp.encode(new Buffer(val.slice(2), 'hex'));
+          key = utils.pad256(new Buffer(key.slice(2), 'hex'));
+
+          storageTrie.put(key, val, cb3);
+        }, cb2);
+      },
       function(cb2) {
         if (codeBuf.toString('hex') !== '00') {
           account.storeCode(state, codeBuf, cb2);
@@ -357,6 +325,7 @@ exports.setupPreConditions = function(state, testData, done) {
         }
       },
       function(cb2){
+        account.stateRoot = storageTrie.root;
         state.put(new Buffer(key, 'hex'), account.serialize(), cb2);
       }
     ], callback);
