@@ -100,6 +100,25 @@ exports.verifyGas = function(results, testData) {
 };
 
 /**
+ * verifyLogs
+ * @param {Object} results  to verify
+ * @param {Object} testData from tests repo
+ */
+exports.verifyLogs = function(results, testData) {
+  if(testData.logs){
+    testData.logs.forEach(function(log, i){
+      var rlog = results.vm.logs[i];
+      assert.strictEqual(rlog[0].toString('hex') , log.address, 'log: invalid address');
+      assert.strictEqual(results.bloom.bitvector.toString('hex') , log.bloom, 'log: invalid bloom');
+      assert.strictEqual('0x' + rlog[2].toString('hex'), log.data, 'log: invalid data');
+      log.topics.forEach(function(topic, i){
+        assert.strictEqual(rlog[1][i].toString('hex'), topic, 'log: invalid topic');
+      });
+    });
+  }
+};
+
+/**
  * verifyEmptyAccount using JSON from tests repo
  * @param {[type]}   account  to verify
  * @param {[type]}   acctData postconditions JSON from tests repo

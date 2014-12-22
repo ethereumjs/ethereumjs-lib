@@ -64,6 +64,7 @@ for (var test in stateTests) {
               assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2), 'invalid return value');
             }
 
+            testUtils.verifyLogs(results, testData);
             testUtils.verifyGas(results, testData);
 
             delete testData.post[testData.env.currentCoinbase]; // coinbase is only done in runBlock
