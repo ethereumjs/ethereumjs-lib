@@ -63,7 +63,7 @@ describe('[Transaction]: Basic functions', function () {
 
   it('should  not verify Signatures', function (done) {
     transactions.forEach(function (tx) {
-      tx.s = utils.zero256();
+      tx.s = utils.zeros(32);
       assert(tx.verifySignature() === false);
     });
     done();

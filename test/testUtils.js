@@ -187,7 +187,7 @@ exports.enableVMtracing = function(vm, file) {
     };
 
     logObj.stack = info.stack.map(function (item) {
-      return utils.pad256(item).toString('hex');
+      return utils.pad(item, 32).toString('hex');
     });
 
     var stream = info.storageTrie.createReadStream();
@@ -230,7 +230,7 @@ exports.fromDecimal = function(string) {
  */
 exports.fromAddress = function(hexString) {
   hexString = hexString.substring(2);
-  return utils.pad256(bignum(hexString, 16).toBuffer());
+  return utils.pad(bignum(hexString, 16).toBuffer(), 32);
 };
 
 /**
@@ -312,7 +312,7 @@ exports.setupPreConditions = function(state, testData, done) {
         async.forEachSeries(keys, function(key, cb3){
           var val = acctData.storage[key];
           val = rlp.encode(new Buffer(val.slice(2), 'hex'));
-          key = utils.pad256(new Buffer(key.slice(2), 'hex'));
+          key = utils.pad(new Buffer(key.slice(2), 'hex'), 32);
 
           storageTrie.put(key, val, cb3);
         }, cb2);

@@ -83,7 +83,7 @@ describe('[VM]: Extensions', function() {
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
       state.root = results.account.stateRoot.toString('hex');
-      state.get(utils.zero256(), function(err, data) { // check storage at 0
+      state.get(utils.zeros(32), function(err, data) { // check storage at 0
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
         assert.strictEqual(rlp.decode(data).length, 32);
@@ -115,7 +115,7 @@ describe('[VM]: Extensions', function() {
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
       state.root = results.account.stateRoot.toString('hex');
-      state.get(utils.zero256(), function(err, data) { // check storage at 0
+      state.get(utils.zeros(32), function(err, data) { // check storage at 0
         assert(!err);
         assert.notStrictEqual(rlp.decode(data).toString('hex'), expSha256Of32bitsWith1);
         assert.strictEqual(rlp.decode(data).toString('hex'), '01');
@@ -147,7 +147,7 @@ describe('[VM]: Extensions', function() {
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
       state.root = results.account.stateRoot.toString('hex');
-      state.get(utils.zero256(), function(err, data) { // check storage at 0
+      state.get(utils.zeros(32), function(err, data) { // check storage at 0
         assert(!err);
         assert.strictEqual(rlp.decode(data).toString('hex'), expRipeOf32bitsWith1);
         // TODO: should verify 32 bytes
@@ -220,7 +220,7 @@ v is recoveryId + 27
 
       async.series([
         function(cb) {
-          var addrOne = utils.pad160(new Buffer([1]));
+          var addrOne = utils.pad(new Buffer([1]), 20);
           state.get(addrOne, function(err, raw) {
             assert(!err);
             account = new Account(raw);
@@ -230,7 +230,7 @@ v is recoveryId + 27
         },
         function() {
           state.root = results.account.stateRoot.toString('hex');
-          state.get(utils.zero256(), function(err, data) { // check storage at 0
+          state.get(utils.zeros(32), function(err, data) { // check storage at 0
             assert(!err);
             assert.strictEqual(rlp.decode(data).toString('hex'), expAddress);
             // TODO: should verify 32 bytes
@@ -270,7 +270,7 @@ v is recoveryId + 27
     vm.runCode(runCodeData, function(err, results) {
       assert(!err);
       state.root = results.account.stateRoot.toString('hex');
-      state.get(utils.zero256(), function(err, data) { // check storage at 0
+      state.get(utils.zeros(32), function(err, data) { // check storage at 0
         assert(!err);
         assert.notStrictEqual(rlp.decode(data).toString('hex'), expAddress);
         assert.strictEqual(rlp.decode(data).toString('hex'), msgHash);
