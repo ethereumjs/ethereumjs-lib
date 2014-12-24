@@ -13,14 +13,6 @@ const bignum = require('bignum'),
 
 const testUtils = exports;
 
-const EMPTY_ACCOUNT_JSON = JSON.stringify([
-  '00',
-  '00',
-  utils.emptyRlpHash().toString('hex'),
-  utils.emptyHash().toString('hex')
-]);
-
-
 /**
  * makeTx using JSON from tests repo
  * @param {[type]} txData the transaction object from tests repo
@@ -48,10 +40,6 @@ exports.makeTx = function(txData) {
  * @param {Function} cb       completion callback
  */
 exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
-  if (testUtils.verifyEmptyAccount(account, acctData)) {
-    cb();
-    return;
-  }
 
   assert.strictEqual(testUtils.toDecimal(account.balance), acctData.balance, 'balance mismatch');
   assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
@@ -62,17 +50,28 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
 
   if (storageKeys.length > 0) {
     state.root = account.stateRoot.toString('hex');
-    async.eachSeries(storageKeys, function(skey, cb2) {
-      state.get(testUtils.fromAddress(skey), function(err, data) {
-        assert(!err);
-        assert.strictEqual(rlp.decode(data).toString('hex'),
-          acctData.storage[skey].slice(2), 'invalid storage result');
-        cb2();
-      });
-    }, function() {
+    var rs =  state.createReadStream();
+    rs.on('data', function(data){
+      var key =  '0x' + utils.unpad(data.key).toString('hex');
+      var val = '0x' + rlp.decode(data.value).toString('hex');
+
+      if(key === '0x00'){
+        key = '0x';
+      }
+
+      assert.strictEqual(val, acctData.storage[key],  'storage value mismatch');
+      delete acctData.storage[key];
+    });
+
+    rs.on('end', function(){
+      for(var key in acctData.storage){
+        assert(false, 'key: ' + key + ' not found in storage');
+      }
+
       state.root = origRoot;
       cb();
     });
+
   } else {
     cb();
   }
@@ -115,22 +114,6 @@ exports.verifyLogs = function(results, testData) {
         assert.strictEqual(rlog[1][i].toString('hex'), topic, 'log: invalid topic');
       });
     });
-  }
-};
-
-/**
- * verifyEmptyAccount using JSON from tests repo
- * @param {[type]}   account  to verify
- * @param {[type]}   acctData postconditions JSON from tests repo
- */
-exports.verifyEmptyAccount = function(account, acctData) {
-  if (!acctData ||
-      (acctData.balance === '0' &&
-      acctData.code === '0x' &&
-      acctData.nonce === '0' &&
-      JSON.stringify(acctData.storage) === '{}')) {
-    assert.strictEqual(JSON.stringify(account), EMPTY_ACCOUNT_JSON);
-    return true;
   }
 };
 
@@ -239,7 +222,7 @@ exports.toDecimal = function(buffer) {
  *  @return {Buffer}
  */
 exports.fromDecimal = function(string) {
-  return utils.intToBuffer(parseInt(string, 10));
+  return bignum(string).toBuffer();
 };
 
 /**
@@ -337,7 +320,7 @@ exports.setupPreConditions = function(state, testData, done) {
         }, cb2);
       },
       function(cb2) {
-        if (codeBuf.toString('hex') !== '00') {
+        if (codeBuf.toString('hex') !== '') {
           account.storeCode(state, codeBuf, cb2);
         } else {
           cb2();

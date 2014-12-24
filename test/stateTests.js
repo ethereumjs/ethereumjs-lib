@@ -17,7 +17,6 @@ if (argv.file) {
   stateTests = i;
 }
 
-
 for (var test in stateTests) {
 
   var testDef = stateTests[test];
@@ -70,15 +69,18 @@ for (var test in stateTests) {
             delete testData.post[testData.env.currentCoinbase]; // coinbase is only done in runBlock
 
             var keysOfPost = Object.keys(testData.post);
+
             async.eachSeries(keysOfPost, function(key, cb) {
-              state.get(new Buffer(key, 'hex'), function(err, raw) {
+              var bkey = new Buffer(key, 'hex');
+              state.get(bkey, function(err, raw) {
                 assert(!err);
+                assert(raw !== null, 'account: ' + key + ' was not found');
 
                 account = new Account(raw);
                 acctData = testData.post[key];
                 testUtils.verifyAccountPostConditions(state, account, acctData, cb);
               });
-            }, done);
+            }, done());
           });
         });
       }

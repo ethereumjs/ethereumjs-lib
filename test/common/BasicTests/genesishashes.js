@@ -24,6 +24,7 @@ describe('[Common]: genesis hashes tests', function () {
     blockGenesis.header.stateRoot = genesisData.genesis_state_root;
 
     rlpGenesis = blockGenesis.serialize();
+
     assert.strictEqual(rlpGenesis.toString('hex'),
       genesisData.genesis_rlp_hex, 'rlp hex mismatch');
 
