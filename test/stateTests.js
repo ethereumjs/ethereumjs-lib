@@ -78,9 +78,11 @@ for (var test in stateTests) {
 
                 account = new Account(raw);
                 acctData = testData.post[key];
-                testUtils.verifyAccountPostConditions(state, account, acctData, cb);
+                testUtils.verifyAccountPostConditions(state, account, acctData, function() {
+                  cb();
+                });
               });
-            }, done());
+            }, done);
           });
         });
       }
