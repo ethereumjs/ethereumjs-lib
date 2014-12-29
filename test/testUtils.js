@@ -59,7 +59,7 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
         key = '0x';
       }
 
-      assert.strictEqual(val, acctData.storage[key],  'storage value mismatch');
+      assert.strictEqual(val, acctData.storage[key],  'storage value mismatch' );
       delete acctData.storage[key];
     });
 
