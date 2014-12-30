@@ -4,7 +4,7 @@
   - [`Account` Methods](#account-methods)
     - [`account.serialize(data)`](#accountserializedata)
     - [`account.isContract()`](#accountiscontract)
-    - [`account.toJSON()`](#acconttojson)
+    - [`account.toJSON()`](#accounttojson)
     - [`account.getCode(trie, cb)`](#accountgetcodetrie-cb)
     - [`account.storeCode(trie, code, cb)`](#accountstorecodetrie-code-cb)
 
