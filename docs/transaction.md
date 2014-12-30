@@ -12,6 +12,7 @@
         - [`transaction.getDataFee()`](#transactiongetdatafee)
         - [`transaction.getBaseFee()`](#transactiongetbasefee)
         - [`transaction.getUpfrontCost()`](#transactiongetupfrontcost)
+        - [`transaction.toJSON()`](#transactiontojson)
 
 ## `Transaction`
 Implements schema and functions relating to Ethereum transactions
@@ -67,3 +68,6 @@ returns the upfront fee (DataFee + TxFee)
 
 #### `transaction.getUpfrontCost()`
 returns the total amount needed in the account of the sender for the transaction to be valid
+
+#### `transaction.toJSON()`
+returns transaction as JSON

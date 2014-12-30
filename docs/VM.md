@@ -50,6 +50,7 @@ Runs EVM code
 - `params.address` - The address of the account that is exucuting this code. The address should be a `Buffer` of 20bits.
 - `params.origin` - The address where the call originated from. The address should be a `Buffer` of 20bits.
 - `params.from` - The address that ran this code. The address should be a `Buffer` of 20bits.
+- `params.bloom` - A bloom filter.
 - `cb` - The callback. It is given two arguments, a `error` string containing an error that may have happen or `null` and a `results` object with the following propieties
   - `gasUsed` - the amount of gas as a `bignum` the code used to run. 
   - `suicide` - a `boolean`, whether the contract commited suicide
@@ -57,6 +58,7 @@ Runs EVM code
   - `expcetion` - a `boolean`, whethere or not the contract encoutered an exception
   - `exceptionErr` - a `String` describing the exception if there was one.
   - `returnValue` - a `Buffer` containing the value that was returned by the contract
+  - `gasRefund` - a `Bignum` containting the amount of gas to refund from deleting storage values
 
 --------------------------------------------------------
 

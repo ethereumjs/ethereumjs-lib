@@ -1,6 +1,6 @@
 {
   "name": "ethereumjs-lib",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "NodeJS and browser JS library for Ethereum",
   "main": "./index.js",
   "repository": {
@@ -19,17 +19,20 @@
     "bignum": "^0.7.0",
     "ecdsa": "^0.5.3",
     "ecurve": "^0.6.0",
-    "levelup": "*",
-    "merkle-patricia-tree": "^0.1.9",
-    "rlp": "0.0.8",
-    "secp256k1": "0.0.8",
+    "merkle-patricia-tree": "0.1.21",
+    "rlp": "0.0.12",
+    "secp256k1": "0.0.13",
     "sha3": "~1.0.0",
     "underscore": "~1.6.0"
   },
   "devDependencies": {
-    "browserify": "^5.12.0",
+    "JSONStream": "^0.10.0",
+    "crypto-js": "^3.1.2-5",
     "eslint": "^0.8.2",
+    "ethrereum-tests": "git+https://github.com/ethereum/tests.git#develop",
+    "levelup": "^0.19.0",
     "memdown": "^0.10.2",
+    "minimist": "^1.1.0",
     "mocha": ">=1.15.1",
     "uglifyjs": "^2.3.6"
   },
@@ -45,12 +48,13 @@
       "test/transactions.js",
       "test/runBlock.js",
       "test/block.js",
-      "test/blockchain.js"
+      "test/blockchain.js",
+      "test/stateTests.js"
     ]
   },
   "scripts": {
-    "test": "./script/eslint.sh && mocha --timeout 5000 --reporter spec ./test/ ./test/common/",
-    "compile": "./node_modules/browserify/bin/cmd.js index.js -s Ethereum | node ./node_modules/uglifyjs/index.js > ethereum-min.js"
+    "test": "./script/eslint.sh && mocha --timeout 60000 --reporter spec ./test/ ./test/common/**",
+    "compile": "browserify index.js -s Ethereum | node ./node_modules/uglifyjs/index.js > ethereum-min.js"
   },
   "author": {
     "name": "Ethereum",

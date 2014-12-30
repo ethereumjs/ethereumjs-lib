@@ -1,5 +1,4 @@
-var SHA3 = require('sha3'),
-  utils = require('../lib/utils.js'),
+var utils = require('../lib/utils.js'),
   ecdsa = require('ecdsa'),
   BigInteger = require('bigi'),
   ecurve = require('ecurve');
@@ -10,7 +9,7 @@ var ecparams = ecurve.getECParams('secp256k1');
  * @method verifySignature
  * @return {Boolean}
  */
-exports.verifySignature = function () {
+exports.txVerifySignature = function () {
   var msgHash = this.hash(false),
     pubKey = this.getSenderPublicKey(),
     sig = {
@@ -31,7 +30,7 @@ exports.verifySignature = function () {
  * @method sign
  * @param {Buffer} privateKey
  */
-exports.sign = function (privateKey) {
+exports.txSign = function (privateKey) {
   var msgHash = this.hash(false),
     e = BigInteger.fromBuffer(msgHash),
     pKey  = BigInteger.fromBuffer(privateKey),
@@ -49,7 +48,7 @@ exports.sign = function (privateKey) {
  * @method getSenderPublicKey
  * @return {Buffer}
  */
-exports.getSenderPublicKey = function () {
+exports.txGetSenderPublicKey = function () {
 
   var msgHash = this.hash(false),
     sig = {

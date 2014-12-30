@@ -8,6 +8,7 @@
         - [`blockchain.getBlockInfo(hash, cb)`](#blockchaingetblockinfohash-cb)
         - [`blockchain.getBlockHashes(parentHash, count, cb)`](#blockchaingetblockhashesparenthash-count-cb)
         - [`blockchain.getBlockChain(startingHashes, count, cb)`](#blockchaingetblockhashesparenthash-count-cb)
+        - [`blockchain.selectNeededHashes(hashes, cb)`](#blockchainselectneededhasheshashes-cb)
 
 ## `Blockchain`
 Implements functions for retrieving, manipulating and storing Ethereum's blockchain
@@ -67,4 +68,9 @@ Gets a segment of the blockchain starting at the parent hash and contuning for `
 gets a section of the blockchain in a form of an array starting at the parent hash, up `count` blocks
 - `startingHashes` - an array of hashes or a single hash to start returning the chain from. The first hash in the array that is found in the blockchain will be used. 
 - `count` - the max number of blocks to return
--  `callback` - the callback. It is given two parameters `err` and `blockchain`. `err` is any errors. If none of the starting hashes were found `err` will be `notFound`. `blockchain` is an array of blocks.
+- `callback` - the callback. It is given two parameters `err` and `blockchain`. `err` is any errors. If none of the starting hashes were found `err` will be `notFound`. `blockchain` is an array of blocks.
+
+#### `blockchain.selectNeededHashes(hashes, cb)`
+Given an ordered array, returns to the callback an array of hashes that are not in the blockchain yet.
+- `hashes` - an `Array` hashes
+- `cb` - the callback
