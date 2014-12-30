@@ -20,9 +20,22 @@ Creates a new transaction object
 - `codeHash` - the hash of the code of the contract
 
 ### `Account` Methods
-#### `account.serialize(data)`
 #### `account.serialize()`
 Returns the RLP serialization of the account
 
 #### `account.isContract()`
 Returns a `Boolean`.
+
+#### `account.toJSON()`
+Returns a JSON object of the account
+
+#### `account.getCode(trie, cb)`
+Fetches the code from the trie
+- `trie` - the [trie](github.com/wanderer/merkle-patricia-tree) to storing the accounts
+- `cb` - the callback
+
+#### `account.storeCode(trie, code, cb)`
+Stores the code in the trie
+- `trie` - the [trie](github.com/wanderer/merkle-patricia-tree)
+- `code` - a `Buffer`
+- `cb` - the callback
