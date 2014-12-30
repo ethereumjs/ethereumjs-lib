@@ -5,19 +5,22 @@
         - [`block.genTxTrie(cb)`](#blockgentxtriecb) 
         - [`block.hash()`](#blockhash)
         - [`block.serialize()`](#blockserialize)
-        - [`block.validate(parentBlock, grandParentBlock)`](#blockvalidateparentblock-grandparentblock)
+        - [`block.validate(blockchain, cb)`](#blockvalidateblockchain-cb)
+        - [`block.validateUncles(blockchain, cb)`](#blockvalidateunclesblockchain-cb)
         - [`block.validateTransactions()`](#blockvalidatetransactions)
         - [`block.validateTransactionsTrie()`](#blockvalidatetransactionstrie)
+        - [`block.toJSON()`](#blocktojson)
 
 - [`Blockheader`](#blockheader)
     - [`Blockheader` Properties](#blockheader-properties)
     - [`Blockheader` Methods](#blockheader-methods)
-        - [`blockheader.validate(parentBlock)`](#blockheadervalidateparentblock)
+        - [`blockheader.validate(blockchain, [height], cb)`](#blockheadervalidateblockchain-height-cb)
+        - [`blockheader.validatePOW()`](#blockheadervalidatepow)
+        - [`blockheader.validateDifficulty()`](#blockheadervalidatedifficulty)
+        - [`blockheader.validateGasLimit()`](#blockheadervalidategaslimit)
         - [`blockheader.canonicalGasLimit(parentBlock)`](#blockheadercanonicalgaslimitparentblock)
         - [`blockheader.canonicalDifficulty(parentBlock)`](#blockheadercanonicaldifficultyparentblock)
-
-- [`TransactionReceipt`](#transactionreceipt)
-    - [`TransactionReceipt` Properties](#transactionreceipt-properties)
+        - [`blockheader.hash`](#blockheaderhash)
 
 ## `Block`
 Implements schema  and functions related to Etheruem's block
@@ -45,10 +48,15 @@ Returns the sha3-256 hash of the RLP encoding of the serialized block
 #### `block.serialize()`
 Returns the RLP serialization of the block.
 
-#### `block.validate(parentBlock, grandParentBlock)`
-Validates the entire block. Returns a `Boolean`
-- `parentBlock` - the Parent Block of this block
-- `grandParentBlock` - the Parent's Parent's Block. Need to validate uncle headers
+#### `block.validate(blockchain, cb)`
+Validates the entire block. Returns a `string` to the callback if block is invalid
+- `blockchain` - an instance of the [`Blockchain`](docs/blockchain.md)
+- `cb` - the callback
+
+#### `block.validateUncles(blockchain, cb)`
+Validates the uncles that are in the block if any. Returns a `string` to the callback if uncles are invalid
+- `blockchain` - an instance of the [`Blockchain`](docs/blockchain.md)
+- `cb` - the callback
 
 #### `block.validateTransactions()`
 Validates all of the transactions in the block. Returns a `Boolean`
@@ -56,27 +64,45 @@ Validates all of the transactions in the block. Returns a `Boolean`
 #### `block.validateTransactionsTrie()`
 Validates the transaction trie. Returns a `Boolean`
 
+#### `block.toJSON()`
+Returns the block as a JSON object.
+
 ## `Blockheader`
 A object that repersents the block header.
 - file - [lib/blockheader.js](../lib/blockHeader.js)
 
 ### `Blockheader` Properties
 - `parentHash` - the blocks' parnet's hash
-- `sha3UncleList` - sha3(rlp_encode(uncle_list))
+- `uncleHash` - sha3(rlp_encode(uncle_list))
 - `coinbase` - the miner address
 - `stateRoot` - The root of a Merkle Patricia tree
-- `sha3transactionList` - sha3(rlp_encode(transaction_list))
+- `transactionTrie` - the root of a Trie containing the transactions
+- `receiptTrie` - the root of a Trie containing the transaction Reciept
+- `bloom`
 - `difficulty`
+- `number` - the height
+- `gasLimit`
+- `gasUsed`
 - `timestamp`
 - `extraData`
-- `number` - the height
 - `raw` - an `Array` of `Buffers` forming the raw header
 
 ### `Blockheader` Methods
 
-#### `blockheader.validate(parentBlock)`
-Validate the `blockheader` returning a `Boolean`
-- `parentBlock` - the parent`Block` of the header
+#### `blockheader.validate(blockchain, [height], cb)`
+Validates the entire block headers
+- `blockchain` - blockChain the blockchain that this block is validating against
+- `height` if this is an uncle header, this is the height of the block that is including it
+- `cb` the callback function
+
+#### `blockheader.validatePOW()`
+Validates the Proof of Work returning a `Boolean`
+
+#### `blockheader.validateDifficulty()`
+Validates the difficutly returning a `Boolean`
+
+#### `blockheader.validateGasLimit()`
+Validates the gasLimit, returning a `Boolean`
 
 #### `blockheader.canonicalGasLimit(parentBlock)`
 Returns the canonical gas limit of the block
@@ -84,13 +110,7 @@ Returns the canonical gas limit of the block
 
 #### `blockheader.canonicalDifficulty(parentBlock)`
 Returns the canoncical difficulty of the block
-- `parentBlock` - the parent`Block` of the header
+- `parentBlock` - the parent `Block` of the header
 
-## `TransactionReceipt`
-A object that repersents the Transaction Receipt.
-- file - [lib/transactionreceipt.js](../lib/transactionReceipt.js)
-
-### `TransactionReceipt` Properties
-- `transaction`
-- `state` - the state root after the `transaction` has been applied
-- `gasUsed` - the amount of gas used by the `transaction`
+#### `blockheader.hash`
+Returns the sha3 hash of the blockheader
