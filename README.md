@@ -36,7 +36,7 @@ First `ethereumjs-lib` can be used with `browserify`. But you can also produce a
  - [Block Chain](./docs/blockchain.md) - Blockchain managment
  - [Block](./docs/block.md) - Block Schema definition and validation
  - [Transaction](./docs/transaction.md) - Transaction Schema definition and validation
- - [Bloom](./doc/bloom.md) - Bloom Filter
+ - [Bloom](./docs/bloom.md) - Bloom Filter
  - [Account](./docs/account.md) - Account Schema definition and validation
  - [utils](./docs/utils.md) - Miscellaneous helper functions
  - [rlp](https://github.com/wanderer/rlp) - Recusive Length Perfix serialization
