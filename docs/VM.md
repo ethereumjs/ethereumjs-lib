@@ -30,13 +30,13 @@ Processes the `block` running all of the transaction it contains and updating th
 #### `vm.runTx(tx, [block], cb)`
 Process a transaction.
 - `tx` - A [`Transaction`](./transaction.md) to run.
-- `block` - The block the `tx` belongs to. If omited any EVM code that access block proporties will not run.
-- `cb` - The callback. It is given two arguments, a `error` string containing an error that may have happen or `null` and a `results` object with the following propieties.
-  - `gasUsed` - the amount of gased used by this transaction as a `bignum`
+- `block` - The block to which the `tx` belongs. If omited, any EVM code that accesses block properties will not run.
+- `cb` - The callback. It is given two arguments, an `error` string containing an error that may have happened or `null`, and a `results` object with the following propieties:
+  - `gasUsed` - the amount of gas used by this transaction as a `bignum`
   - `fromAccount` - the resulting [`Account`](./account.md) that sent the transaction
   - `toAccount` - the resulting [`Account`](./account.md) that recieved the transaction
   - `createdAddress` - if the transaction created a new contract this is the resulting address as a `Buffer`
-  - `vm` - contains the results from running the code, if any as described in [`vm.runCode(params, cb)`](#vmruncodeparams-cb)
+  - `vm` - contains the results from running the code, if any, as described in [`vm.runCode(params, cb)`](#vmruncodeparams-cb)
 
 --------------------------------------------------------
 
