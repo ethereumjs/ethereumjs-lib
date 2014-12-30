@@ -58,11 +58,11 @@ to just run the State test run
 `mocha test/stateTests.js`
 
 Both the test runners can take the following options
-`--file` run only one file in the [test repo](github.com/ethereum/tests)
-`--test` needs to be used with the `--file` option. Specifies a test from a file to run.
-`--vmtrace` test the test runner to print a json VM trace to a file
+`--file` run only one file in the [test repo](github.com/ethereum/tests)  
+`--test` needs to be used with the `--file` option. Specifies a test from a file to run.  
+`--vmtrace` test the test runner to print a json VM trace to a file  
 
-example usage
+######example usage  
 mocha test/stateTests.js --file stInitCodeTest --test CallRecursiveContract --vmtrace "trace.json"
 
 ####License
