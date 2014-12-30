@@ -4,6 +4,9 @@
   - [`Account` Methods](#account-methods)
     - [`account.serialize(data)`](#accountserializedata)
     - [`account.isContract()`](#accountiscontract)
+    - [`account.toJSON()`](#acconttojson)
+    - [`account.getCode(trie, cb)`](#accountgetcodetrie-cb)
+    - [`account.storeCode(trie, code, cb)`](#accountstorecodetrie-code-cb)
 
 ## `Account`
 Implements schema and functions relating to Accounts
