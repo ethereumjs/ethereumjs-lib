@@ -50,7 +50,7 @@ For browser testing install testling `npm install testling -g` and run
 `testling -u`
 
 #####common tests
-Most of the tests are in described in the [test repo](github.com/ethereum/tests)
+Most of the tests are in described in the [test repo](https://github.com/ethereum/tests)
 to just run the VM test run
 `mocha test/vmTests.js`
 
@@ -58,7 +58,7 @@ to just run the State test run
 `mocha test/stateTests.js`
 
 Both the test runners can take the following options   
-`--file` run only one file in the [test repo](github.com/ethereum/tests)  
+`--file` run only one file in the [test repo](https://github.com/ethereum/tests)  
 `--test` needs to be used with the `--file` option. Specifies a test from a file to run.  
 `--vmtrace` test the test runner to print a json VM trace to a file  
 
