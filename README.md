@@ -63,7 +63,13 @@ Both the test runners can take the following options
 `--vmtrace` test the test runner to print a json VM trace to a file  
 
 ######example usage
+run a the CallRecursiveContract test from the stInitCodeTest file  
 `mocha test/stateTests.js --file stInitCodeTest --test CallRecursiveContract --vmtrace "trace.json"`
+
+#### Contract & Communications
+Forum: https://forum.ethereum.org/categories/node-ethereum    
+Chat: #etherum-dev on freenode  
+Issue tracker: https://waffle.io/ethereum/ethereumjs-lib  
 
 ####License
 GPL3
