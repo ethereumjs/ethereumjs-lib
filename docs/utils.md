@@ -2,16 +2,11 @@
  - `MAX_INTEGER`  - The max interger that the VM can handle
 
 ## methods 
-### `zero256()`
+### `zeros(number)`
 Returns 256 bit `Buffer` filled with 0s
- 
-### `zero160()`
-Returns 160 bit `Buffer` filled with 0s
+- `number` - the number bytes to to return
 
-### `emptyHash()`
-Returns an SHA3-256 hash of `null`
-
-### `emptyRlpHash()`
+### `SHA3_RLP_ARRAY`
 Return an SHA3-256 hash of the rlp of `null`
 
 ### `trimZeros(toTrim)`
