@@ -1,12 +1,12 @@
-ethereumjs-lib [![Build Status](https://travis-ci.org/ethereum/ethereumjs-lib.svg?branch=master)](https://travis-ci.org/ethereum/ethereumjs-lib)
+SYNOPSIS [![Build Status](https://travis-ci.org/ethereum/ethereumjs-lib.svg?branch=master)](https://travis-ci.org/ethereum/ethereumjs-lib)
 ===========
 
-A Javascript library of core [Ethereum](http://Ethereum.org) functions.
+A Javascript library of core [Ethereum](http://Ethereum.org) functions as described in the [Yellow Paper](https://github.com/ethereum/yellowpaper)
 
 ####Install
 `npm install ethereumjs-lib`
 
-### Node Usage
+#Usage
 ``` javascript
  var Network = require('ethereumjs-lib').Network;
  
@@ -22,13 +22,13 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions.
 ### Browser Usage
 `ethereumjs-lib` can be used with [`browserify`](http://browserify.org/). 
 
-#### Examples
+# Examples
 
  - [Exploring the state trie](https://wanderer.github.io/ethereum/nodejs/code/2014/05/21/using-ethereums-tries-with-node/)
  - [Creating contracts and verifying transaction](https://wanderer.github.io/ethereum/2014/06/14/creating-and-verifying-transaction-with-node/)
  - [How to run contracts and create stack traces](https://wanderer.github.io/ethereum/nodejs/code/2014/08/12/running-contracts-with-vm/)
 
-#### API
+# API
 `ethereumjs-lib` provides the following.
 
  - [Network](./docs/networking.md) - Networking protocol and peer managment
@@ -42,7 +42,7 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions.
  - [rlp](https://github.com/wanderer/rlp) - Recusive Length Perfix serialization
  - [Trie](https://github.com/wanderer/merkle-patricia-tree) - Modified Merkle Patricia Tree
 
-####Testing
+# Testing
 Tests use mocha
 `npm test`
 
@@ -66,10 +66,27 @@ Both the test runners can take the following options
 run a the CallRecursiveContract test from the stInitCodeTest file  
 `mocha test/stateTests.js --file stInitCodeTest --test CallRecursiveContract --vmtrace "trace.json"`
 
-#### Contact & Communications
-Forum: https://forum.ethereum.org/categories/node-ethereum    
-Chat: #etheruem-dev on freenode  
-Issue tracker: https://waffle.io/ethereum/ethereumjs-lib  
+# CONTRIBUTIONS
 
-####License
+Patches welcome! Contributors are listed in the `package.json` file.
+Please run the tests before opening a pull request and make sure that you are
+passing all of them.
+
+If you would like to contribute, but don't know what to work on, check
+the issues list or ask on the forms or on IRC.
+
+* <http://github.com/ethereum/ethereumjs-lib/issues>
+* <https://forum.ethereum.org/categories/node-ethereum>
+* #ethereum-dev on irc.freenode.net
+
+# BUGS
+
+When you find issues, please report them:
+
+* [web](http://github.com/ethereum/ethereumjs-tools/issues)
+* [email](mb@ethdev.com)
+
+You can also look for null_radix in #ethereum-dev on irc://irc.freenode.net. 
+
+# LISCENCE
 GPL3
