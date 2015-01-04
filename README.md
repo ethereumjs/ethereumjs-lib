@@ -3,10 +3,10 @@ SYNOPSIS [![Build Status](https://travis-ci.org/ethereum/ethereumjs-lib.svg?bran
 
 A Javascript library of core [Ethereum](http://Ethereum.org) functions as described in the [Yellow Paper](https://github.com/ethereum/yellowpaper)
 
-####Install
+####install
 `npm install ethereumjs-lib`
 
-#Usage
+#USAGE
 ``` javascript
  var Network = require('ethereumjs-lib').Network;
  
@@ -19,10 +19,10 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions as descri
  network.listen(30303, '0.0.0.0');
 ```
 
-### Browser Usage
+### browser
 `ethereumjs-lib` can be used with [`browserify`](http://browserify.org/). 
 
-# Examples
+# EXAMPLES
 
  - [Exploring the state trie](https://wanderer.github.io/ethereum/nodejs/code/2014/05/21/using-ethereums-tries-with-node/)
  - [Creating contracts and verifying transaction](https://wanderer.github.io/ethereum/2014/06/14/creating-and-verifying-transaction-with-node/)
@@ -42,7 +42,7 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions as descri
  - [rlp](https://github.com/wanderer/rlp) - Recusive Length Perfix serialization
  - [Trie](https://github.com/wanderer/merkle-patricia-tree) - Modified Merkle Patricia Tree
 
-# Testing
+# TESTING
 Tests use mocha
 `npm test`
 
