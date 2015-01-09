@@ -52,8 +52,7 @@ for (var test in stateTests) {
             var sstream = testUtils.enableVMtracing(vm, argv.vmtrace);
           }
 
-          vm.runTx(tx, block, function(err, results) {
-
+          function postTx(err, results) {
             if (sstream) sstream.end();
 
             if (err) console.log('error: ' + err);
@@ -83,6 +82,18 @@ for (var test in stateTests) {
                 });
               });
             }, done);
+          }
+
+          vm.runTx(tx, block, function(err, results) {
+
+            if (argv.dumpstate) {
+              testUtils.dumpState(state, function(){
+                postTx(err, results);
+
+              });
+            } else {
+              postTx(err, results);
+            }
           });
         });
       }
