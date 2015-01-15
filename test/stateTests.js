@@ -6,6 +6,7 @@ var blacklist = ['EmptyTransaction'];
 var async = require('async'),
   VM = require('../lib/vm'),
   Account = require('../lib/account.js'),
+  // Blockchain = require('../lib/blockchain.js'),
   assert = require('assert'),
   testUtils = require('./testUtils'),
   Trie = require('merkle-patricia-tree');
