@@ -84,7 +84,7 @@ for (var test in stateTests) {
             }, done);
           }
 
-          vm.runTx(tx, block, function(err, results) {
+          vm.runTx( {tx: tx, block: block}, function(err, results) {
 
             if (argv.dumpstate) {
               testUtils.dumpState(state, function(){
