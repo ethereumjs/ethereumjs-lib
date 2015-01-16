@@ -102,10 +102,9 @@ The Network object inherits from `Events.EventEmitter` and emits the following e
 - `'message.getNotInChain'` - emitted on receiving a not in chain packet
 - `'message.getTransactions'` - emitted on receiving a get transactions packet
  
-Each of the events are provided with the following arguments
+Each of the events are provided with the following arguments in this order
 
 - `message` - The decoded message parsed to an Object. [See event Message Objects](#event-message-objects)
-- `payload` - The RPL decoded payload
 - `peer` - The [peer](#peer) that emitted the event
 
 ## `Peer`
@@ -169,7 +168,8 @@ After the payload is parsed it passed along to the events in form of these objec
     - `peerDiscovery`
     - `transactionRelaying`
 - `port` -  specifies the port that the client is listening on 
-- `nodeId` - a 512-bit hash that identifies this node
+- `ip` - the ip of the connecting peer
+- `id` - a 512-bit hash that identifies this node
 
 ### `peers`
 The peers message is an array of object with the following fields
