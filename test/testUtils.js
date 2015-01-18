@@ -155,7 +155,7 @@ exports.makeRunCallData = function(testData, block) {
     origin: new Buffer(exec.origin, 'hex'),
     data: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
     value: bignum(exec.value),
-    from: new Buffer(exec.caller, 'hex'),
+    caller: new Buffer(exec.caller, 'hex'),
     to: new Buffer(exec.address, 'hex'),
     gas: exec.gas,
     block: block
@@ -177,7 +177,7 @@ exports.makeRunCallDataWithAccount = function(testData, account, block) {
     origin: new Buffer(exec.origin, 'hex'),
     data: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
     value: bignum(exec.value),
-    from: new Buffer(exec.caller, 'hex'),
+    caller: new Buffer(exec.caller, 'hex'),
     to: new Buffer(exec.address, 'hex'),
     gas: exec.gas,
     block: block
@@ -300,7 +300,7 @@ exports.makeRunCodeData = function(exec, account, block) {
     code: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
     value: bignum(exec.value),
     address: new Buffer(exec.address, 'hex'),
-    from: new Buffer(exec.caller, 'hex'),
+    caller: new Buffer(exec.caller, 'hex'),
     data: new Buffer(exec.data.slice(2), 'hex'), // slice off 0x
     gasLimit: bignum(exec.gas),
     gasPrice: testUtils.fromDecimal(exec.gasPrice),
