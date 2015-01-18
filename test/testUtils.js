@@ -21,7 +21,8 @@ exports.dumpState = function(state, cb) {
     var account = new Account(data.value);
     statedump[data.key.toString('hex')] = {
       balance: bignum.fromBuffer(account.balance).toString(),
-      nonce: bignum.fromBuffer(account.nonce).toString()
+      nonce: bignum.fromBuffer(account.nonce).toString(),
+      stateRoot: account.stateRoot.toString('hex')
     };
   });
 
@@ -106,7 +107,6 @@ exports.verifyGas = function(results, testData) {
 
   if (!testData.post[coinbaseAddr]) {
     assert.deepEqual(testData.pre, testData.post);
-    console.log('gas NOT checked: invalid tx');
     return;
   }
 
@@ -324,6 +324,7 @@ exports.setupPreConditions = function(state, testData, done) {
     account.nonce = testUtils.fromDecimal(acctData.nonce);
     account.balance = testUtils.fromDecimal(acctData.balance);
 
+    //WTF? remove
     var codeBuf = bignum(acctData.code.slice(2), 16).toBuffer();
     var storageTrie = state.copy();
 
@@ -340,6 +341,7 @@ exports.setupPreConditions = function(state, testData, done) {
         }, cb2);
       },
       function(cb2) {
+        //WTF? remove
         if (codeBuf.toString('hex') !== '') {
           account.storeCode(state, codeBuf, cb2);
         } else {
@@ -348,6 +350,11 @@ exports.setupPreConditions = function(state, testData, done) {
       },
       function(cb2) {
         account.stateRoot = storageTrie.root;
+
+        if(testData.exec && key === testData.exec.address){
+          testData.root = storageTrie.root;
+        }
+
         state.put(new Buffer(key, 'hex'), account.serialize(), cb2);
       }
     ], callback);
