@@ -19,19 +19,20 @@ Creates a new VM object
 - `StateTrie` - The [Patricia Merkle Tree](https://github.com/wanderer/merkle-patricia-tree) that contains the state
 
 ### `VM` methods
-#### `vm.runBlock(block, [stateRoot], cb)`
+#### `vm.runBlock(opts, cb)`
 Processes the `block` running all of the transaction it contains and updating the miner's account.
-- `block` - The [`Block`](./block.md) to process
-- `stateRoot` - The state at which the trie should start with when running the block. If omited the current `trie.root` will be used
+- `opts.block` - The [`Block`](./block.md) to process
+- `opts.blockchain` - The [blockchain](./blockchain.md)
+- `opts.root` - The state at which the trie should start with when running the block. If omited the current `trie.root` will be used
 - `cb` - The callback
 
 --------------------------------------------------------
 
-#### `vm.runTx(params, cb)`
+#### `vm.runTx(opts, cb)`
 Process a transaction.
-- `params.tx` - A [`Transaction`](./transaction.md) to run.
-- `params.block` - The block to which the `tx` belongs. If omited, any EVM code that accesses block properties will not run.
-- `params.blockchain` - The [blockchain](./blockchain.md)
+- `opts.tx` - A [`Transaction`](./transaction.md) to run.
+- `opts.block` - The block to which the `tx` belongs. If omited, any EVM code that accesses block properties will not run.
+- `opts.blockchain` - The [blockchain](./blockchain.md)
 - `cb` - The callback. It is given two arguments, an `error` string containing an error that may have happened or `null`, and a `results` object with the following propieties:
   - `gasUsed` - the amount of gas used by this transaction as a `bignum`
   - `callerAccount` - the resulting [`Account`](./account.md) that sent the transaction
@@ -41,17 +42,18 @@ Process a transaction.
 
 --------------------------------------------------------
 
-#### `vm.runCode(params, cb)`
+#### `vm.runCode(opts, cb)`
 Runs EVM code
-- `params.code` - The EVM code to run given as a `Buffer`
-- `params.data` - The input data given as a `Buffer`
-- `params.block` - The [`Block`](./block.md) the `tx` belongs to. If omited any EVM code that access block proporties will not run.
-- `params.gasLimit` - The gas limit for the code given as an `Number` or a `bigint`.
-- `params.account` - The [`Account`](./account.md) that the exucuting code belongs to.
+- `opts.code` - The EVM code to run given as a `Buffer`
+- `opts.data` - The input data given as a `Buffer`
+- `opts.block` - The [`Block`](./block.md) the `tx` belongs to. If omited any EVM code that access block proporties will not run.
+- `opts.blockchain` - The [blockchain](./blockchain.md)
+- `opts.gasLimit` - The gas limit for the code given as an `Number` or a `bignum`.
+- `opts.account` - The [`Account`](./account.md) that the exucuting code belongs to.
 - `params.address` - The address of the account that is exucuting this code. The address should be a `Buffer` of 20bits.
-- `params.origin` - The address where the call originated from. The address should be a `Buffer` of 20bits.
-- `params.caller` - The address that ran this code. The address should be a `Buffer` of 20bits.
-- `params.bloom` - A bloom filter.
+- `opts.origin` - The address where the call originated from. The address should be a `Buffer` of 20bits.
+- `opts.caller` - The address that ran this code. The address should be a `Buffer` of 20bits.
+- `opts.bloom` - A bloom filter.
 - `cb` - The callback. It is given two arguments, a `error` string containing an error that may have happen or `null` and a `results` object with the following propieties
   - `gasUsed` - the amount of gas as a `bignum` the code used to run. 
   - `gasRefund` - a `Bignum` containting the amount of gas to refund from deleting storage values
