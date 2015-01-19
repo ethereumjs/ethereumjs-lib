@@ -27,13 +27,14 @@ Processes the `block` running all of the transaction it contains and updating th
 
 --------------------------------------------------------
 
-#### `vm.runTx(tx, [block], cb)`
+#### `vm.runTx(params, cb)`
 Process a transaction.
-- `tx` - A [`Transaction`](./transaction.md) to run.
-- `block` - The block to which the `tx` belongs. If omited, any EVM code that accesses block properties will not run.
+- `params.tx` - A [`Transaction`](./transaction.md) to run.
+- `params.block` - The block to which the `tx` belongs. If omited, any EVM code that accesses block properties will not run.
+- `params.blockchain` - The [blockchain]('./blockchain.md')
 - `cb` - The callback. It is given two arguments, an `error` string containing an error that may have happened or `null`, and a `results` object with the following propieties:
   - `gasUsed` - the amount of gas used by this transaction as a `bignum`
-  - `fromAccount` - the resulting [`Account`](./account.md) that sent the transaction
+  - `callerAccount` - the resulting [`Account`](./account.md) that sent the transaction
   - `toAccount` - the resulting [`Account`](./account.md) that recieved the transaction
   - `createdAddress` - if the transaction created a new contract this is the resulting address as a `Buffer`
   - `vm` - contains the results from running the code, if any, as described in [`vm.runCode(params, cb)`](#vmruncodeparams-cb)
@@ -49,16 +50,17 @@ Runs EVM code
 - `params.account` - The [`Account`](./account.md) that the exucuting code belongs to.
 - `params.address` - The address of the account that is exucuting this code. The address should be a `Buffer` of 20bits.
 - `params.origin` - The address where the call originated from. The address should be a `Buffer` of 20bits.
-- `params.from` - The address that ran this code. The address should be a `Buffer` of 20bits.
+- `params.caller` - The address that ran this code. The address should be a `Buffer` of 20bits.
 - `params.bloom` - A bloom filter.
 - `cb` - The callback. It is given two arguments, a `error` string containing an error that may have happen or `null` and a `results` object with the following propieties
   - `gasUsed` - the amount of gas as a `bignum` the code used to run. 
+  - `gasRefund` - a `Bignum` containting the amount of gas to refund from deleting storage values
   - `suicide` - a `boolean`, whether the contract commited suicide
   - `account` - account of the code that ran
   - `expcetion` - a `boolean`, whethere or not the contract encoutered an exception
   - `exceptionErr` - a `String` describing the exception if there was one.
   - `returnValue` - a `Buffer` containing the value that was returned by the contract
-  - `gasRefund` - a `Bignum` containting the amount of gas to refund from deleting storage values
+
 
 --------------------------------------------------------
 
