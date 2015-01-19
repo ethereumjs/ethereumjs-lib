@@ -1,7 +1,7 @@
 - [`VM`](#vm)
   - [`new VM([StateTrie])`](#new-vmstatetrie)  
   - [`VM` methods](#vm-methods)  
-    - [`vm.runBlock(opts, cb)`](#vmrunblockblock-stateroot-cb)
+    - [`vm.runBlock(opts, cb)`](#vmrunblockopts-cb)
     - [`vm.runTx(opts, cb)`](#vmruntxopts-cb)
     - [`vm.runCode(opts, cb)`](#vmruncodeopts-cb)
     - [`vm.generateGenesis(cb)`](#vmgenerategenesiscb)
