@@ -151,7 +151,7 @@ exports.makeRunCallData = function(testData, block) {
   account.balance = testUtils.fromDecimal(acctData.balance);
 
   return {
-    fromAccount: account,
+    account: account,
     origin: new Buffer(exec.origin, 'hex'),
     data: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
     value: bignum(exec.value),
@@ -173,7 +173,7 @@ exports.makeRunCallData = function(testData, block) {
 exports.makeRunCallDataWithAccount = function(testData, account, block) {
   var exec = testData.exec;
   return {
-    fromAccount: account,
+    account: account,
     origin: new Buffer(exec.origin, 'hex'),
     data: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
     value: bignum(exec.value),
