@@ -2,7 +2,7 @@
   - [`new VM([StateTrie])`](#new-vmstatetrie)  
   - [`VM` methods](#vm-methods)  
     - [`vm.runBlock(block, [stateRoot], cb)`](#vmrunblockblock-stateroot-cb)
-    - [`vm.runTx(tx, [block], cb)`](#vmruntxtx-block-cb)
+    - [`vm.runTx(params, cb)`](#vmruntxparams-cb)
     - [`vm.runCode(params, cb)`](#vmruncodeparams-cb)
     - [`vm.generateGenesis(cb)`](#vmgenerategenesiscb)
   - [`VM` debugging hooks](#vm-debugging-hooks)
@@ -31,7 +31,7 @@ Processes the `block` running all of the transaction it contains and updating th
 Process a transaction.
 - `params.tx` - A [`Transaction`](./transaction.md) to run.
 - `params.block` - The block to which the `tx` belongs. If omited, any EVM code that accesses block properties will not run.
-- `params.blockchain` - The [blockchain]('./blockchain.md')
+- `params.blockchain` - The [blockchain](./blockchain.md)
 - `cb` - The callback. It is given two arguments, an `error` string containing an error that may have happened or `null`, and a `results` object with the following propieties:
   - `gasUsed` - the amount of gas used by this transaction as a `bignum`
   - `callerAccount` - the resulting [`Account`](./account.md) that sent the transaction
