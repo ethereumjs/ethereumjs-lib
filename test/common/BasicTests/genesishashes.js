@@ -1,4 +1,4 @@
-var genesisData = require('ethereum-tests').genesishashes,
+var genesisData = require('ethereum-tests').basicTests.genesishashestest,
   assert = require('assert'),
   Blockchain = require('../../../lib/blockchain.js'),
   Block = require('../../../lib/block.js'),

@@ -1,12 +1,12 @@
 var argv = require('minimist')(process.argv.slice(2));
 
-var stateTests = require('ethereum-tests').StateTests;
+var stateTests = require('ethereum-tests').stateTests;
 var blacklist = ['EmptyTransaction'];
 
 var async = require('async'),
   VM = require('../lib/vm'),
   Account = require('../lib/account.js'),
-  // Blockchain = require('../lib/blockchain.js'),
+  blockchain = require('./fakeBlockChain.js'),
   assert = require('assert'),
   testUtils = require('./testUtils'),
   Trie = require('merkle-patricia-tree');
@@ -85,7 +85,7 @@ for (var test in stateTests) {
             }, done);
           }
 
-          vm.runTx( {tx: tx, block: block}, function(err, results) {
+          vm.runTx( {tx: tx, block: block, blockchain: blockchain}, function(err, results) {
 
             if (argv.dumpstate) {
               testUtils.dumpState(state, function(){

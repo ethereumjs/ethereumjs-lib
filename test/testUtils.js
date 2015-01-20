@@ -58,10 +58,18 @@ exports.makeTx = function(txData) {
  * @param {[type]}   acctData postconditions JSON from tests repo
  * @param {Function} cb       completion callback
  */
-exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
+exports.verifyAccountPostConditions = function(state, account, acctData, vm, cb) {
 
-  assert.strictEqual(testUtils.toDecimal(account.balance), acctData.balance, 'balance mismatch');
-  assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
+  if(arguments.length === 4){
+    cb = vm;
+    vm = false;
+  }
+
+
+  if(!vm){
+    assert.strictEqual(testUtils.toDecimal(account.balance), acctData.balance, 'balance mismatch');
+    assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
+  }
 
   // validate storage
   var origRoot = state.root,
