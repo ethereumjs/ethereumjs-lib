@@ -1,4 +1,4 @@
-var Network = require('../lib/network'),
+var Network = require('../lib/networking.js'),
   RLP = require('rlp'),
   net = require('net'),
   assert = require('assert');

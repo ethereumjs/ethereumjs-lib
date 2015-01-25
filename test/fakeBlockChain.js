@@ -1,4 +1,4 @@
-var utils = require('../lib/utils.js');
+var utils = require('ethereumjs-util');
 
 module.exports = {
   getBlockByNumber: function(n, cb){
