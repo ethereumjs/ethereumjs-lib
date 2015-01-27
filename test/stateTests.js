@@ -1,5 +1,4 @@
 var argv = require('minimist')(process.argv.slice(2));
-
 var stateTests = require('ethereum-tests').stateTests;
 var blacklist = ['EmptyTransaction'];
 
@@ -63,7 +62,9 @@ for (var test in stateTests) {
               assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2), 'invalid return value');
             }
 
-            testUtils.verifyLogs(results, testData);
+            if(results){
+              testUtils.verifyLogs(results.vm.logs, testData);
+            }
             testUtils.verifyGas(results, testData);
 
             delete testData.post[testData.env.currentCoinbase]; // coinbase is only done in runBlock

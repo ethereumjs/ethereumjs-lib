@@ -129,12 +129,11 @@ exports.verifyGas = function(results, testData) {
  * @param {Object} results  to verify
  * @param {Object} testData from tests repo
  */
-exports.verifyLogs = function(results, testData) {
+exports.verifyLogs = function(logs, testData) {
   if (testData.logs) {
     testData.logs.forEach(function(log, i) {
-      var rlog = results.vm.logs[i];
+      var rlog = logs[i];
       assert.strictEqual(rlog[0].toString('hex'), log.address, 'log: invalid address');
-      assert.strictEqual(results.bloom.bitvector.toString('hex'), log.bloom, 'log: invalid bloom');
       assert.strictEqual('0x' + rlog[2].toString('hex'), log.data, 'log: invalid data');
       log.topics.forEach(function(topic, i) {
         assert.strictEqual(rlog[1][i].toString('hex'), topic, 'log: invalid topic');
@@ -332,8 +331,7 @@ exports.setupPreConditions = function(state, testData, done) {
     account.nonce = testUtils.fromDecimal(acctData.nonce);
     account.balance = testUtils.fromDecimal(acctData.balance);
 
-    //WTF? remove
-    var codeBuf = bignum(acctData.code.slice(2), 16).toBuffer();
+    var codeBuf = new Buffer(acctData.code.slice(2), 'hex');
     var storageTrie = state.copy();
 
     async.series([
