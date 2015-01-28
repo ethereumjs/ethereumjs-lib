@@ -17,10 +17,12 @@
     "async": "~0.2.10",
     "bigi": "^1.3.0",
     "bignum": "^0.9.1",
+    "bignum-browserify": "0.0.1",
     "crypto-js": "^3.1.2-5",
     "ecdsa": "^0.5.3",
     "ecurve": "^0.6.0",
     "ethereumjs-util": "git+https://github.com/ethereum/ethereumjs-util",
+    "ethereumjs-p2p": "git+https://github.com/ethereum/ethereumjs-p2p",
     "merkle-patricia-tree": "0.1.21",
     "rlp": "0.0.12",
     "secp256k1": "0.0.13",
@@ -31,7 +33,6 @@
     "JSONStream": "^0.10.0",
     "eslint": "^0.8.2",
     "ethereum-tests": "git+https://github.com/ethereum/tests.git#develop",
-    "ethereumjs-p2p": "git+https://github.com/ethereum/ethereumjs-p2p",
     "levelup": "^0.19.0",
     "memdown": "^0.10.2",
     "minimist": "^1.1.0",
@@ -63,10 +64,9 @@
     "url": "http://ethereum.org"
   },
   "browser": {
-    "lib/network": false,
     "ecdsa-native": false,
     "./lib/ecdsaOps.js": "./browser/ecdsaOps.js",
-    "bignum": "./browser/bignum.js",
+    "bignum": "bignum-browserify",
     "sha3": "./browser/sha3.js"
   }
 }
