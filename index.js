@@ -1,4 +1,4 @@
-exports.utils = require('ethereumjs-utils');
+exports.utils = require('ethereumjs-util');
 exports.Network = require('./lib/network');
 exports.VM = require('./lib/vm');
 exports.Block = require('./lib/block');
