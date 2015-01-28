@@ -1,5 +1,5 @@
 exports.utils = require('ethereumjs-util');
-exports.Network = require('ethereumjs-p2p');
+exports.Network = require('./lib/networking.js');
 exports.VM = require('./lib/vm');
 exports.Block = require('./lib/block');
 exports.Blockchain = require('./lib/blockchain');
