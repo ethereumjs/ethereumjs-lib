@@ -93,7 +93,7 @@ for (var test in vmTests) {
                   postTx(err, results);
                 });
               } else {
-                postTx(err | err2, results);
+                postTx(err, results);
               }
             });
           });
