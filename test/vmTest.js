@@ -1,12 +1,10 @@
 var argv = require('minimist')(process.argv.slice(2));
 var bignum = require('bignum');
 var vmTests = require('ethereum-tests').vmTests;
-var utils = require('ethereumjs-util');
 //CallToPrecompil
 var blacklist = [];
 
-var async = require('async'),
-  VM = require('../lib/vm'),
+var VM = require('../lib/vm'),
   Account = require('../lib/account.js'),
   blockchain = require('./fakeBlockChain.js'),
   assert = require('assert'),
@@ -83,19 +81,19 @@ for (var test in vmTests) {
               assert.equal(results.gasUsed.toString(), testData.exec.gas );
             }
 
-            done();
+            done(err);
           }
 
           state.get(new Buffer(testData.exec.address, 'hex'), function(err, data){
             var a = new Account(data);
             account.stateRoot = a.stateRoot;
-            vm.runCode(runCodeData, function(err, results) {
+            vm.runCode(runCodeData, function(err2, results) {
               if (argv.dumpstate) {
                 testUtils.dumpState(state, function() {
                   postTx(err, results);
                 });
               } else {
-                postTx(err, results);
+                postTx(err | err2, results);
               }
             });
           });
