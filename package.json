@@ -21,12 +21,12 @@
     "crypto-js": "^3.1.2-5",
     "ecdsa": "^0.5.3",
     "ecurve": "^0.6.0",
-    "ethereumjs-util": "git+https://github.com/ethereum/ethereumjs-util",
     "ethereumjs-p2p": "git+https://github.com/ethereum/ethereumjs-p2p",
+    "ethereumjs-util": "git+https://github.com/ethereum/ethereumjs-util",
     "merkle-patricia-tree": "0.1.21",
     "rlp": "0.0.12",
     "secp256k1": "0.0.13",
-    "sha3": "~1.0.0",
+    "sha3": "^1.1.0",
     "underscore": "~1.6.0"
   },
   "devDependencies": {
