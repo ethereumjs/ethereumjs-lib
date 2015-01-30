@@ -66,8 +66,20 @@ Runs EVM code
 
 --------------------------------------------------------
 
-#### `vm.generateGenesis(cb)`
+#### `vm.generateGenesis(genesisData, cb)`
 Generate the genesis state.
+- `genesisData` - an `Object` whose keys are addresses and values are a `string`s representing initail allocation of ether.
+- `cb` - The callback
+```javascript
+var genesisData = {
+  "51ba59315b3a95761d0863b05ccc7a7f54703d99": "1606938044258990275541962092341162602522202993782792835301376",
+  "e4157b34ea9615cfbde6b4fda419828124b70c78": "1606938044258990275541962092341162602522202993782792835301376"
+}
+
+vm.generateGenesis(genesisData, function(){
+  conosle.log('generation done');
+})
+```
 
 --------------------------------------------------------
 
