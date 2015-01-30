@@ -63,6 +63,11 @@
     "name": "Ethereum",
     "url": "http://ethereum.org"
   },
+  "contributors": [
+    "Martin Becze <wanderer.github.io> (github.com/wanderer)",
+    "Ethers (github.com/ethers)",
+    "Vitalik Buterin (ttps://github.com/vbuterin)"
+  ],
   "browser": {
     "ecdsa-native": false,
     "./lib/ecdsaOps.js": "./browser/ecdsaOps.js",
