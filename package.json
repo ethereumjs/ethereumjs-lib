@@ -23,7 +23,7 @@
     "ecurve": "^0.6.0",
     "ethereumjs-p2p": "git+https://github.com/ethereum/ethereumjs-p2p",
     "ethereumjs-util": "git+https://github.com/ethereum/ethereumjs-util",
-    "merkle-patricia-tree": "0.1.22",
+    "merkle-patricia-tree": "0.1.23",
     "rlp": "0.0.12",
     "secp256k1": "0.0.13",
     "sha3": "^1.1.0",
