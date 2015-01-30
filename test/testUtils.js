@@ -5,13 +5,32 @@ const bignum = require('bignum'),
   SHA3 = require('sha3'),
   rlp = require('rlp'),
   JSONStream = require('JSONStream'),
-  utils = require('../lib/utils'),
+  utils = require('ethereumjs-util'),
   Account = require('../lib/account.js'),
   Transaction = require('../lib/transaction.js'),
   Block = require('../lib/block.js');
 
 
 const testUtils = exports;
+
+exports.dumpState = function(state, cb) {
+  var rs = state.createReadStream();
+  var statedump = {};
+
+  rs.on('data', function(data) {
+    var account = new Account(data.value);
+    statedump[data.key.toString('hex')] = {
+      balance: bignum.fromBuffer(account.balance).toString(),
+      nonce: bignum.fromBuffer(account.nonce).toString(),
+      stateRoot: account.stateRoot.toString('hex')
+    };
+  });
+
+  rs.on('end', function(){
+    console.log(statedump);
+    cb();
+  });
+};
 
 /**
  * makeTx using JSON from tests repo
@@ -26,7 +45,7 @@ exports.makeTx = function(txData) {
       bignum(txData.gasLimit).toBuffer(),
       new Buffer(txData.to, 'hex'),
       bignum(txData.value).toBuffer(),
-      new Buffer(txData.data.slice(2), 'hex')  // slice off 0x
+      new Buffer(txData.data.slice(2), 'hex') // slice off 0x
     ]);
   tx.sign(privKey);
   return tx;
@@ -39,10 +58,18 @@ exports.makeTx = function(txData) {
  * @param {[type]}   acctData postconditions JSON from tests repo
  * @param {Function} cb       completion callback
  */
-exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
+exports.verifyAccountPostConditions = function(state, account, acctData, vm, cb) {
 
-  assert.strictEqual(testUtils.toDecimal(account.balance), acctData.balance, 'balance mismatch');
-  assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
+  if(arguments.length === 4){
+    cb = vm;
+    vm = false;
+  }
+
+
+  if(!vm){
+    assert.strictEqual(testUtils.toDecimal(account.balance), acctData.balance, 'balance mismatch');
+    assert.strictEqual(testUtils.toDecimal(account.nonce), acctData.nonce, 'nonce mismatch');
+  }
 
   // validate storage
   var origRoot = state.root,
@@ -50,21 +77,21 @@ exports.verifyAccountPostConditions = function(state, account, acctData, cb) {
 
   if (storageKeys.length > 0) {
     state.root = account.stateRoot.toString('hex');
-    var rs =  state.createReadStream();
-    rs.on('data', function(data){
-      var key =  '0x' + utils.unpad(data.key).toString('hex');
+    var rs = state.createReadStream();
+    rs.on('data', function(data) {
+      var key = '0x' + utils.unpad(data.key).toString('hex');
       var val = '0x' + rlp.decode(data.value).toString('hex');
 
-      if(key === '0x00'){
+      if (key === '0x00') {
         key = '0x';
       }
 
-      assert.strictEqual(val, acctData.storage[key],  'storage value mismatch' );
+      assert.strictEqual(val, acctData.storage[key], 'storage value mismatch');
       delete acctData.storage[key];
     });
 
-    rs.on('end', function(){
-      for(var key in acctData.storage){
+    rs.on('end', function() {
+      for (var key in acctData.storage) {
         assert(false, 'key: ' + key + ' not found in storage');
       }
 
@@ -88,7 +115,6 @@ exports.verifyGas = function(results, testData) {
 
   if (!testData.post[coinbaseAddr]) {
     assert.deepEqual(testData.pre, testData.post);
-    console.log('gas NOT checked: invalid tx');
     return;
   }
 
@@ -103,14 +129,13 @@ exports.verifyGas = function(results, testData) {
  * @param {Object} results  to verify
  * @param {Object} testData from tests repo
  */
-exports.verifyLogs = function(results, testData) {
-  if(testData.logs){
-    testData.logs.forEach(function(log, i){
-      var rlog = results.vm.logs[i];
-      assert.strictEqual(rlog[0].toString('hex') , log.address, 'log: invalid address');
-      assert.strictEqual(results.bloom.bitvector.toString('hex') , log.bloom, 'log: invalid bloom');
+exports.verifyLogs = function(logs, testData) {
+  if (testData.logs) {
+    testData.logs.forEach(function(log, i) {
+      var rlog = logs[i];
+      assert.strictEqual(rlog[0].toString('hex'), log.address, 'log: invalid address');
       assert.strictEqual('0x' + rlog[2].toString('hex'), log.data, 'log: invalid data');
-      log.topics.forEach(function(topic, i){
+      log.topics.forEach(function(topic, i) {
         assert.strictEqual(rlog[1][i].toString('hex'), topic, 'log: invalid topic');
       });
     });
@@ -133,11 +158,11 @@ exports.makeRunCallData = function(testData, block) {
   account.balance = testUtils.fromDecimal(acctData.balance);
 
   return {
-    fromAccount: account,
+    account: account,
     origin: new Buffer(exec.origin, 'hex'),
     data: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
     value: bignum(exec.value),
-    from: new Buffer(exec.caller, 'hex'),
+    caller: new Buffer(exec.caller, 'hex'),
     to: new Buffer(exec.address, 'hex'),
     gas: exec.gas,
     block: block
@@ -155,11 +180,11 @@ exports.makeRunCallData = function(testData, block) {
 exports.makeRunCallDataWithAccount = function(testData, account, block) {
   var exec = testData.exec;
   return {
-    fromAccount: account,
+    account: account,
     origin: new Buffer(exec.origin, 'hex'),
     data: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
     value: bignum(exec.value),
-    from: new Buffer(exec.caller, 'hex'),
+    caller: new Buffer(exec.caller, 'hex'),
     to: new Buffer(exec.address, 'hex'),
     gas: exec.gas,
     block: block
@@ -183,24 +208,26 @@ exports.enableVMtracing = function(vm, file) {
       depth: info.depth,
       opcode: info.opcode,
       gas: info.gasLeft.toNumber(),
-      memory: '', //info.memory,
+      memory: (new Buffer(info.memory)).toString('hex'),
       storage: [],
       address: info.address.toString('hex')
     };
 
-    logObj.stack = info.stack.map(function (item) {
+    logObj.stack = info.stack.map(function(item) {
       return utils.pad(item, 32).toString('hex');
     });
 
     var stream = info.storageTrie.createReadStream();
 
     stream.on('data', function(data) {
-      logObj.storage.push([utils.unpad(data.key).toString('hex') ,rlp.decode(data.value).toString('hex')]);
+      logObj.storage.push([utils.unpad(data.key).toString('hex'), rlp.decode(data.value).toString('hex')]);
     });
 
-    stream.on('end', function(){
+    stream.on('end', function() {
       stringify.write(logObj);
       done();
+      // console.log('---------'+ logObj.opcode +' \n');
+      // dumpState(vm.trie, done )
     });
   };
 
@@ -280,7 +307,7 @@ exports.makeRunCodeData = function(exec, account, block) {
     code: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
     value: bignum(exec.value),
     address: new Buffer(exec.address, 'hex'),
-    from: new Buffer(exec.caller, 'hex'),
+    caller: new Buffer(exec.caller, 'hex'),
     data: new Buffer(exec.data.slice(2), 'hex'), // slice off 0x
     gasLimit: bignum(exec.gas),
     gasPrice: testUtils.fromDecimal(exec.gasPrice),
@@ -304,14 +331,14 @@ exports.setupPreConditions = function(state, testData, done) {
     account.nonce = testUtils.fromDecimal(acctData.nonce);
     account.balance = testUtils.fromDecimal(acctData.balance);
 
-    var codeBuf = bignum(acctData.code.slice(2), 16).toBuffer();
+    var codeBuf = new Buffer(acctData.code.slice(2), 'hex');
     var storageTrie = state.copy();
 
     async.series([
-      function(cb2){
+      function(cb2) {
         var keys = Object.keys(acctData.storage);
 
-        async.forEachSeries(keys, function(key, cb3){
+        async.forEachSeries(keys, function(key, cb3) {
           var val = acctData.storage[key];
           val = rlp.encode(new Buffer(val.slice(2), 'hex'));
           key = utils.pad(new Buffer(key.slice(2), 'hex'), 32);
@@ -320,14 +347,20 @@ exports.setupPreConditions = function(state, testData, done) {
         }, cb2);
       },
       function(cb2) {
+        //WTF? remove
         if (codeBuf.toString('hex') !== '') {
           account.storeCode(state, codeBuf, cb2);
         } else {
           cb2();
         }
       },
-      function(cb2){
+      function(cb2) {
         account.stateRoot = storageTrie.root;
+
+        if(testData.exec && key === testData.exec.address){
+          testData.root = storageTrie.root;
+        }
+
         state.put(new Buffer(key, 'hex'), account.serialize(), cb2);
       }
     ], callback);

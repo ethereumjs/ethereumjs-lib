@@ -1,11 +1,11 @@
 var argv = require('minimist')(process.argv.slice(2));
-
-var stateTests = require('ethereum-tests').StateTests;
+var stateTests = require('ethereum-tests').stateTests;
 var blacklist = ['EmptyTransaction'];
 
 var async = require('async'),
   VM = require('../lib/vm'),
   Account = require('../lib/account.js'),
+  blockchain = require('./fakeBlockChain.js'),
   assert = require('assert'),
   testUtils = require('./testUtils'),
   Trie = require('merkle-patricia-tree');
@@ -52,8 +52,7 @@ for (var test in stateTests) {
             var sstream = testUtils.enableVMtracing(vm, argv.vmtrace);
           }
 
-          vm.runTx(tx, block, function(err, results) {
-
+          function postTx(err, results) {
             if (sstream) sstream.end();
 
             if (err) console.log('error: ' + err);
@@ -63,7 +62,9 @@ for (var test in stateTests) {
               assert.strictEqual(results.vm.returnValue.toString('hex'), testData.out.slice(2), 'invalid return value');
             }
 
-            testUtils.verifyLogs(results, testData);
+            if(results){
+              testUtils.verifyLogs(results.vm.logs, testData);
+            }
             testUtils.verifyGas(results, testData);
 
             delete testData.post[testData.env.currentCoinbase]; // coinbase is only done in runBlock
@@ -83,6 +84,18 @@ for (var test in stateTests) {
                 });
               });
             }, done);
+          }
+
+          vm.runTx( {tx: tx, block: block, blockchain: blockchain}, function(err, results) {
+
+            if (argv.dumpstate) {
+              testUtils.dumpState(state, function(){
+                postTx(err, results);
+
+              });
+            } else {
+              postTx(err, results);
+            }
           });
         });
       }

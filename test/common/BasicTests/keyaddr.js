@@ -1,6 +1,6 @@
-var tests = require('ethereum-tests').keyaddrtests,
+var tests = require('ethereum-tests').basicTests.keyaddrtest,
   assert = require('assert'),
-  utils = require('../../../lib/utils'),
+  utils = require('ethereumjs-util'),
   ecdsa = require('secp256k1'),
   SHA3 = require('sha3');
 

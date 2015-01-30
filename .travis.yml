@@ -1,7 +1,4 @@
 language: node_js
 node_js:
   - "0.10"
-
-before_script:
-  - git clone https://github.com/ethereum/tests.git
-  - mv tests ..
+  - "0.11"

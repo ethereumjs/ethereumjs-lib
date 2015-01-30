@@ -1,6 +1,6 @@
 var assert = require('assert'),
   rlp = require('rlp'),
-  utils = require('../lib/utils.js'),
+  utils = require('ethereumjs-util'),
   bignum = require('bignum'),
   Transaction = require('../lib/transaction.js'),
   txFixtures = require('./fixtures/txs.json');
