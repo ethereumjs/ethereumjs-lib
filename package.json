@@ -39,7 +39,7 @@
   "devDependencies": {
     "JSONStream": "^0.10.0",
     "eslint": "^0.8.2",
-    "ethereum-tests": "git+https://github.com/ethereum/tests.git#develop",
+    "ethereum-tests": "0.0.3",
     "levelup": "^0.19.0",
     "memdown": "^0.10.2",
     "minimist": "^1.1.0",
