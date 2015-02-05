@@ -1,6 +1,6 @@
 {
   "name": "ethereumjs-lib",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "NodeJS and browser JS library for Ethereum",
   "main": "./index.js",
   "repository": {
@@ -23,12 +23,11 @@
     "ecdsa": "^0.5.3",
     "ecurve": "^0.6.0",
     "eslint": "^0.8.2",
-    "ethereum-tests": "0.0.1",
     "ethereumjs-p2p": "git+https://github.com/ethereum/ethereumjs-p2p",
     "ethereumjs-util": "0.0.5",
     "levelup": "^0.19.0",
     "memdown": "^0.10.2",
-    "merkle-patricia-tree": "^0.1.22",
+    "merkle-patricia-tree": "^0.1.23",
     "minimist": "^1.1.0",
     "mocha": "^2.1.0",
     "rlp": "0.0.12",
@@ -41,6 +40,7 @@
     "JSONStream": "^0.10.0",
     "ethereum-tests": "0.0.1",
     "eslint": "^0.8.2",
+    "ethereum-tests": "0.0.3",
     "levelup": "^0.19.0",
     "memdown": "^0.10.2",
     "minimist": "^1.1.0",
@@ -71,6 +71,11 @@
     "name": "Ethereum",
     "url": "http://ethereum.org"
   },
+  "contributors": [
+    "Martin Becze <wanderer.github.io> (github.com/wanderer)",
+    "Ethers (github.com/ethers)",
+    "Vitalik Buterin (ttps://github.com/vbuterin)"
+  ],
   "browser": {
     "ecdsa-native": false,
     "./lib/ecdsaOps.js": "./browser/ecdsaOps.js",
