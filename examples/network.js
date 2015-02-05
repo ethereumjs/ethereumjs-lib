@@ -1,4 +1,4 @@
-var Network = require('../lib/network');
+var Network = require('../').Network;
 var network = new Network();
 
 network.on('message', function(payload){

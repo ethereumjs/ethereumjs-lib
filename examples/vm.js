@@ -54,7 +54,7 @@ function setup(cb) {
 
   //give the account some wei.
   //This needs to be a `Buffer` or a string. all strings need to be in hex.
-  account.balance = 'f00000000000000000';
+  account.balance = 'f00000000000000001';
 
   //store in the trie
   stateTrie.put(address, account.serialize(), cb);
@@ -69,7 +69,7 @@ function runTx(raw, cb) {
   tx.sign(new Buffer(secretKey, 'hex'));
 
   //run the tx
-  vm.runTx(tx, function(err, results) {
+  vm.runTx({tx: tx}, function(err, results) {
     var createdAddress = results.createdAddress;
     //log some results
     console.log('gas used: ' + results.gasUsed.toString());
