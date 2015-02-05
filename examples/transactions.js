@@ -9,11 +9,10 @@ var tx = new Transaction();
 
 // So now we have created a blank transaction but Its not quiet valid yet. We
 // need to add some things to it. Lets start with
-
+//notice we don't set the `to` field since we are creating a new contract
 tx.nonce = 0;
 tx.gasPrice = 100;
 tx.gasLimit = 1000;
-tx.to = null; //creating a new contract
 tx.value = 0;
 tx.data = '7f4e616d65526567000000000000000000000000000000000000000000000000003057307f4e616d6552656700000000000000000000000000000000000000000000000000573360455760415160566000396000f20036602259604556330e0f600f5933ff33560f601e5960003356576000335700604158600035560f602b590033560f60365960003356573360003557600035335700';
 
