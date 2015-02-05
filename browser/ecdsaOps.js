@@ -1,4 +1,4 @@
-var utils = require('ethereumj-util'),
+var utils = require('ethereumjs-util'),
   ecdsa = require('ecdsa'),
   BigInteger = require('bigi'),
   ecurve = require('ecurve');
