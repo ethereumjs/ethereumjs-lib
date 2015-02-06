@@ -18,7 +18,7 @@
     "async": "^0.2.10",
     "bigi": "^1.4.0",
     "bignum": "^0.9.1",
-    "bignum-browserify": "0.0.1",
+    "bignum-browserify": "https://github.com/wanderer/bignum-browserify",
     "crypto-js": "^3.1.2-5",
     "ecdsa": "^0.5.3",
     "ecurve": "^0.6.0",
