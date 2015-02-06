@@ -1,13 +1,13 @@
 var Network = require('../').Network;
 var network = new Network();
 
-network.on('message', function(payload){
-   // console.log(payload);
-});
+// network.on('message', function(payload){
+//    // console.log(payload);
+// });
 
-network.on('message.hello', function(hello, payload){
-    console.log("hello from:" + hello.clientId);
-    console.log("at:" + hello.ip + " port:" + hello.port);
+network.on('message.hello', function(hello){
+    console.log('hello from:' + hello.clientId);
+    console.log('at:' + hello.ip + ' port:' + hello.port);
 });
 
 network.on('message.ping', function(){
@@ -37,7 +37,7 @@ network.on('message.blocks', function(){
 });
 
 network.on('message.getChain', function(){
-    console.log("get chian");
+    console.log('get chian');
 });
 
 network.on('message.notInChain', function(){
@@ -48,4 +48,4 @@ network.on('message.getTransactions', function(){
     console.log('request for transactions');
 });
 
-network.listen(30303, "0.0.0.0");
+network.listen(30303, '0.0.0.0');
