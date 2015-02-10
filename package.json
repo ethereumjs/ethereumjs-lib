@@ -23,7 +23,6 @@
     "ecdsa": "^0.5.3",
     "ecurve": "^0.6.0",
     "ethereumjs-p2p": "git+https://github.com/ethereum/ethereumjs-p2p",
-    "ethereumjs-tester": "git+https://github.com/ethereum/ethereumjs-tester",
     "ethereumjs-util": "git+https://github.com/ethereum/ethereumjs-util",
     "levelup": "^0.19.0",
     "memdown": "^0.10.2",
