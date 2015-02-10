@@ -59,7 +59,7 @@
     ]
   },
   "scripts": {
-    "test": "./script/eslint.sh && mocha --timeout 60000 --reporter spec ./test/ ./test/common/**",
+    "test": "./script/eslint.sh && ./bin/tester -a",
     "compile": "browserify index.js -s Ethereum | node ./node_modules/uglifyjs/index.js > ethereum-min.js"
   },
   "author": {

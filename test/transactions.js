@@ -1,99 +1,75 @@
-var assert = require('assert'),
+var tape = require('tape'),
   rlp = require('rlp'),
   utils = require('ethereumjs-util'),
-  bignum = require('bignum'),
   Transaction = require('../lib/transaction.js'),
   txFixtures = require('./fixtures/txs.json');
 
-describe('[Transaction]: Basic functions', function () {
+tape('[Transaction]: Basic functions', function(t) {
   var transactions = [];
-  it('should decode transactions', function (done) {
-    txFixtures.forEach(function (tx) {
-      var t = new Transaction(tx.raw);
-      assert(t.nonce.toString('hex') === tx.raw[0]);
-      assert(t.gasPrice.toString('hex') === tx.raw[1]);
-      assert(t.gasLimit.toString('hex') === tx.raw[2]);
-      assert(t.to.toString('hex') === tx.raw[3]);
-      assert(t.value.toString('hex') === tx.raw[4]);
-      assert(t.v.toString('hex') === tx.raw[6]);
-      assert(t.r.toString('hex') === tx.raw[7]);
-      assert(t.s.toString('hex') === tx.raw[8]);
-      assert(t.data.toString('hex') === tx.raw[5]);
-      transactions.push(t);
+  t.test('should decode transactions', function(st) {
+    txFixtures.forEach(function(tx) {
+      var pt = new Transaction(tx.raw);
+      st.equal(pt.nonce.toString('hex'), tx.raw[0]);
+      st.equal(pt.gasPrice.toString('hex'), tx.raw[1]);
+      st.equal(pt.gasLimit.toString('hex'), tx.raw[2]);
+      st.equal(pt.to.toString('hex'), tx.raw[3]);
+      st.equal(pt.value.toString('hex'), tx.raw[4]);
+      st.equal(pt.v.toString('hex'), tx.raw[6]);
+      st.equal(pt.r.toString('hex'), tx.raw[7]);
+      st.equal(pt.s.toString('hex'), tx.raw[8]);
+      st.equal(pt.data.toString('hex'), tx.raw[5]);
+      transactions.push(pt);
     });
-    done();
+    st.end();
   });
 
-  it('should serialize', function (done) {
-    transactions.forEach(function (tx) {
-      assert.deepEqual(tx.serialize(), rlp.encode(tx.raw));
+  t.test('should serialize', function(st) {
+    transactions.forEach(function(tx) {
+      st.deepEqual(tx.serialize(), rlp.encode(tx.raw));
     });
-    done();
+    st.end();
   });
 
-  it.skip('should correctly calcuate the upfront fee', function (done) {
-    transactions.forEach(function (tx, i) {
-      if (txFixtures[i].cost) {
-        assert(tx.getBaseFee().eq(bignum(txFixtures[i].cost)));
-      }
+  t.test('should verify Signatures', function(st) {
+    transactions.forEach(function(tx) {
+      st.equals(tx.verifySignature(), true);
     });
-    done();
+    st.end();
   });
 
-  it('should get sender\'s address', function (done) {
-    transactions.forEach(function (tx, i) {
-      assert(tx.getSenderAddress().toString('hex'),  txFixtures[i].sendersAddress);
-    });
-    done();
-  });
-
-  it('should verify Signatures', function (done) {
-    transactions.forEach(function (tx) {
-      assert(tx.verifySignature() === true);
-    });
-    done();
-  });
-
-  it.skip('should verify tx', function (done) {
-    transactions.forEach(function (tx) {
-      assert(tx.validate() === true);
-    });
-    done();
-  });
-
-  it('should  not verify Signatures', function (done) {
-    transactions.forEach(function (tx) {
+  t.test('should  not verify Signatures', function(st) {
+    transactions.forEach(function(tx) {
       tx.s = utils.zeros(32);
-      assert(tx.verifySignature() === false);
+      st.equals(tx.verifySignature(), false);
     });
-    done();
+    st.end();
   });
 
-  it('should sign tx', function (done) {
-    transactions.forEach(function (tx, i) {
+  t.test('should sign tx', function(st) {
+    transactions.forEach(function(tx, i) {
       if (txFixtures[i].privateKey) {
         var privKey = new Buffer(txFixtures[i].privateKey, 'hex');
         tx.sign(privKey);
       }
     });
-    done();
+    st.end();
   });
 
-  it('should get sender\'s address after signing it', function (done) {
-    transactions.forEach(function (tx, i) {
+  t.test('should get sender\'s address after signing it', function(st) {
+    transactions.forEach(function(tx, i) {
       if (txFixtures[i].privateKey) {
-        assert(tx.getSenderAddress().toString('hex') === txFixtures[i].sendersAddress);
+        st.equals(tx.getSenderAddress().toString('hex'), txFixtures[i].sendersAddress);
       }
     });
-    done();
+    st.end();
   });
 
-  it('should verify signing it', function (done) {
-    transactions.forEach(function (tx, i) {
+  t.test('should verify signing it', function(st) {
+    transactions.forEach(function(tx, i) {
       if (txFixtures[i].privateKey) {
-        assert(tx.verifySignature() === true);
+        st.equals(tx.verifySignature(), true);
       }
     });
-    done();
+    st.end();
   });
 });

@@ -3,6 +3,7 @@
 var argv = require('minimist')(process.argv.slice(2));
 var async = require('async');
 var tape = require('tape');
+var cp = require('child_process');
 
 if (argv.r) {
   randomized(process.argv[2]);
@@ -10,7 +11,7 @@ if (argv.r) {
   runTests('state', argv);
 } else if (argv.v) {
   runTests('vm', argv);
-} else if (argv.a){
+} else if (argv.a) {
   runAll();
 }
 
@@ -96,8 +97,17 @@ function runTests(type, argv, cb) {
   }, cb);
 }
 
-function runAll(){
+function runAll() {
   async.series([
+    function(done) {
+      var f = cp.fork(__dirname + '/../test/browserfy.js');
+      f.on('close', done);
+    },
+
+    function(done) {
+      var f = cp.fork(__dirname + '/../test/transactions.js');
+      f.on('close', done);
+    },
     runTests.bind(this, 'state', {}),
     runTests.bind(this, 'vm', {})
   ]);

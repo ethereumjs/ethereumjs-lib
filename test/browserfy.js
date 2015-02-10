@@ -1,17 +1,16 @@
 var path = require('path');
+var tape = require('tape');
 
-describe('browserify', function() {
-  it('it should browserify', function(done) {
-    var browserify = require('browserify');
-    var b = browserify();
-    b.add(path.join(__dirname, '/../index.js'));
-    var s = b.bundle();
-    s.on('error', function(err){
-      done(err);
-    });
+tape('browserify', function(t) {
+  var browserify = require('browserify');
+  var b = browserify();
+  b.add(path.join(__dirname, '/../index.js'));
+  var s = b.bundle();
+  s.on('error', function(err) {
+    t.fail('got error: ' + err );
+  });
 
-    s.once('data', function(){
-      done();
-    });
+  s.once('data', function() {
+    t.end();
   });
 });
