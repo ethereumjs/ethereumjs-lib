@@ -32,7 +32,6 @@
     "rlp": "0.0.12",
     "secp256k1": "0.0.13",
     "sha3": "^1.1.0",
-    "uglifyjs": "^2.3.6",
     "underscore": "^1.6.0"
   },
   "devDependencies": {
