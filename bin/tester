@@ -6,7 +6,7 @@ var tape = require('tape');
 var cp = require('child_process');
 
 if (argv.r) {
-  randomized(process.argv[2]);
+  randomized(argv.r);
 } else if (argv.s) {
   runTests('state', argv);
 } else if (argv.v) {
@@ -19,15 +19,17 @@ if (argv.r) {
 //returns 1 if the tests fails
 //returns 0 if the tests succeds
 function randomized(stateTest) {
+  var stateRunner = require('../test/stateRunner.js');
+
   tape.createStream({
     objectMode: true
   }).on('data', function(row) {
     if (row.ok === false) {
-      process.stdout.write(1);
+      process.stdout.write('1');
       process.exit();
     }
   }).on('end', function() {
-    process.stdout.write(0);
+    process.stdout.write('0');
   });
 
   try {
