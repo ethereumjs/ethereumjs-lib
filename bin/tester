@@ -1,0 +1,104 @@
+#!/usr/bin/env node
+
+var argv = require('minimist')(process.argv.slice(2));
+var async = require('async');
+var tape = require('tape');
+
+if (argv.r) {
+  randomized(process.argv[2]);
+} else if (argv.s) {
+  runTests('state', argv);
+} else if (argv.v) {
+  runTests('vm', argv);
+} else if (argv.a){
+  runAll();
+}
+
+//randomized tests
+//returns 1 if the tests fails
+//returns 0 if the tests succeds
+function randomized(stateTest) {
+  tape.createStream({
+    objectMode: true
+  }).on('data', function(row) {
+    if (row.ok === false) {
+      process.stdout.write(1);
+      process.exit();
+    }
+  }).on('end', function() {
+    process.stdout.write(0);
+  });
+
+  try {
+    stateTest = JSON.parse(stateTest);
+  } catch (e) {
+    console.error('invalid json');
+    process.exit();
+  }
+
+  tape('', function(t) {
+    stateRunner(stateTest, {
+      t: t
+    }, function() {
+      t.end();
+    });
+  });
+}
+
+function getTests(type, argv) {
+  var tests = require('ethereum-tests')[type + 'Tests'];
+
+  if (type === 'vm') {
+    for (var prop in tests.randomTest) {
+      tests[prop] = tests.randomTest[prop];
+    }
+
+    delete tests.RandomTests;
+    delete tests.vmSystemOperationsTest;
+  }
+
+  //for running a single file
+  if (argv.file) {
+    var i = {};
+    i[argv.file] = tests[argv.file];
+
+    //run a single test from a single file
+    if (argv.test) {
+      i[argv.file] = {};
+      i[argv.file][argv.test] = tests[argv.file][argv.test];
+    }
+
+    tests = i;
+  }
+
+  return tests;
+}
+
+function runTests(type, argv, cb) {
+  var tests = getTests(type, argv);
+  var runner = require('../test/' + type + 'Runner');
+
+  //run all of the tests
+  async.each(Object.keys(tests), function(fileName, done) {
+    var file = tests[fileName];
+    async.eachSeries(Object.keys(file), function(testName, done2) {
+      var test = file[testName];
+      tape('[' + fileName + '] ' + testName, function(t) {
+        runner(test, {
+          t: t,
+          vmtrace: argv.vmtrace
+        }, function() {
+          t.end();
+          done2();
+        });
+      });
+    }, done);
+  }, cb);
+}
+
+function runAll(){
+  async.series([
+    runTests.bind(this, 'state', {}),
+    runTests.bind(this, 'vm', {})
+  ]);
+}
