@@ -43,9 +43,7 @@
     "levelup": "^0.19.0",
     "memdown": "^0.10.2",
     "minimist": "^1.1.0",
-    "mocha": ">=1.15.1",
-    "tape": "^3.5.0",
-    "uglifyjs": "^2.3.6"
+    "tape": "^3.5.0"
   },
   "testling": {
     "browsers": [
@@ -60,7 +58,7 @@
   },
   "scripts": {
     "test": "./script/eslint.sh && ./bin/tester -a",
-    "compile": "browserify index.js -s Ethereum | node ./node_modules/uglifyjs/index.js > ethereum-min.js"
+    "compile": "browserify index.js -s Ethereum"
   },
   "author": {
     "name": "Ethereum",
