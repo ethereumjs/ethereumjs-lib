@@ -1,13 +1,13 @@
-var genesisData = require('ethereum-tests').basicTests.genesishashestest,
-  tape = require('tape'), 
+const genesisData = require('ethereum-tests').basicTests.genesishashestest,
+  tape = require('tape'),
   Blockchain = require('../lib/blockchain.js'),
   Block = require('../lib/block.js'),
   VM = require('../lib/vm/index.js'),
   levelup = require('levelup');
 
 var blockDB = levelup('', {
-  db: require('memdown')
-}),
+    db: require('memdown')
+  }),
   detailsDB = levelup('/does/not/matter', {
     db: require('memdown')
   }),
@@ -16,23 +16,23 @@ var blockDB = levelup('', {
   }),
   blockchain;
 
-tape('[Common]: genesis hashes tests', function (t) {
-  t.test('should create a new block chain', function (st) {
+tape('[Common]: genesis hashes tests', function(t) {
+  t.test('should create a new block chain', function(st) {
     blockchain = new Blockchain(blockDB, detailsDB);
-    blockchain.init(function(){
+    blockchain.init(function() {
       st.end();
     });
   });
 
-  t.test('should generate the genesis state correctly', function(st){
+  t.test('should generate the genesis state correctly', function(st) {
     var vm = new VM(stateDB);
-    vm.generateGenesis(genesisData.initial_alloc, function(){
+    vm.generateGenesis(genesisData.initial_alloc, function() {
       st.equal(vm.trie.root.toString('hex'), genesisData.genesis_state_root);
       st.end();
     });
   });
 
-  t.test('should have added the genesis correctly', function (st) {
+  t.test('should have added the genesis correctly', function(st) {
     var blockGenesis = new Block(),
       rlpGenesis;
     blockGenesis.header.stateRoot = genesisData.genesis_state_root;

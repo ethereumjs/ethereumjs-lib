@@ -109,8 +109,12 @@ exports.verifyGas = function(results, testData, t) {
 
   var postBal = bignum(testData.post[coinbaseAddr].balance);
   var balance = postBal.sub(preBal).toString();
-  var amountSpent = results.gasUsed.mul(testData.transaction.gasPrice);
-  t.equal(amountSpent.toString(), balance, 'correct gas');
+  if(balance !== '0'){
+    var amountSpent = results.gasUsed.mul(testData.transaction.gasPrice);
+    t.equal(amountSpent.toString(), balance, 'correct gas');
+  }else{
+    t.equal(results, undefined);
+  }
 };
 
 /**

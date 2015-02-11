@@ -11,6 +11,8 @@ if (argv.r) {
   runTests('state', argv);
 } else if (argv.v) {
   runTests('vm', argv);
+} else if(argv.t){
+  runTests('transaction', argv);
 } else if (argv.a) {
   runAll();
 }
@@ -102,12 +104,19 @@ function runTests(type, argv, cb) {
 function runAll() {
   async.series([
     function(done) {
+      var f = cp.fork(__dirname + '/../test/tester.js');
+      f.on('close', done);
+    },
+    function(done) {
       var f = cp.fork(__dirname + '/../test/browserfy.js');
       f.on('close', done);
     },
-
     function(done) {
       var f = cp.fork(__dirname + '/../test/transactions.js');
+      f.on('close', done);
+    },
+    function(done) {
+      var f = cp.fork(__dirname + '/../test/genesishashes.js');
       f.on('close', done);
     },
     runTests.bind(this, 'state', {}),
