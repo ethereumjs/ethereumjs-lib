@@ -27,10 +27,9 @@ Tests use mocha
 `npm test`
 
 Most of the tests are in described in the [test repo](https://github.com/ethereum/tests)
-To run the test run `npm test`. 
+To run the test run `npm test`. You can also run the tests directly by running `./bin/tester -a`   
 
-You can use the test run directly by running `./bin/tester -a` 
-The test can take the following options  
+The `tester` can take the following options  
 `-a` runs all the tests  
 `-s` runs all the state tests
 `-v` runs all the VM tests 
