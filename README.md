@@ -1,7 +1,7 @@
 SYNOPSIS [![Build Status](https://travis-ci.org/ethereum/ethereumjs-lib.svg?branch=master)](https://travis-ci.org/ethereum/ethereumjs-lib)
 ===========
 
-A Javascript library of core [Ethereum](http://Ethereum.org) functions as described in the [Yellow Paper](https://github.com/ethereum/yellowpaper) `ethereumjs-lib` can be used with [`browserify`](http://browserify.org/). 
+A Javascript library of core [Ethereum](http://Ethereum.org) functions as described in the [Yellow Paper](https://github.com/ethereum/yellowpaper). 
 
 # EXAMPLES
  - [Exploring the state trie](https://wanderer.github.io/ethereum/nodejs/code/2014/05/21/using-ethereums-tries-with-node/)
@@ -30,22 +30,25 @@ Most of the tests are in described in the [test repo](https://github.com/ethereu
 To run the test run `npm test`. You can also run the tests directly by running `./bin/tester -a`   
 
 The `tester` can take the following options  
-`-a` runs all the tests  
-`-s` runs all the state tests
-`-v` runs all the VM tests 
+`-a` runs all the tests   
+`-s` runs all the state tests   
+`-v` runs all the VM tests   
 `-r` runs a VM tests given a string which defines the test   
 `--vmtrace <filename>` dumps a json VM trace to a file for VM and State tests  
 
-In addition you can select specific VM and State tests with the following options    
+In addition you can select specific VM and State tests with the following options       
 `--file` run only one file in the [test repo](https://github.com/ethereum/tests)  
 `--test` needs to be used with the `--file` option. Specifies a test from a file to run.  
 
-For browser testing install testling `npm install testling -g` and run  
-`testling -u`
+
 
 ######example usage
 run a the CallRecursiveContract test from the stInitCodeTest file  
 `./bin/tester --file stInitCodeTest --test CallRecursiveContract --vmtrace "trace.json"`
+
+# BROWSER
+`ethereumjs-lib` can be used with [`browserify`](http://browserify.org/). 
+For browser testing install testling `npm install testling -g` and run `testling -u`
 
 # CONTRIBUTIONS
 
