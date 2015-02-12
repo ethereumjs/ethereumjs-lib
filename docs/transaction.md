@@ -21,10 +21,44 @@ Implements schema and functions relating to Ethereum transactions
 
 ### `new Transaction([data])`
 Creates a new transaction object
-- `data` - the serialized transaction (usually from the network) in a array of buffers as described in the [wire protocol](https://github.com/ethereum/wiki/wiki/%5BEnglish%5D-Wire-Protocol)
+- `data` - a transaction can be initiailized with either a `buffer` containing the RLP serialized transaction. 
+ Or an `array` of buffers relating to each of the tx Properties, listed in order below.  For example.
+```javascript
+var rawTx = [
+  '00', //nonce
+  '09184e72a000', //gasPrice
+  '2710', //gasLimit
+  '0000000000000000000000000000000000000000', //to
+  '00',  //value
+  '7f7465737432000000000000000000000000000000000000000000000000000000600057', //data
+  '1c', //v
+  '5e1d3a76fbf824220eafc8c79ad578ad2b67d01b0c2425eb1f1347e8f50882ab', //r
+  '5bd428537f05f9830e93792f90ea6a3e2d1ee84952dd96edbae9f658f831ab13' //s
+];
+
+var tx = new Transaction(rawTx);
+```
+
+Or lastly an `Object` containing the Properties of the transaction
+
+```javascript
+var rawTx = {
+  nonce: '00',
+  gasPrice: '09184e72a000', 
+  gasLimit: '2710',
+  to: '0000000000000000000000000000000000000000', 
+  value: '00', 
+  data: '7f7465737432000000000000000000000000000000000000000000000000000000600057',
+  v: '1c', 
+  r: '5e1d3a76fbf824220eafc8c79ad578ad2b67d01b0c2425eb1f1347e8f50882ab',
+  s '5bd428537f05f9830e93792f90ea6a3e2d1ee84952dd96edbae9f658f831ab13'
+};
+
+var tx = new Transaction(rawTx);
+```
+For `Object` and `Arrays` each of the elements can either be a `Buffer`, hex `String` , `Number`, or an object with a `toBuffer` method such as `Bignum`
 
 ### `transaction` Properties
-- `type` - Either `message` or `contract`
 - `raw` - The raw rlp decoded transaction.
 - `nonce` 
 - `to` - the to address
@@ -69,5 +103,6 @@ returns the upfront fee (DataFee + TxFee)
 #### `transaction.getUpfrontCost()`
 returns the total amount needed in the account of the sender for the transaction to be valid
 
-#### `transaction.toJSON()`
+#### `transaction.toJSON([object])`
 returns transaction as JSON
+- `object` - a `Boolean` that defaults to false. If `object` is true then this will return an object else it will return an `array`.
