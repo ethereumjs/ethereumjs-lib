@@ -46,9 +46,9 @@
       "firefox/15..latest",
       "chrome/22..latest"
     ],
-    "harness": "mocha-bdd",
     "files": [
-      "test/stateTests.js"
+      "test/browserState.js",
+      "test/transactions.js"
     ]
   },
   "scripts": {

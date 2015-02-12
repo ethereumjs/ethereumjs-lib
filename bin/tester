@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-var argv = require('minimist')(process.argv.slice(2));
-var async = require('async');
-var tape = require('tape');
-var cp = require('child_process');
+const argv = require('minimist')(process.argv.slice(2));
+const async = require('async');
+const tape = require('tape');
+const cp = require('child_process');
 
 if (argv.r) {
   randomized(argv.r);
@@ -21,7 +21,7 @@ if (argv.r) {
 //returns 1 if the tests fails
 //returns 0 if the tests succeds
 function randomized(stateTest) {
-  var stateRunner = require('../test/stateRunner.js');
+  const stateRunner = require('../test/stateRunner.js');
 
   tape.createStream({
     objectMode: true
@@ -51,7 +51,7 @@ function randomized(stateTest) {
 }
 
 function getTests(type, argv) {
-  var tests = require('ethereum-tests')[type + 'Tests'];
+  const tests = require('ethereum-tests')[type + 'Tests'];
 
   if (type === 'vm') {
     for (var prop in tests.randomTest) {
@@ -81,7 +81,7 @@ function getTests(type, argv) {
 
 function runTests(type, argv, cb) {
   var tests = getTests(type, argv);
-  var runner = require('../test/' + type + 'Runner');
+  const runner = require('../test/' + type + 'Runner');
 
   //run all of the tests
   async.eachSeries(Object.keys(tests), function(fileName, done) {
