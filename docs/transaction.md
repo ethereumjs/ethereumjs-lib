@@ -21,7 +21,7 @@ Implements schema and functions relating to Ethereum transactions
 
 ### `new Transaction([data])`
 Creates a new transaction object
-- `data` - a transaction can be initiailed with either a `buffer` containing the RLP serialized transaction. 
+- `data` - a transaction can be initiailized with either a `buffer` containing the RLP serialized transaction. 
  Or an `array` of buffers relating to each of the tx Properties, listed in order below.  For example.
 ```javascript
 var rawTx = [
@@ -56,7 +56,7 @@ var rawTx = {
 
 var tx = new Transaction(rawTx);
 ```
-For `Object` and `Arrays` each of the elements can either be a `Buffer`, hex `String` , `Number`, or an object with a `toBuffer` method such as `Bignum
+For `Object` and `Arrays` each of the elements can either be a `Buffer`, hex `String` , `Number`, or an object with a `toBuffer` method such as `Bignum`
 
 ### `transaction` Properties
 - `raw` - The raw rlp decoded transaction.
