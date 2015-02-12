@@ -1,29 +1,9 @@
 SYNOPSIS [![Build Status](https://travis-ci.org/ethereum/ethereumjs-lib.svg?branch=master)](https://travis-ci.org/ethereum/ethereumjs-lib)
 ===========
 
-A Javascript library of core [Ethereum](http://Ethereum.org) functions as described in the [Yellow Paper](https://github.com/ethereum/yellowpaper)
-
-####install
-`npm install ethereumjs-lib`
-
-#USAGE
-``` javascript
- var Network = require('ethereumjs-lib').Network;
- 
- //create a new tcp server instance using network version 25
- var network = new Network({
-   version: 25
- });
-
- //start listening for incoming connects
- network.listen(30303, '0.0.0.0');
-```
-
-### browser
-`ethereumjs-lib` can be used with [`browserify`](http://browserify.org/). 
+A Javascript library of core [Ethereum](http://Ethereum.org) functions as described in the [Yellow Paper](https://github.com/ethereum/yellowpaper) `ethereumjs-lib` can be used with [`browserify`](http://browserify.org/). 
 
 # EXAMPLES
-
  - [Exploring the state trie](https://wanderer.github.io/ethereum/nodejs/code/2014/05/21/using-ethereums-tries-with-node/)
  - [Creating contracts and verifying transaction](https://wanderer.github.io/ethereum/2014/06/14/creating-and-verifying-transaction-with-node/)
  - [How to run contracts and create stack traces](https://wanderer.github.io/ethereum/nodejs/code/2014/08/12/running-contracts-with-vm/)
@@ -46,25 +26,27 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions as descri
 Tests use mocha
 `npm test`
 
+Most of the tests are in described in the [test repo](https://github.com/ethereum/tests)
+To run the test run `npm test`. 
+
+You can use the test run directly by running `./bin/tester -a` 
+The test can take the following options  
+`-a` runs all the tests  
+`-s` runs all the state tests
+`-v` runs all the VM tests 
+`-r` runs a VM tests given a string which defines the test   
+`--vmtrace <filename>` dumps a json VM trace to a file for VM and State tests  
+
+In addition you can select specific VM and State tests with the following options    
+`--file` run only one file in the [test repo](https://github.com/ethereum/tests)  
+`--test` needs to be used with the `--file` option. Specifies a test from a file to run.  
+
 For browser testing install testling `npm install testling -g` and run  
 `testling -u`
 
-#####common tests
-Most of the tests are in described in the [test repo](https://github.com/ethereum/tests)
-to just run the VM test run
-`mocha test/vmTests.js`
-
-to just run the State test run
-`mocha test/stateTests.js`
-
-Both the test runners can take the following options   
-`--file` run only one file in the [test repo](https://github.com/ethereum/tests)  
-`--test` needs to be used with the `--file` option. Specifies a test from a file to run.  
-`--vmtrace` test the test runner to print a json VM trace to a file  
-
 ######example usage
 run a the CallRecursiveContract test from the stInitCodeTest file  
-`mocha test/stateTests.js --file stInitCodeTest --test CallRecursiveContract --vmtrace "trace.json"`
+`./bin/tester --file stInitCodeTest --test CallRecursiveContract --vmtrace "trace.json"`
 
 # CONTRIBUTIONS
 
