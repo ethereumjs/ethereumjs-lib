@@ -66,9 +66,6 @@
     "Ethers (github.com/ethers)"
   ],
   "browser": {
-    "transform": [
-      "brfs"
-    ],
     "ecdsa-native": false,
     "./lib/ecdsaOps.js": "./browser/ecdsaOps.js",
     "bignum": "bignum-browserify",
