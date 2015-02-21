@@ -51,7 +51,7 @@ function randomized(stateTest) {
 }
 
 function getTests(type, argv) {
-  const tests = require('ethereum-tests')[type + 'Tests'];
+  var tests = require('ethereum-tests')[type + 'Tests'];
 
   if (type === 'vm') {
     for (var prop in tests.randomTest) {
@@ -119,6 +119,7 @@ function runAll() {
       var f = cp.fork(__dirname + '/../test/genesishashes.js');
       f.on('close', done);
     },
+    runTests.bind(this, 'transaction', {}),
     runTests.bind(this, 'state', {}),
     runTests.bind(this, 'vm', {})
   ]);
