@@ -24,13 +24,13 @@ tape('[Common]: genesis hashes tests', function(t) {
     });
   });
 
-  t.test('should generate the genesis state correctly', function(st) {
-    var vm = new VM(stateDB);
-    vm.generateGenesis(genesisData.initial_alloc, function() {
-      st.equal(vm.trie.root.toString('hex'), genesisData.genesis_state_root);
-      st.end();
-    });
-  });
+  // t.test('should generate the genesis state correctly', function(st) {
+  //   var vm = new VM(stateDB);
+  //   vm.generateGenesis(genesisData.initial_alloc, function() {
+  //     st.equal(vm.trie.root.toString('hex'), genesisData.genesis_state_root);
+  //     st.end();
+  //   });
+  // });
 
   t.test('should have added the genesis correctly', function(st) {
     var blockGenesis = new Block(),
