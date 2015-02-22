@@ -21,8 +21,8 @@ module.exports = function runStateTest(testData, options, cb) {
     },
     function(done) {
 
-      var vm = new VM(state),
-        tx = testUtil.makeTx(testData.transaction);
+      var vm = new VM(state);
+      var tx = testUtil.makeTx(testData.transaction);
 
       block = testUtil.makeBlockFromEnv(testData.env);
       block.transactions.push(tx);
