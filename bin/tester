@@ -82,7 +82,7 @@ function getTests(type, argv) {
 function runTests(type, argv, cb) {
   var tests = getTests(type, argv);
   const runner = require('../test/' + type + 'Runner');
-  const skip = ['TransactionMakeAccountBalanceOverflow'];
+  const skip = ['TransactionMakeAccountBalanceOverflow', 'RecursiveCreateContracts'];
 
   //run all of the tests
   async.eachSeries(Object.keys(tests), function(fileName, done) {
