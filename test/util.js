@@ -172,10 +172,12 @@ exports.enableVMtracing = function(vm, file) {
 
   var stringify = JSONStream.stringify();
   stringify.pipe(fs.createWriteStream(file));
+  var step = 0;
 
   vm.onStep = function(info, done) {
 
     var logObj = {
+      step : step,
       pc: bignum(info.pc).toNumber(),
       depth: info.depth,
       opcode: info.opcode,
@@ -184,6 +186,8 @@ exports.enableVMtracing = function(vm, file) {
       storage: [],
       address: info.address.toString('hex')
     };
+
+    step++;
 
     logObj.stack = info.stack.map(function(item) {
       return utils.pad(item, 32).toString('hex');
