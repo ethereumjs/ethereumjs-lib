@@ -47,9 +47,6 @@ module.exports = function runStateTest(testData, options, cb) {
         done();
       }
     },
-    function(done){
-      testUtil.dumpState(state, done);
-    },
     function(done) {
       if (!errored) {
         var address = new Buffer(testData.env.currentCoinbase, 'hex');
