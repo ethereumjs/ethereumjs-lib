@@ -43,7 +43,7 @@ In addition you can select specific VM and State tests with the following option
 
 ######example usage
 run a the CallRecursiveContract test from the stInitCodeTest file  
-`./bin/tester --file stInitCodeTest --test CallRecursiveContract --vmtrace "trace.json"`
+`./bin/tester -s --file stInitCodeTest --test CallRecursiveContract --vmtrace "trace.json"`
 
 # BROWSER
 `ethereumjs-lib` can be used with [`browserify`](http://browserify.org/). 
