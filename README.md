@@ -23,7 +23,6 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions as descri
  - [Trie](https://github.com/wanderer/merkle-patricia-tree) - Modified Merkle Patricia Tree
 
 # TESTING
-Tests use mocha
 `npm test`
 
 Most of the tests are in described in the [test repo](https://github.com/ethereum/tests)
