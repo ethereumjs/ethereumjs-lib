@@ -21,7 +21,7 @@ module.exports = function runStateTest(testData, options, cb) {
     },
     function(done) {
 
-      var vm = new VM(state);
+      var vm = new VM(state, blockchain);
       var tx = testUtil.makeTx(testData.transaction);
 
       block = testUtil.makeBlockFromEnv(testData.env);
@@ -34,7 +34,6 @@ module.exports = function runStateTest(testData, options, cb) {
       if (tx.validate()) {
         vm.runBlock({
           block: block,
-          blockchain: blockchain,
           gen: true
         }, function(err) {
           if (err) {
