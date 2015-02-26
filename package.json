@@ -26,7 +26,6 @@
     "merkle-patricia-tree": "^0.1.23",
     "rlp": "0.0.12",
     "secp256k1": "0.0.15",
-    "semaphore": "^1.0.1",
     "sha3": "^1.1.0",
     "underscore": "^1.6.0"
   },
