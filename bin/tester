@@ -3,6 +3,7 @@
 const argv = require('minimist')(process.argv.slice(2));
 const async = require('async');
 const tape = require('tape');
+const path = require('path');
 const cp = require('child_process');
 
 if (argv.r) {
@@ -51,6 +52,14 @@ function randomized(stateTest) {
 }
 
 function getTests(type, argv) {
+  
+  if(argv.local){
+    var base = path.basename(argv.local);
+    return {
+      base : require(argv.local)
+    };
+  }
+
   var tests = require('ethereum-tests')[type + 'Tests'];
 
   if (type === 'vm') {
