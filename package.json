@@ -66,6 +66,7 @@
     "Ethers (github.com/ethers)"
   ],
   "browser": {
+    "./lib/networking.js": false,
     "./lib/ecdsaOps.js": "./browser/ecdsaOps.js",
     "bignum": "bignum-browserify",
     "sha3": "./browser/sha3.js"
