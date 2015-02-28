@@ -50,7 +50,7 @@ module.exports = function runStateTest(testData, options, cb) {
     },
     function(done) {
       var hrend = process.hrtime(hrstart);
-      console.log('# Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000);
+      //console.log('# Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000);
       if (!errored) {
         var address = new Buffer(testData.env.currentCoinbase, 'hex');
         var minerReward = bignum('1500000000000000000');
