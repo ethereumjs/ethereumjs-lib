@@ -31,9 +31,8 @@ module.exports = function runStateTest(testData, options, cb) {
     },
     function(done) {
       var block = testUtil.makeBlockFromEnv( testData.env);
-      var vm = new VM(state);
+      var vm = new VM(state, blockchain);
       var runCodeData = testUtil.makeRunCodeData(testData.exec, account, block);
-      runCodeData.blockchain = blockchain;
 
       if (options.vmtrace) {
         sstream = testUtil.enableVMtracing(vm, options.vmtrace);
