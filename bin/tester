@@ -9,7 +9,12 @@ const cp = require('child_process');
 if (argv.r) {
   randomized(argv.r);
 } else if (argv.s) {
-  runTests('state', argv);
+
+  var hrstart = process.hrtime();
+  runTests('state', argv, function(){
+    var hrend = process.hrtime(hrstart);
+    console.log('# Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000);
+  });
 } else if (argv.v) {
   runTests('vm', argv);
 } else if(argv.t){
