@@ -1,13 +1,13 @@
-const bignum = require('bignum'),
-  fs = require('fs'),
-  async = require('async'),
-  SHA3 = require('sha3'),
-  rlp = require('rlp'),
-  JSONStream = require('JSONStream'),
-  utils = require('ethereumjs-util'),
-  Account = require('../lib/account.js'),
-  Transaction = require('../lib/transaction.js'),
-  Block = require('../lib/block.js');
+const fs = require('fs');
+const BN = require('bn.js');
+const async = require('async');
+const SHA3 = require('sha3');
+const rlp = require('rlp');
+const JSONStream = require('JSONStream');
+const utils = require('ethereumjs-util');
+const Account = require('../lib/account.js');
+const Transaction = require('../lib/transaction.js');
+const Block = require('../lib/block.js');
 
 const testUtils = exports;
 
@@ -18,8 +18,8 @@ exports.dumpState = function(state, cb) {
   rs.on('data', function(data) {
     var account = new Account(data.value);
     statedump[data.key.toString('hex')] = {
-      balance: bignum.fromBuffer(account.balance).toString(),
-      nonce: bignum.fromBuffer(account.nonce).toString(),
+      balance: new BN(account.balance).toString(),
+      nonce: new BN(account.nonce).toString(),
       stateRoot: account.stateRoot.toString('hex')
     };
   });
@@ -38,12 +38,12 @@ exports.dumpState = function(state, cb) {
 exports.makeTx = function(txData) {
   var privKey = new Buffer(txData.secretKey, 'hex'),
     tx = new Transaction([
-      bignum(txData.nonce).toBuffer(),
-      bignum(txData.gasPrice).toBuffer(),
-      bignum(txData.gasLimit).toBuffer(),
-      new Buffer(txData.to, 'hex'),
-      bignum(txData.value).toBuffer(),
-      new Buffer(txData.data.slice(2), 'hex') // slice off 0x
+      new BN(txData.nonce),
+      new BN(txData.gasPrice),
+      new BN(txData.gasLimit),
+      txData.to,
+      new BN(txData.value),
+      txData.data.slice(2) // slice off 0x
     ]);
   tx.sign(privKey);
   return tx;
@@ -107,7 +107,7 @@ exports.verifyGas = function(results, testData, t) {
     return;
   }
 
-  var postBal = bignum(testData.post[coinbaseAddr].balance);
+  var postBal = new BN(testData.post[coinbaseAddr].balance);
   var balance = postBal.sub(preBal).toString();
   if(balance !== '0'){
     var amountSpent = results.gasUsed.mul(testData.transaction.gasPrice);
@@ -154,7 +154,7 @@ exports.makeRunCallData = function(testData, block) {
     account: account,
     origin: new Buffer(exec.origin, 'hex'),
     data: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
-    value: bignum(exec.value),
+    value: new BN(exec.value),
     caller: new Buffer(exec.caller, 'hex'),
     to: new Buffer(exec.address, 'hex'),
     gas: exec.gas,
@@ -178,10 +178,10 @@ exports.enableVMtracing = function(vm, file) {
 
     var logObj = {
       step : step,
-      pc: bignum(info.pc).toNumber(),
+      pc: new BN(info.pc).toString(),
       depth: info.depth,
       opcode: info.opcode,
-      gas: info.gasLeft.toNumber(),
+      gas: info.gasLeft.toString(),
       memory: (new Buffer(info.memory)).toString('hex'),
       storage: [],
       address: info.address.toString('hex')
@@ -216,7 +216,7 @@ exports.enableVMtracing = function(vm, file) {
  * @return {String}
  */
 exports.toDecimal = function(buffer) {
-  return bignum.fromBuffer(buffer).toString();
+  return new BN(buffer).toString();
 };
 
 /**
@@ -225,7 +225,7 @@ exports.toDecimal = function(buffer) {
  *  @return {Buffer}
  */
 exports.fromDecimal = function(string) {
-  return bignum(string).toBuffer();
+  return new Buffer(new BN(string).toArray());
 };
 
 /**
@@ -235,7 +235,7 @@ exports.fromDecimal = function(string) {
  */
 exports.fromAddress = function(hexString) {
   hexString = hexString.substring(2);
-  return utils.pad(bignum(hexString, 16).toBuffer(), 32);
+  return utils.pad(new Buffer(new BN(hexString, 16).toArray()), 32);
 };
 
 /**
@@ -281,11 +281,11 @@ exports.makeRunCodeData = function(exec, account, block) {
     account: account,
     origin: new Buffer(exec.origin, 'hex'),
     code: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
-    value: bignum(exec.value),
+    value: new BN(exec.value),
     address: new Buffer(exec.address, 'hex'),
     caller: new Buffer(exec.caller, 'hex'),
     data: new Buffer(exec.data.slice(2), 'hex'), // slice off 0x
-    gasLimit: bignum(exec.gas),
+    gasLimit: new BN(exec.gas),
     gasPrice: testUtils.fromDecimal(exec.gasPrice),
     block: block
   };

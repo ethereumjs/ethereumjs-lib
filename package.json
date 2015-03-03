@@ -16,8 +16,7 @@
   "dependencies": {
     "async": "^0.9.0",
     "bigi": "^1.4.0",
-    "bignum": "git+https://github.com/kumavis/node-bignum",
-    "bignum-browserify": "git+https://github.com/wanderer/bignum-browserify",
+    "bn.js": "^2.0.1",
     "crypto-js": "^3.1.2-5",
     "ecdsa": "^0.5.3",
     "ecurve": "^0.6.0",
@@ -68,7 +67,6 @@
   "browser": {
     "./lib/networking.js": false,
     "./lib/ecdsaOps.js": "./browser/ecdsaOps.js",
-    "bignum": "bignum-browserify",
     "sha3": "./browser/sha3.js"
   }
 }

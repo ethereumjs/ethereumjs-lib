@@ -1,5 +1,5 @@
 const async = require('async'),
-  bignum = require('bignum'),
+  BN = require('bn.js'),
   VM = require('../lib/vm'),
   Account = require('../lib/account.js'),
   Bloom = require('../lib/bloom.js'),
@@ -53,11 +53,11 @@ module.exports = function runStateTest(testData, options, cb) {
       //console.log('# Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000);
       if (!errored) {
         var address = new Buffer(testData.env.currentCoinbase, 'hex');
-        var minerReward = bignum('1500000000000000000');
+        var minerReward = new BN('1500000000000000000');
 
         state.get(address, function(err, data) {
           var account = new Account(data);
-          account.balance = bignum.fromBuffer(account.balance).sub(minerReward).toBuffer();
+          account.balance = new BN(account.balance).sub(minerReward);
           state.put(address, account.serialize(), done);
         });
       } else {
