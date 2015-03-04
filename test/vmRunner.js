@@ -57,8 +57,9 @@ module.exports = function runStateTest(testData, options, cb) {
         testUtil.verifyLogs(results.logs, testData, t);
       }
 
+      console.log(results.gasUsed.toString());
       if(testData.gas){
-        t.equal(new BN(testData.gas).add(results.gasUsed).toString(), testData.exec.gas, 'valid gas usage');
+        t.equal(new BN(testData.exec.gas).sub(results.gasUsed).toString(), testData.gas, 'valid gas usage');
       }else{
         //OOG
         t.equal(results.gasUsed.toString(), testData.exec.gas, 'valid gas usage');
