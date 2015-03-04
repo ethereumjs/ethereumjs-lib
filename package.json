@@ -63,7 +63,7 @@
     "Vitalik Buterin (https://github.com/vbuterin)",
     "Martin Becze <wanderer.github.io> (github.com/wanderer)",
     "Ethers (github.com/ethers)",
-    "Aaron Kumavis <http://aaron.kumavis.me/> (https://github.com/kumavis)",
+    "Aaron Kumavis <http://aaron.kumavis.me/> (https://github.com/kumavis)"
   ],
   "browser": {
     "./lib/networking.js": false,
