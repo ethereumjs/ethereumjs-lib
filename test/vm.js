@@ -1,4 +1,4 @@
-var async = require('async'),
+const async = require('async'),
   rlp = require('rlp'),
   VM = require('../lib/vm'),
   Account = require('../lib/account.js'),
