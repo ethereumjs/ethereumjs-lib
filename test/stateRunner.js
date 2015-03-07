@@ -15,14 +15,18 @@ module.exports = function runStateTest(testData, options, cb) {
   var errored = false;
   var block;
   var hrstart;
+  var vm;
 
   async.series([
     function(done) {
       testUtil.setupPreConditions(state, testData, done);
     },
+    function(done){
+      vm = new VM(state, blockchain);
+      vm.loadAllPrecompiled(done);
+    },
     function(done) {
 
-      var vm = new VM(state, blockchain);
       var tx = testUtil.makeTx(testData.transaction);
 
       block = testUtil.makeBlockFromEnv(testData.env);
