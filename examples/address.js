@@ -6,5 +6,8 @@ var privateKey = crypto.randomBytes(32);
 console.log('Your Private Key Is:');
 console.log(privateKey.toString('hex'));
 
+var publicKey = ecdsa.createPublicKey(privateKey);
+var address = ethUtil.pubToAddress(publicKey).toString('hex');
+
 console.log('Your Ethereum address is:');
-console.log(ethUtil.pubToAddress(ecdsa.createPublicKey(privateKey)).toString('hex'));
+console.log(address);
