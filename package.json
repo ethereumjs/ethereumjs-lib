@@ -20,6 +20,7 @@
     "crypto-js": "^3.1.2-5",
     "ecdsa": "^0.5.3",
     "ecurve": "^0.6.0",
+    "ethereum-common": "git+https://github.com/wanderer/common",
     "ethereumjs-p2p": "0.0.2",
     "ethereumjs-util": "0.0.8",
     "merkle-patricia-tree": "^0.1.23",
