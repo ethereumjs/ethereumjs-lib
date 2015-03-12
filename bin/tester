@@ -67,13 +67,23 @@ function getTests(type, argv) {
 
   var tests = require('ethereum-tests')[type + 'Tests'];
 
+  //move the random tests
   if (type === 'vm') {
-    for (var prop in tests.randomTest) {
-      tests[prop] = tests.randomTest[prop];
+    for (var prop in tests.RandomTests) {
+      tests[prop] = tests.RandomTests[prop];
     }
 
     delete tests.RandomTests;
     delete tests.vmSystemOperationsTest;
+  }
+
+  //move the random tests
+  if (type === 'state') {
+    for (var prop in tests.RandomTests) {
+      tests[prop] = tests.RandomTests[prop];
+    }
+
+    delete tests.RandomTests;
   }
 
   //for running a single file
