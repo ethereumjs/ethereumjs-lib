@@ -30,17 +30,26 @@ exports.dumpState = function(state, cb) {
   });
 };
 
+function makeBN(a){
+  if(a.slice && a.slice(0, 2) === '0x' ){
+    return new BN(a.slice(2), 16);
+  }else{
+    return new BN(a);
+  }
+}
+
 /**
  * makeTx using JSON from tests repo
  * @param {[type]} txData the transaction object from tests repo
  * @return {Object}        object that will be passed to VM.runTx function
  */
 exports.makeTx = function(txData) {
-  var privKey = new Buffer(txData.secretKey, 'hex'),
-    tx = new Transaction([
+  var privKey = new Buffer(txData.secretKey, 'hex');
+
+  var  tx = new Transaction([
       new BN(txData.nonce),
       new BN(txData.gasPrice),
-      new BN(txData.gasLimit),
+      makeBN(txData.gasLimit),
       txData.to,
       new BN(txData.value),
       txData.data.slice(2) // slice off 0x
@@ -110,7 +119,7 @@ exports.verifyGas = function(results, testData, t) {
   var postBal = new BN(testData.post[coinbaseAddr].balance);
   var balance = postBal.sub(preBal).toString();
   if(balance !== '0'){
-    var amountSpent = results.gasUsed.mul(testData.transaction.gasPrice);
+   var amountSpent = results.gasUsed.mul(testData.transaction.gasPrice);
     t.equal(amountSpent.toString(), balance, 'correct gas');
   }else{
     t.equal(results, undefined);
@@ -258,7 +267,7 @@ exports.toCodeHash = function(hexCode) {
 exports.makeBlockFromEnv = function(env) {
   var block = new Block();
   block.header.timestamp = testUtils.fromDecimal(env.currentTimestamp);
-  block.header.gasLimit = testUtils.fromDecimal(env.currentGasLimit);
+  block.header.gasLimit = makeBN(env.currentGasLimit);
   block.header.parentHash = new Buffer(env.previousHash, 'hex');
   block.header.coinbase = new Buffer(env.currentCoinbase, 'hex');
   block.header.difficulty = testUtils.fromDecimal(env.currentDifficulty);
