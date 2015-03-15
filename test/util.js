@@ -38,6 +38,14 @@ function makeBN(a){
   }
 }
 
+function format(a){
+  if(a.slice && a.slice(0, 2) === '0x' ){
+    return a.slice(2);
+  }else{
+    return a;
+  }
+}
+
 /**
  * makeTx using JSON from tests repo
  * @param {[type]} txData the transaction object from tests repo
@@ -50,7 +58,7 @@ exports.makeTx = function(txData) {
       new BN(txData.nonce),
       new BN(txData.gasPrice),
       makeBN(txData.gasLimit),
-      txData.to,
+      format(txData.to),
       new BN(txData.value),
       txData.data.slice(2) // slice off 0x
     ]);
