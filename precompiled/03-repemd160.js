@@ -17,8 +17,6 @@ if (opts.gasLimit.cmp(new BN(gasCost)) === -1) {
 
 results.gasUsed = gasCost;
 
-
-
 var dataGas2 = Math.ceil(opts.data.length / 32) * fees.ripemd160WordGas.v;
 // console.log('data: ' + data.toString('hex'));
 
