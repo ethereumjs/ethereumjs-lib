@@ -20,11 +20,12 @@
 var ecdsaOps = require('../ecdsaOps.js');
 var utils = require('ethereumjs-util');
 var BN = require('bn.js');
-var gasCost = 500;
+const fees = require('ethereum-common').fees;
+var gasCost = new BN(fees.ecrecoverGas.v);
 
 results = {};
 
-if (opts.gasLimit.cmp(new BN(gasCost)) === -1) {
+if (opts.gasLimit.cmp(gasCost) === -1) {
   results.gasUsed = opts.gasLimit;
   results.exception = 0; // 0 means VM fail (in this case because of OOG)
   return results;
