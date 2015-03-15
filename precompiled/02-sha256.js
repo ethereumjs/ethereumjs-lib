@@ -1,26 +1,14 @@
 var crypto = require('crypto');
 var BN = require('bn.js');
 
-sha256 = crypto.createHash('SHA256');
-data = opts.data;
-var dataGas = Math.ceil(data.length / 32) * 50;
+var sha256 = crypto.createHash('SHA256');
+const fees = require('ethereum-common').fees;
+var data = opts.data;
 var results = {};
-results.gasUsed += dataGas;
-
-var gasCost = 50;
-
-
-if (opts.gasLimit.cmp(new BN(gasCost)) === -1) {
-  results.gasUsed = opts.gasLimit;
-  results.exception = 0; // 0 means VM fail (in this case because of OOG)
-  return results;
-}
+var gasCost = fees.sha256Gas.v;
 
 results.gasUsed = gasCost;
-
-sha256 = crypto.createHash('SHA256');
-data = opts.data;
-var dataGas = Math.ceil(data.length / 32) * 50;
+var dataGas = Math.ceil(data.length / 32) * fees.sha256WordGas.v;
 results.gasUsed += dataGas;
 
 if (opts.gasLimit.cmp(new BN(gasCost + dataGas)) === -1) {
