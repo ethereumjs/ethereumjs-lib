@@ -2,10 +2,12 @@ var ethUtil = require('ethereumjs-util');
 var crypto = require('crypto');
 var BN = require('bn.js');
 
+const fees = require('ethereum-common').fees;
+
 var results = {};
 var ripemd160 = crypto.createHash('RSA-RIPEMD160');
 var data = opts.data;
-var gasCost = 50;
+var gasCost = fees.ripemd160Gas.v;
 
 if (opts.gasLimit.cmp(new BN(gasCost)) === -1) {
   results.gasUsed = opts.gasLimit;
@@ -17,7 +19,7 @@ results.gasUsed = gasCost;
 
 
 
-var dataGas2 = Math.ceil(opts.data.length / 32) * 50;
+var dataGas2 = Math.ceil(opts.data.length / 32) * fees.ripemd160WordGas.v;
 // console.log('data: ' + data.toString('hex'));
 
 if (opts.gasLimit.cmp(new BN(gasCost + dataGas2)) === -1) {
