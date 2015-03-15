@@ -106,7 +106,18 @@ function getTests(type, argv) {
 function runTests(type, argv, cb) {
   var tests = getTests(type, argv);
   const runner = require('../test/' + type + 'Runner');
-  const skip = ['TransactionMakeAccountBalanceOverflow', 'RecursiveCreateContracts', 'sha3_bigSize', 'mload32bitBound_return', 'mload32bitBound_return2', 'Call50000', 'Call50000_ecrec', 'Call50000_identity', 'Call50000_identity2', 'Call50000_rip160'];
+  const skip = [
+    'CreateHashCollision', //impossible hash collision on generating address
+    'TransactionMakeAccountBalanceOverflow', 
+    'RecursiveCreateContracts',
+    'sha3_bigSize',
+    'mload32bitBound_return',
+    'mload32bitBound_return2',
+    'Call50000',
+    'Call50000_ecrec',
+    'Call50000_identity',
+    'Call50000_identity2',
+    'Call50000_rip160'];
 
   //run all of the tests
   async.eachSeries(Object.keys(tests), function(fileName, done) {
