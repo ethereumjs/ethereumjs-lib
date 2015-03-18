@@ -47,6 +47,9 @@ function randomized(stateTest) {
     process.exit();
   }
 
+  var keys =  Object.keys(stateTest);
+  stateTest = stateTest[keys[0]];
+
   tape('', function(t) {
     stateRunner(stateTest, {
       t: t
