@@ -7,9 +7,8 @@ const path = require('path');
 const cp = require('child_process');
 
 if (argv.r) {
-  randomized(argv.r);
+  randomized(argv.r, argv.v);
 } else if (argv.s) {
-
   var hrstart = process.hrtime();
   runTests('state', argv, function(){
     var hrend = process.hrtime(hrstart);
@@ -28,11 +27,13 @@ if (argv.r) {
 //returns 0 if the tests succeds
 function randomized(stateTest) {
   const stateRunner = require('../test/stateRunner.js');
+  var errored = false;
 
   tape.createStream({
     objectMode: true
   }).on('data', function(row) {
-    if (row.ok === false) {
+    if (row.ok === false && !errored) {
+      errored = true;
       process.stdout.write('1');
       process.exit();
     }
