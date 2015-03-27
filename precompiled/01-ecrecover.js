@@ -28,6 +28,7 @@ results = {};
 if (opts.gasLimit.cmp(gasCost) === -1) {
   results.gasUsed = opts.gasLimit;
   results.exception = 0; // 0 means VM fail (in this case because of OOG)
+  results.exceptionErr = 'out of gas';
   return results;
 }
 
