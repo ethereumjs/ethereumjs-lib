@@ -23,6 +23,7 @@
     "ethereum-common": "0.0.2",
     "ethereumjs-p2p": "0.0.2",
     "ethereumjs-util": "0.0.8",
+    "functional-red-black-tree": "^1.0.1",
     "merkle-patricia-tree": "^0.1.23",
     "rlp": "0.0.12",
     "secp256k1": "0.0.15",
