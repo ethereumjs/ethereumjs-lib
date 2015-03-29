@@ -20,6 +20,7 @@
     "crypto-js": "^3.1.2-5",
     "ecdsa": "^0.5.3",
     "ecurve": "^0.6.0",
+    "es6-set": "^0.1.1",
     "ethereum-common": "0.0.2",
     "ethereumjs-p2p": "0.0.2",
     "ethereumjs-util": "0.0.8",
