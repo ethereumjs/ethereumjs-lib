@@ -7,5 +7,6 @@ exports.Transaction = require('./lib/transaction');
 exports.Account = require('./lib/account');
 exports.rlp = require('rlp');
 exports.Trie = require('merkle-patricia-tree');
+exports.opcodes = require('./lib/vm/opcodes.js');
 exports.bloom = require('./lib/bloom.js');
 exports.networkDef = require('./lib/ethDefinitions.js');
