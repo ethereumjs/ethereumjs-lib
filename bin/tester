@@ -115,6 +115,7 @@ function runTests(type, argv, cb) {
     'TransactionMakeAccountBalanceOverflow', 
     'RecursiveCreateContracts',
     'sha3_bigSize',
+    'createJS_ExampleContract', //creates an account that already exsists
     'mload32bitBound_return',
     'mload32bitBound_return2',
     'Call50000',
