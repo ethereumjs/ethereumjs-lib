@@ -79,11 +79,9 @@ module.exports = function runStateTest(testData, options, cb) {
         });
 
         t.equal(bloom.bitvector.toString('hex'), block.header.bloom.toString('hex'));
-
       }
 
       var keysOfPost = Object.keys(testData.post);
-
       async.eachSeries(keysOfPost, function(key, cb2) {
         var bkey = new Buffer(key, 'hex');
         state.get(bkey, function(err, raw) {

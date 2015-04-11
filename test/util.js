@@ -38,12 +38,17 @@ function makeBN(a){
   }
 }
 
-function format(a){
+function format(a, toZero){
   if(a.slice && a.slice(0, 2) === '0x' ){
-    return a.slice(2);
+    a = new Buffer(a.slice(2), 'hex');
   }else{
-    return a;
+     a  =new Buffer(new BN(a).toArray());
   }
+
+  if(toZero && a.toString('hex') === ''){
+    a= new Buffer([0]);
+  }
+  return a;
 }
 
 /**
@@ -53,15 +58,15 @@ function format(a){
  */
 exports.makeTx = function(txData) {
   var privKey = new Buffer(txData.secretKey, 'hex');
+  var  tx = new Transaction();
 
-  var  tx = new Transaction([
-      new BN(txData.nonce),
-      new BN(txData.gasPrice),
-      makeBN(txData.gasLimit),
-      format(txData.to),
-      new BN(txData.value),
-      txData.data.slice(2) // slice off 0x
-    ]);
+  tx.nonce = format(txData.nonce);
+  tx.gasPrice = format(txData.gasPrice);
+  tx.gasLimit = format(txData.gasLimit);
+  tx.to = txData.to;
+  tx.value = format(txData.value);
+  tx.data = format(txData.data);// slice off 0x
+
   tx.sign(privKey);
   return tx;
 };
@@ -75,8 +80,8 @@ exports.makeTx = function(txData) {
  */
 exports.verifyAccountPostConditions = function(state, account, acctData, t, cb) {
 
-  t.equal(testUtils.toDecimal(account.balance), acctData.balance, 'correct balance');
-  t.equal(testUtils.toDecimal(account.nonce), acctData.nonce, 'correct nonce');
+  t.equal(format(account.balance, true).toString('hex'), format(acctData.balance, true).toString('hex'), 'correct balance');
+  t.equal(format(account.nonce, true).toString('hex'), format(acctData.nonce, true).toString('hex'), 'correct nonce');
 
   // validate storage
   var origRoot = state.root,
@@ -274,12 +279,12 @@ exports.toCodeHash = function(hexCode) {
  */
 exports.makeBlockFromEnv = function(env) {
   var block = new Block();
-  block.header.timestamp = testUtils.fromDecimal(env.currentTimestamp);
-  block.header.gasLimit = makeBN(env.currentGasLimit);
-  block.header.parentHash = new Buffer(env.previousHash, 'hex');
-  block.header.coinbase = new Buffer(env.currentCoinbase, 'hex');
-  block.header.difficulty = testUtils.fromDecimal(env.currentDifficulty);
-  block.header.number = testUtils.fromDecimal(env.currentNumber);
+  block.header.timestamp = format(env.currentTimestamp);
+  block.header.gasLimit = format(env.currentGasLimit);
+  block.header.parentHash = env.previousHash;
+  block.header.coinbase = env.currentCoinbase;
+  block.header.difficulty = format(env.currentDifficulty);
+  block.header.number = format(env.currentNumber);
 
   return block;
 };
@@ -321,8 +326,8 @@ exports.setupPreConditions = function(state, testData, done) {
     var acctData = testData.pre[key];
     var account = new Account();
 
-    account.nonce = testUtils.fromDecimal(acctData.nonce);
-    account.balance = testUtils.fromDecimal(acctData.balance);
+    account.nonce =  format(acctData.nonce);
+    account.balance = format(acctData.balance);
 
     var codeBuf = new Buffer(acctData.code.slice(2), 'hex');
     var storageTrie = state.copy();
