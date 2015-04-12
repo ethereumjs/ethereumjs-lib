@@ -66,7 +66,6 @@ exports.makeTx = function(txData) {
   tx.to = txData.to;
   tx.value = format(txData.value);
   tx.data = format(txData.data);// slice off 0x
-
   tx.sign(privKey);
   return tx;
 };
