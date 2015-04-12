@@ -39,6 +39,11 @@ function makeBN(a){
 }
 
 function format(a, toZero){
+
+  if(a === ''){
+    return new Buffer([]);
+  }
+
   if(a.slice && a.slice(0, 2) === '0x' ){
     a = new Buffer(a.slice(2), 'hex');
   }else{
@@ -59,6 +64,7 @@ function format(a, toZero){
 exports.makeTx = function(txData) {
   var privKey = new Buffer(txData.secretKey, 'hex');
   var  tx = new Transaction();
+
 
   tx.nonce = format(txData.nonce);
   tx.gasPrice = format(txData.gasPrice);
