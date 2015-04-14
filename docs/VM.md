@@ -5,8 +5,8 @@
     - [`vm.runTx(opts, cb)`](#vmruntxopts-cb)
     - [`vm.runCode(opts, cb)`](#vmruncodeopts-cb)
     - [`vm.generateGenesis(cb)`](#vmgenerategenesiscb)
+  - [`VM` events]
   - [`VM` debugging hooks](#vm-debugging-hooks)
-    - [`vm.onTx`](#vmontx)
     - [`vm.onStep`](#vmonstep)
 
 ## `VM`
@@ -80,14 +80,15 @@ vm.generateGenesis(genesisData, function(){
   conosle.log('generation done');
 })
 ```
-
+--------------------------------------------------------
+### `VM` events
+The `VM` inherits from Events.EventEmitter and emits the following events.
+- `block` - emitted once `VM.runBlock` is finished processing a valid block. It doesn't emit invalid blocks. It provides the processed `Block` as an argumnet.
+- `beforeTx` - emitted before the `VM` runs a `Tx`. Provides the Tx as an argumnet. 
+- `afterTx` - emitted after the `VM` runs a `Tx`. Provides the Tx as an argumnet. 
 --------------------------------------------------------
 
-### `VM` debugging hooks
-#### `vm.onTx`
-When `onTx` is assigned a function the VM will run that function at the begining of each transaction it processes. The `onTx` function is give the [`Transaction`](./transaction.md) and `done`. `done` must be called before the VM contunies
-
---------------------------------------------------------
+### `VM` debugging hook
 
 #### `vm.onStep` 
 When `onStep` is assigned a function the VM will run that function at the begining of each opcode. The `onStep` function is give an `Object` and `done`. `done` must be called before the VM contunies. The `Object` has the following propieties.
