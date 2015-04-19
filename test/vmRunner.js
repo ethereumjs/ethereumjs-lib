@@ -18,8 +18,8 @@ module.exports = function runStateTest(testData, options, cb) {
     function(done) {
       var acctData = testData.pre[testData.exec.address];
       account = new Account();
-      account.nonce = testUtil.fromDecimal(acctData.nonce);
-      account.balance = testUtil.fromDecimal(acctData.balance);
+      account.nonce = testUtil.format(acctData.nonce);
+      account.balance = testUtil.format(acctData.balance);
       testUtil.setupPreConditions(state, testData, done);
     },
     function(done){
@@ -45,7 +45,6 @@ module.exports = function runStateTest(testData, options, cb) {
         done();
       });
     },
-
     function(done) {
       if (sstream) sstream.end();
 
@@ -58,10 +57,10 @@ module.exports = function runStateTest(testData, options, cb) {
       }
 
       if(testData.gas){
-        t.equal(new BN(testData.exec.gas).sub(results.gasUsed).toString(), testData.gas, 'valid gas usage');
+        t.equal(results.gas.toString(), new BN(testData.gas.slice(2), 16).toString() , 'valid gas usage');
       }else{
         //OOG
-        t.equal(results.gasUsed.toString(), testData.exec.gas, 'valid gas usage');
+        t.equal(results.gasUsed.toString(),  new BN(testData.exec.gas.slice(2), 16).toString(), 'valid gas usage');
       }
 
       done();

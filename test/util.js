@@ -38,13 +38,14 @@ function makeBN(a){
   }
 }
 
-function format(a, toZero){
+var format = exports.format = function(a, toZero){
 
   if(a === ''){
     return new Buffer([]);
   }
 
-  if(a.slice && a.slice(0, 2) === '0x' ){
+  if(a.slice &&  a.slice(0, 2) === '0x' ){
+    if(a.slice(2).length % 2) a = '0' + a;
     a = new Buffer(a.slice(2), 'hex');
   }else{
      a  =new Buffer(new BN(a).toArray());
@@ -64,7 +65,6 @@ function format(a, toZero){
 exports.makeTx = function(txData) {
   var privKey = new Buffer(txData.secretKey, 'hex');
   var  tx = new Transaction();
-
 
   tx.nonce = format(txData.nonce);
   tx.gasPrice = format(txData.gasPrice);
@@ -160,33 +160,6 @@ exports.verifyLogs = function(logs, testData, t) {
       });
     });
   }
-};
-
-/**
- * makeRunCallData - helper to create the object for VM.runCall using
- *   the exec object specified in the tests repo
- * @param {Object} testData    object from the tests repo
- * @param {Object} block   that the transaction belongs to
- * @return {Object}        object that will be passed to VM.runCall function
- */
-exports.makeRunCallData = function(testData, block) {
-  var exec = testData.exec,
-    acctData = testData.pre[exec.caller],
-    account = new Account();
-
-  account.nonce = testUtils.fromDecimal(acctData.nonce);
-  account.balance = testUtils.fromDecimal(acctData.balance);
-
-  return {
-    account: account,
-    origin: new Buffer(exec.origin, 'hex'),
-    data: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
-    value: new BN(exec.value),
-    caller: new Buffer(exec.caller, 'hex'),
-    to: new Buffer(exec.address, 'hex'),
-    gas: exec.gas,
-    block: block
-  };
 };
 
 
@@ -306,14 +279,14 @@ exports.makeBlockFromEnv = function(env) {
 exports.makeRunCodeData = function(exec, account, block) {
   return {
     account: account,
-    origin: new Buffer(exec.origin, 'hex'),
-    code: new Buffer(exec.code.slice(2), 'hex'), // slice off 0x
-    value: new BN(exec.value),
-    address: new Buffer(exec.address, 'hex'),
-    caller: new Buffer(exec.caller, 'hex'),
-    data: new Buffer(exec.data.slice(2), 'hex'), // slice off 0x
-    gasLimit: new BN(exec.gas),
-    gasPrice: testUtils.fromDecimal(exec.gasPrice),
+    origin: format(exec.origin),
+    code:  format(exec.code), // slice off 0x
+    value: new BN(format(exec.value)),
+    address: format(exec.address),
+    caller: format(exec.caller),
+    data: format(exec.data), // slice off 0x
+    gasLimit: format(exec.gas),
+    gasPrice: format(exec.gasPrice),
     block: block
   };
 };
