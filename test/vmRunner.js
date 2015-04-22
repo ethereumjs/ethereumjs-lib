@@ -4,7 +4,8 @@ var async = require('async'),
   Account = require('../lib/account.js'),
   testUtil = require('./util'),
   blockchain = require('./fakeBlockChain.js'),
-  Trie = require('../index.js').Trie;
+  Trie = require('../index.js').Trie,
+  fs = require('fs');
 
 module.exports = function runStateTest(testData, options, cb) {
 

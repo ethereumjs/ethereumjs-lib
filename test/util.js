@@ -169,47 +169,12 @@ exports.verifyLogs = function(logs, testData, t) {
  * enableVMtracing - set up handler to output VM trace on console
  * @param {[type]} vm - the VM object
  * @param file
+ * TODO: remove
  */
 exports.enableVMtracing = function(vm, file) {
-
-  var stringify = JSONStream.stringify();
-  stringify.pipe(fs.createWriteStream(file));
-  var step = 0;
-
-  vm.onStep = function(info, done) {
-
-    var logObj = {
-      step : step,
-      pc: new BN(info.pc).toString(),
-      depth: info.depth,
-      opcode: info.opcode,
-      gas: info.gasLeft.toString(),
-      memory: (new Buffer(info.memory)).toString('hex'),
-      storage: [],
-      address: info.address.toString('hex')
-    };
-
-    step++;
-
-    logObj.stack = info.stack.map(function(item) {
-      return utils.pad(item, 32).toString('hex');
-    });
-
-    var stream = info.storageTrie.createReadStream();
-
-    stream.on('data', function(data) {
-      logObj.storage.push([utils.unpad(data.key).toString('hex'), rlp.decode(data.value).toString('hex')]);
-    });
-
-    stream.on('end', function() {
-      stringify.write(logObj);
-      done();
-      // console.log('---------'+ logObj.opcode +' \n');
-      // dumpState(vm.trie, done )
-    });
-  };
-
-  return stringify;
+  var stream = vm.logReadStream();
+  stream.pipe(fs.createWriteStream(file));
+  return stream;
 };
 
 /**
