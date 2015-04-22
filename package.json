@@ -24,7 +24,7 @@
     "es6-set": "^0.1.1",
     "ethereum-common": "0.0.2",
     "ethereumjs-p2p": "0.0.2",
-    "ethereumjs-util": "0.0.10",
+    "ethereumjs-util": "0.1.0",
     "functional-red-black-tree": "^1.0.1",
     "merkle-patricia-tree": "^0.1.26",
     "rlp": "0.0.12",

@@ -38,7 +38,7 @@ function makeBN(a){
   }
 }
 
-var format = exports.format = function(a, toZero){
+var format = exports.format = function(a, toZero, isHex){
 
   if(a === ''){
     return new Buffer([]);
@@ -47,8 +47,10 @@ var format = exports.format = function(a, toZero){
   if(a.slice &&  a.slice(0, 2) === '0x' ){
     if(a.slice(2).length % 2) a = '0' + a;
     a = new Buffer(a.slice(2), 'hex');
+  }else if(!isHex){
+     a = new Buffer(new BN(a).toArray());
   }else{
-     a  =new Buffer(new BN(a).toArray());
+    a = new Buffer(a, 'hex')
   }
 
   if(toZero && a.toString('hex') === ''){
@@ -260,7 +262,7 @@ exports.makeBlockFromEnv = function(env) {
   block.header.timestamp = format(env.currentTimestamp);
   block.header.gasLimit = format(env.currentGasLimit);
   block.header.parentHash = env.previousHash;
-  block.header.coinbase = env.currentCoinbase;
+  block.header.coinbase = format(env.currentCoinbase, false, true);
   block.header.difficulty = format(env.currentDifficulty);
   block.header.number = format(env.currentNumber);
 
@@ -277,13 +279,14 @@ exports.makeBlockFromEnv = function(env) {
  * @return {Object}        object that will be passed to VM.runCode function
  */
 exports.makeRunCodeData = function(exec, account, block) {
+  console.log('gas: ' + format(exec.gas).toString('hex'));
   return {
     account: account,
-    origin: format(exec.origin),
+    origin: format(exec.origin, false, true),
     code:  format(exec.code), // slice off 0x
     value: new BN(format(exec.value)),
-    address: format(exec.address),
-    caller: format(exec.caller),
+    address: format(exec.address, false, true),
+    caller: format(exec.caller, false, true),
     data: format(exec.data), // slice off 0x
     gasLimit: format(exec.gas),
     gasPrice: format(exec.gasPrice),
