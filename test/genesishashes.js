@@ -1,9 +1,9 @@
 const genesisData = require('ethereum-tests').basicTests.genesishashestest;
-const Trie = require('merkle-patricia-tree/secure.js'),
-  tape = require('tape'),
-  Block = require('../lib/block.js'),
-  common = require('ethereum-common'),
-  VM = require('../lib/vm/index.js');
+const Trie = require('merkle-patricia-tree/secure.js');
+const tape = require('tape');
+const Block = require('../lib/block.js');
+const common = require('ethereum-common');
+const VM = require('../lib/vm/index.js');
 
 var trie = new Trie();
 

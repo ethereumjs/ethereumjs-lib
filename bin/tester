@@ -166,6 +166,10 @@ function runAll() {
       var f = cp.fork(__dirname + '/../test/genesishashes.js');
       f.on('close', done);
     },
+    function(done) {
+      var f = cp.fork(__dirname + '/../test/ethash.js');
+      f.on('close', done);
+    },
     // runTests.bind(this, 'transaction', {}),
     runTests.bind(this, 'state', {}),
     runTests.bind(this, 'vm', {})
