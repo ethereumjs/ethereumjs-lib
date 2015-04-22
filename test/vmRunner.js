@@ -57,10 +57,10 @@ module.exports = function runStateTest(testData, options, cb) {
       }
 
       if(testData.gas){
-        t.equal(results.gas.toString(), new BN(testData.gas.slice(2), 16).toString() , 'valid gas usage');
+        t.equal(results.gas.toString(), new BN(testUtil.format(testData.gas)).toString() , 'valid gas usage');
       }else{
         //OOG
-        t.equal(results.gasUsed.toString(),  new BN(testData.exec.gas.slice(2), 16).toString(), 'valid gas usage');
+        t.equal(results.gasUsed.toString(),  new BN(testUtil.format(testData.exec.gas)).toString(), 'valid gas usage');
       }
 
       done();
