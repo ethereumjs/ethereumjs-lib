@@ -56,7 +56,7 @@ module.exports = function runStateTest(testData, options, cb) {
         testUtil.verifyLogs(results.logs, testData, t);
       }
 
-      if(testData.gas){
+      if(testData.gas && !results.exceptionErr){
         t.equal(results.gas.toString(), new BN(testUtil.format(testData.gas)).toString() , 'valid gas usage');
       }else{
         //OOG
