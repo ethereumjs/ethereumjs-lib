@@ -101,8 +101,8 @@ exports.verifyAccountPostConditions = function(state, account, acctData, t, cb) 
       var key = '0x' + utils.unpad(data.key).toString('hex');
       var val = '0x' + rlp.decode(data.value).toString('hex');
 
-      if (key === '0x00') {
-        key = '0x';
+      if (key === '0x') {
+        key = '0x00';
       }
 
       t.equal(val, acctData.storage[key], 'correct storage value');
