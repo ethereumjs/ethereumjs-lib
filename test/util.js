@@ -103,10 +103,14 @@ exports.verifyAccountPostConditions = function(state, account, acctData, t, cb) 
 
       if (key === '0x') {
         key = '0x00';
+        acctData.storage['0x00'] = acctData.storage['0x00'] ? acctData.storage['0x00'] : acctData.storage['0x'] ;
+        delete acctData.storage['0x']
       }
+
 
       t.equal(val, acctData.storage[key], 'correct storage value');
       delete acctData.storage[key];
+
     });
 
     rs.on('end', function() {
