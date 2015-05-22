@@ -45,8 +45,9 @@ var format = exports.format = function(a, toZero, isHex){
   }
 
   if(a.slice &&  a.slice(0, 2) === '0x' ){
-    if(a.slice(2).length % 2) a = '0' + a;
-    a = new Buffer(a.slice(2), 'hex');
+    a = a.slice(2);
+    if(a.length % 2) a = '0' + a;
+    a = new Buffer(a, 'hex');
   }else if(!isHex){
      a = new Buffer(new BN(a).toArray());
   }else{
@@ -107,10 +108,8 @@ exports.verifyAccountPostConditions = function(state, account, acctData, t, cb) 
         delete acctData.storage['0x']
       }
 
-
       t.equal(val, acctData.storage[key], 'correct storage value');
       delete acctData.storage[key];
-
     });
 
     rs.on('end', function() {
