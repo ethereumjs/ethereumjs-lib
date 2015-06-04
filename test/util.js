@@ -57,6 +57,7 @@ var format = exports.format = function(a, toZero, isHex){
   if(toZero && a.toString('hex') === ''){
     a= new Buffer([0]);
   }
+
   return a;
 }
 
@@ -66,8 +67,8 @@ var format = exports.format = function(a, toZero, isHex){
  * @return {Object}        object that will be passed to VM.runTx function
  */
 exports.makeTx = function(txData) {
-  var privKey = new Buffer(txData.secretKey, 'hex');
   var  tx = new Transaction();
+
 
   tx.nonce = format(txData.nonce);
   tx.gasPrice = format(txData.gasPrice);
@@ -75,7 +76,14 @@ exports.makeTx = function(txData) {
   tx.to = txData.to;
   tx.value = format(txData.value);
   tx.data = format(txData.data);// slice off 0x
-  tx.sign(privKey);
+  if(txData.secretKey){
+    var privKey = new Buffer(txData.secretKey, 'hex');
+    tx.sign(privKey);
+  }else{
+    tx.v = new Buffer(txData.v.slice(2), 'hex');
+    tx.r = new Buffer(txData.r.slice(2), 'hex');
+    tx.s = new Buffer(txData.s.slice(2), 'hex');
+  }
   return tx;
 };
 
