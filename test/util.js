@@ -75,7 +75,7 @@ exports.makeTx = function(txData) {
   tx.gasLimit = format(txData.gasLimit);
   tx.to = txData.to;
   tx.value = format(txData.value);
-  tx.data = format(txData.data);// slice off 0x
+  tx.data = format(txData.data, false, true);// slice off 0x
   if(txData.secretKey){
     var privKey = new Buffer(txData.secretKey, 'hex');
     tx.sign(privKey);
