@@ -237,7 +237,7 @@ exports.makeBlockFromEnv = function(env) {
   block.header.timestamp = format(env.currentTimestamp);
   block.header.gasLimit = format(env.currentGasLimit);
   block.header.parentHash = env.previousHash;
-  block.header.coinbase = format(env.currentCoinbase, false, true);
+  block.header.coinbase = utils.pad(format(env.currentCoinbase, false, true), 20);
   block.header.difficulty = format(env.currentDifficulty);
   block.header.number = format(env.currentNumber);
 
