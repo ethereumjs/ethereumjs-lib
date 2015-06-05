@@ -69,7 +69,6 @@ var format = exports.format = function(a, toZero, isHex){
 exports.makeTx = function(txData) {
   var  tx = new Transaction();
 
-
   tx.nonce = format(txData.nonce);
   tx.gasPrice = format(txData.gasPrice);
   tx.gasLimit = format(txData.gasLimit);
