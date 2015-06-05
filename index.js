@@ -1,5 +1,4 @@
 exports.utils = require('ethereumjs-util');
-exports.Network = require('./lib/networking.js');
 exports.VM = require('./lib/vm');
 exports.Block = require('./lib/block');
 exports.Blockchain = require('./lib/blockchain');
@@ -10,4 +9,3 @@ exports.Trie = require('merkle-patricia-tree');
 exports.opcodes = require('./lib/vm/opcodes.js');
 exports.bloom = require('./lib/bloom.js');
 exports.Ethash = require('./lib/ethash/');
-exports.networkDef = require('./lib/ethDefinitions.js');
