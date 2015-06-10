@@ -16,8 +16,6 @@ if (argv.r) {
   });
 } else if (argv.v) {
   runTests('vm', argv);
-} else if(argv.t){
-  runTests('transaction', argv);
 } else if (argv.a) {
   runAll();
 }
@@ -118,11 +116,18 @@ function runTests(type, argv, cb) {
     'createJS_ExampleContract', //creates an account that already exsists
     'mload32bitBound_return',
     'mload32bitBound_return2',
-    'Call50000',
-    'Call50000_ecrec',
-    'Call50000_identity',
-    'Call50000_identity2',
-    'Call50000_rip160'];
+    'Call50000', //slow
+    'Call50000_ecrec', //slow
+    'Call50000_identity', //slow
+    'Call50000_identity2', //slow
+    'Call50000_sha256', //slow
+    'Call50000_rip160', //slow
+    'Call50000bytesContract50_1', //slow
+    'Call50000bytesContract50_2',
+    'Callcode50000', //slow
+    'Return50000', //slow
+    'Return50000_2' //slow
+  ];
 
   //run all of the tests
   async.eachSeries(Object.keys(tests), function(fileName, done) {
@@ -156,10 +161,6 @@ function runAll() {
     },
     function(done) {
       var f = cp.fork(__dirname + '/../test/browserfy.js');
-      f.on('close', done);
-    },
-    function(done) {
-      var f = cp.fork(__dirname + '/../test/transactions.js');
       f.on('close', done);
     },
     function(done) {

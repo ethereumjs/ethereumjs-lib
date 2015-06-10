@@ -6,7 +6,7 @@ const rlp = require('rlp');
 const JSONStream = require('JSONStream');
 const utils = require('ethereumjs-util');
 const Account = require('../lib/account.js');
-const Transaction = require('../lib/transaction.js');
+const Transaction = require('ethereumjs-tx');
 const Block = require('../lib/block.js');
 
 const testUtils = exports;
