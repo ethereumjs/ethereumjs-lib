@@ -116,6 +116,7 @@ function runTests(type, argv, cb) {
     'createJS_ExampleContract', //creates an account that already exsists
     'mload32bitBound_return',
     'mload32bitBound_return2',
+    'QuadraticComplexitySolidity_CallDataCopy', //tests hash collisoin, sending from a contract
     'Call50000', //slow
     'Call50000_ecrec', //slow
     'Call50000_identity', //slow
