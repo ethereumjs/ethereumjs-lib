@@ -68,7 +68,6 @@ module.exports = function runStateTest(testData, options, cb) {
         done();
       }
     },
-
     function(done) {
       if (sstream) sstream.end();
 
