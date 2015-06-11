@@ -10,6 +10,7 @@ var gasCost = fees.sha256Gas.v;
 results.gasUsed = gasCost;
 var dataGas = Math.ceil(data.length / 32) * fees.sha256WordGas.v;
 results.gasUsed += dataGas;
+results.gasUsed = new BN(results.gasUsed);
 
 if (opts.gasLimit.cmp(new BN(gasCost + dataGas)) === -1) {
   results.gasUsed = opts.gasLimit;

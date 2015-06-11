@@ -27,6 +27,7 @@ if (opts.gasLimit.cmp(new BN(gasCost + dataGas2)) === -1) {
 }
 
 results.gasUsed += dataGas2;
+results.gasUsed = new BN(results.gasUsed);
 
 hashStr = ethUtil.pad(ripemd160.update(data).digest('bin'), 32); // nb: bin
 

@@ -51,6 +51,7 @@ var format = exports.format = function(a, toZero, isHex){
   }else if(!isHex){
      a = new Buffer(new BN(a).toArray());
   }else{
+    if(a.length % 2) a = '0' + a;
     a = new Buffer(a, 'hex')
   }
 

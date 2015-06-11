@@ -6,7 +6,7 @@ const fees = require('ethereum-common').fees;
 var data = opts.data;
 var results = {};
 
-results.gasUsed = Math.ceil(data.length / 32) * fees.identityWordGas.v  +  fees.identityGas.v;
+results.gasUsed =  new BN(Math.ceil(data.length / 32) * fees.identityWordGas.v  +  fees.identityGas.v);
 results.exception = 1;
 results.returnValue =  opts.data;
 
