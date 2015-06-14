@@ -103,11 +103,17 @@ exports.verifyAccountPostConditions = function(state, account, acctData, t, cb) 
   var origRoot = state.root,
     storageKeys = Object.keys(acctData.storage);
 
+  var hashedStorage = {};
+  for(key in acctData.storage){
+    hashedStorage[utils.sha3(utils.pad(new Buffer(key.slice(2), 'hex'), 32)).toString('hex')] = acctData.storage[key];
+  }
+
   if (storageKeys.length > 0) {
     state.root = account.stateRoot.toString('hex');
     var rs = state.createReadStream();
+
     rs.on('data', function(data) {
-      var key = '0x' + utils.unpad(data.key).toString('hex');
+      var key = data.key.toString('hex');
       var val = '0x' + rlp.decode(data.value).toString('hex');
 
       if (key === '0x') {
@@ -116,12 +122,12 @@ exports.verifyAccountPostConditions = function(state, account, acctData, t, cb) 
         delete acctData.storage['0x']
       }
 
-      t.equal(val, acctData.storage[key], 'correct storage value');
-      delete acctData.storage[key];
+      t.equal(val, hashedStorage[key], 'correct storage value');
+      delete hashedStorage[key];
     });
 
     rs.on('end', function() {
-      for (var key in acctData.storage) {
+      for (var key in hashedStorage) {
         t.fail('key: ' + key + ' not found in storage');
       }
 

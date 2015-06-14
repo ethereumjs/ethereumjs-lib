@@ -5,7 +5,8 @@ const async = require('async'),
   Bloom = require('../lib/bloom.js'),
   testUtil = require('./util'),
   blockchain = require('./fakeBlockChain.js'),
-  Trie = require('../index.js').Trie;
+  utils = require('ethereumjs-util');
+Trie = require('merkle-patricia-tree/secure');
 
 module.exports = function runStateTest(testData, options, cb) {
 
@@ -21,7 +22,7 @@ module.exports = function runStateTest(testData, options, cb) {
     function(done) {
       testUtil.setupPreConditions(state, testData, done);
     },
-    function(done){
+    function(done) {
       vm = new VM(state, blockchain);
       vm.loadAllPrecompiled(done);
     },
@@ -63,7 +64,11 @@ module.exports = function runStateTest(testData, options, cb) {
         state.get(address, function(err, data) {
           var account = new Account(data);
           account.balance = new BN(account.balance).sub(minerReward);
-          state.put(address, account.serialize(), done);
+          // if(account.balance.toString('hex') === '00'){
+          //   state.del(address,  done);
+          // }else{
+            state.put(address, account.serialize(), done);
+          // }
         });
       } else {
         done();
@@ -71,29 +76,67 @@ module.exports = function runStateTest(testData, options, cb) {
     },
     function(done) {
       if (sstream) sstream.end();
+      var rlp = require('rlp');
+      t.equal(state.root.toString('hex'), testData.postStateRoot, 'the state roots should match');
 
       if (testData.logs.length !== 0) {
         var bloom = new Bloom();
         testData.logs.forEach(function(l) {
           bloom.or(new Bloom(new Buffer(l.bloom, 'hex')));
         });
-
         t.equal(bloom.bitvector.toString('hex'), block.header.bloom.toString('hex'));
       }
 
-      var keysOfPost = Object.keys(testData.post);
-      async.eachSeries(keysOfPost, function(key, cb2) {
-        var bkey = new Buffer(key, 'hex');
-        state.get(bkey, function(err, raw) {
-          t.assert(raw !== null, 'account: ' + key + ' was found');
+      var hashedAccounts = {};
+      var keyMap = {};
 
-          var account = new Account(raw);
-          var acctData = testData.post[key];
-          testUtil.verifyAccountPostConditions(state, account, acctData, t, function() {
-            cb2();
-          });
+      for (key in testData.post) {
+        var hash = utils.sha3(new Buffer(key, 'hex')).toString('hex');
+        hashedAccounts[hash] = testData.post[key];
+        keyMap[hash] = key;
+      }
+
+      var q = async.queue(function(task, cb2) {
+        testUtil.verifyAccountPostConditions(state, task.account, task.testData, t, function() {
+          cb2();
         });
-      }, done);
+      }, 1);
+
+
+      var keysOfPost = Object.keys(testData.post);
+      var stream = state.createReadStream();
+
+      stream.on('data', function(data) {
+        var acnt = new Account(rlp.decode(data.value));
+        var key = data.key.toString('hex');
+        var testData = hashedAccounts[key];
+        delete keyMap[key];
+
+        if (testData) {
+          q.push({
+            account: acnt,
+            testData: testData
+          });
+        } else {
+          t.fail('invalid account in the trie: ' + key);
+        }
+      });
+
+      stream.on('end', function() {
+
+        function onEnd() {
+          for (hash in keyMap) {
+            t.fail('Missing account!: ' + keyMap[hash]);
+          }
+          done();
+        };
+
+        if (q.length()) {
+          q.drain = onEnd;
+        } else {
+          onEnd();
+        }
+      });
     }
   ], cb);
 };

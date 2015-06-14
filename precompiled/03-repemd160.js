@@ -1,6 +1,7 @@
 var ethUtil = require('ethereumjs-util');
 var crypto = require('crypto');
 var BN = require('bn.js');
+const error = require('./constants.js').ERROR;
 
 const fees = require('ethereum-common').fees;
 
@@ -12,6 +13,7 @@ var gasCost = fees.ripemd160Gas.v;
 if (opts.gasLimit.cmp(new BN(gasCost)) === -1) {
   results.gasUsed = opts.gasLimit;
   results.exception = 0; // 0 means VM fail (in this case because of OOG)
+  results.exceptionErr = error.OUT_OF_GAS;
   return results;
 }
 
@@ -22,6 +24,7 @@ var dataGas2 = Math.ceil(opts.data.length / 32) * fees.ripemd160WordGas.v;
 
 if (opts.gasLimit.cmp(new BN(gasCost + dataGas2)) === -1) {
   results.gasUsed = opts.gasLimit;
+  results.exceptionErr = error.OUT_OF_GAS;
   results.exception = 0; // 0 means VM fail (in this case because of OOG)
   return results;
 }

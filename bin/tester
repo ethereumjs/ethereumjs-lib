@@ -110,6 +110,7 @@ function runTests(type, argv, cb) {
   const runner = require('../test/' + type + 'Runner');
   const skip = [
     'CreateHashCollision', //impossible hash collision on generating address
+    'SuicidesMixingCoinbase', //sucides to the coinbase, since we run a blockLevel we create coinbase account.
     'TransactionMakeAccountBalanceOverflow', 
     'RecursiveCreateContracts',
     'sha3_bigSize',
