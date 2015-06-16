@@ -294,6 +294,7 @@ exports.setupPreConditions = function(state, testData, done) {
 
     var codeBuf = new Buffer(acctData.code.slice(2), 'hex');
     var storageTrie = state.copy();
+    storageTrie.root = null;
 
     async.series([
       function(cb2) {
@@ -317,7 +318,9 @@ exports.setupPreConditions = function(state, testData, done) {
           testData.root = storageTrie.root;
         }
 
-        state.put(new Buffer(key, 'hex'), account.serialize(), cb2);
+        state.put(new Buffer(key, 'hex'), account.serialize(), function(){
+          cb2();
+        });
       }
     ], callback);
 
