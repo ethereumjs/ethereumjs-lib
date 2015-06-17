@@ -110,9 +110,7 @@ exports.verifyAccountPostConditions = function(state, account, acctData, t, cb) 
 
   if (storageKeys.length > 0) {
     state.root = account.stateRoot.toString('hex');
-    console.log('StateRoot: ' + state.root.toString('hex'));
     var rs = state.createReadStream();
-
     rs.on('data', function(data) {
       var key = data.key.toString('hex');
       var val = '0x' + rlp.decode(data.value).toString('hex');
