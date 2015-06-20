@@ -11,7 +11,6 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions as descri
 # API
 `ethereumjs-lib` provides the following.
 
- - [Network](./docs/networking.md) - Networking protocol and peer managment
  - [VM](./docs/VM.md) - The Ethereum vitural machine and state processing functions
  - [Block Chain](./docs/blockchain.md) - Blockchain managment
  - [Block](./docs/block.md) - Block Schema definition and validation
