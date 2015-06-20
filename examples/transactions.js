@@ -60,7 +60,6 @@ var rawTx = [
 ];
 
 var tx2 = new Transaction(rawTx);
-
 //Note rlp.decode will actully produce an array of buffers `new Transaction` will
 //take either and array of buffers or and array of hex strings.
 //So assuming that you were able to parse the tranaction, we will now get the sender's
