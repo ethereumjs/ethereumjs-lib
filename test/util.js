@@ -260,7 +260,6 @@ exports.makeBlockFromEnv = function(env) {
  * @return {Object}        object that will be passed to VM.runCode function
  */
 exports.makeRunCodeData = function(exec, account, block) {
-  console.log('gas: ' + format(exec.gas).toString('hex'));
   return {
     account: account,
     origin: format(exec.origin, false, true),

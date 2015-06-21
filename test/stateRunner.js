@@ -1,12 +1,12 @@
-const async = require('async'),
-  BN = require('bn.js'),
-  VM = require('../lib/vm'),
-  Account = require('../lib/account.js'),
-  Bloom = require('../lib/bloom.js'),
-  testUtil = require('./util'),
-  blockchain = require('./fakeBlockChain.js'),
-  utils = require('ethereumjs-util');
-Trie = require('merkle-patricia-tree/secure');
+const async = require('async')
+const BN = require('bn.js')
+const VM = require('../lib/vm')
+const Account = require('../lib/account.js')
+const Bloom = require('../lib/bloom.js')
+const testUtil = require('./util')
+const blockchain = require('./fakeBlockChain.js')
+const utils = require('ethereumjs-util')
+const Trie = require('merkle-patricia-tree/secure')
 
 module.exports = function runStateTest(testData, options, cb) {
 
