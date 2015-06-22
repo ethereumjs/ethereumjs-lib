@@ -1,4 +1,5 @@
 const Ethash = require('../lib/ethash');
+const Header = require('../lib/blockHeader.js');
 const tape = require('tape');
 const powTests = require('ethereum-tests').powTests.ethash_tests;
 const async = require('async');
@@ -9,7 +10,8 @@ tape('POW tests', function(t) {
   tests.forEach(function(key) {
     var test = powTests[key];
     var ethash = new Ethash();
-    var headerHash = ethash.headerHash(new Buffer(test.header, 'hex'));
+    var header = new Header(new Buffer(test.header, 'hex'));
+    var headerHash = ethash.headerHash(header.raw);
     t.equal(headerHash.toString('hex'), test.header_hash, 'generate header hash')
 
     ethash.mkcache(test.cache_size, new Buffer(test.seed, 'hex'))
