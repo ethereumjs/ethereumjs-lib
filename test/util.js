@@ -9,8 +9,6 @@ const Account = require('../lib/account.js');
 const Transaction = require('ethereumjs-tx');
 const Block = require('../lib/block.js');
 
-const testUtils = exports;
-
 exports.dumpState = function(state, cb) {
   var rs = state.createReadStream();
   var statedump = {};
@@ -24,39 +22,39 @@ exports.dumpState = function(state, cb) {
     };
   });
 
-  rs.on('end', function(){
+  rs.on('end', function() {
     console.log(statedump);
     cb();
   });
 };
 
-function makeBN(a){
-  if(a.slice && a.slice(0, 2) === '0x' ){
+function makeBN(a) {
+  if (a.slice && a.slice(0, 2) === '0x') {
     return new BN(a.slice(2), 16);
-  }else{
+  } else {
     return new BN(a);
   }
 }
 
-var format = exports.format = function(a, toZero, isHex){
+var format = exports.format = function(a, toZero, isHex) {
 
-  if(a === ''){
+  if (a === '') {
     return new Buffer([]);
   }
 
-  if(a.slice &&  a.slice(0, 2) === '0x' ){
+  if (a.slice && a.slice(0, 2) === '0x') {
     a = a.slice(2);
-    if(a.length % 2) a = '0' + a;
+    if (a.length % 2) a = '0' + a;
     a = new Buffer(a, 'hex');
-  }else if(!isHex){
-     a = new Buffer(new BN(a).toArray());
-  }else{
-    if(a.length % 2) a = '0' + a;
+  } else if (!isHex) {
+    a = new Buffer(new BN(a).toArray());
+  } else {
+    if (a.length % 2) a = '0' + a;
     a = new Buffer(a, 'hex')
   }
 
-  if(toZero && a.toString('hex') === ''){
-    a= new Buffer([0]);
+  if (toZero && a.toString('hex') === '') {
+    a = new Buffer([0]);
   }
 
   return a;
@@ -68,24 +66,79 @@ var format = exports.format = function(a, toZero, isHex){
  * @return {Object}        object that will be passed to VM.runTx function
  */
 exports.makeTx = function(txData) {
-  var  tx = new Transaction();
+  var tx = new Transaction();
 
   tx.nonce = format(txData.nonce);
   tx.gasPrice = format(txData.gasPrice);
   tx.gasLimit = format(txData.gasLimit);
   tx.to = txData.to;
   tx.value = format(txData.value);
-  tx.data = format(txData.data, false, true);// slice off 0x
-  if(txData.secretKey){
+  tx.data = format(txData.data, false, true); // slice off 0x
+  if (txData.secretKey) {
     var privKey = new Buffer(txData.secretKey, 'hex');
     tx.sign(privKey);
-  }else{
+  } else {
     tx.v = new Buffer(txData.v.slice(2), 'hex');
     tx.r = new Buffer(txData.r.slice(2), 'hex');
     tx.s = new Buffer(txData.s.slice(2), 'hex');
   }
   return tx;
 };
+
+
+exports.verifyPostConditions = function(state, testData, t, cb) {
+  var hashedAccounts = {};
+  var keyMap = {};
+
+  for (key in testData.post) {
+    var hash = utils.sha3(new Buffer(key, 'hex')).toString('hex');
+    hashedAccounts[hash] = testData.post[key];
+    keyMap[hash] = key;
+  }
+
+  var q = async.queue(function(task, cb2) {
+    exports.verifyAccountPostConditions(state, task.account, task.testData, t, function() {
+      cb2();
+    });
+  }, 1);
+
+
+  var keysOfPost = Object.keys(testData.post);
+  var stream = state.createReadStream();
+
+  stream.on('data', function(data) {
+    var acnt = new Account(rlp.decode(data.value))
+    var key = data.key.toString('hex')
+    var testData = hashedAccounts[key]
+    delete keyMap[key];
+
+    if (testData) {
+      q.push({
+        account: acnt,
+        testData: testData
+      });
+    } else {
+      t.fail('invalid account in the trie: ' + key);
+    }
+  });
+
+  stream.on('end', function() {
+
+    function onEnd() {
+      for (hash in keyMap) {
+        t.fail('Missing account!: ' + keyMap[hash])
+      }
+      cb()
+    };
+
+    if (q.length()) {
+      q.drain = onEnd
+    } else {
+      onEnd()
+    }
+  });
+}
+
 
 /**
  * verifyAccountPostConditions using JSON from tests repo
@@ -104,7 +157,7 @@ exports.verifyAccountPostConditions = function(state, account, acctData, t, cb) 
     storageKeys = Object.keys(acctData.storage);
 
   var hashedStorage = {};
-  for(key in acctData.storage){
+  for (key in acctData.storage) {
     hashedStorage[utils.sha3(utils.pad(new Buffer(key.slice(2), 'hex'), 32)).toString('hex')] = acctData.storage[key];
   }
 
@@ -117,7 +170,7 @@ exports.verifyAccountPostConditions = function(state, account, acctData, t, cb) 
 
       if (key === '0x') {
         key = '0x00';
-        acctData.storage['0x00'] = acctData.storage['0x00'] ? acctData.storage['0x00'] : acctData.storage['0x'] ;
+        acctData.storage['0x00'] = acctData.storage['0x00'] ? acctData.storage['0x00'] : acctData.storage['0x'];
         delete acctData.storage['0x']
       }
 
@@ -154,10 +207,10 @@ exports.verifyGas = function(results, testData, t) {
 
   var postBal = new BN(testData.post[coinbaseAddr].balance);
   var balance = postBal.sub(preBal).toString();
-  if(balance !== '0'){
-   var amountSpent = results.gasUsed.mul(testData.transaction.gasPrice);
+  if (balance !== '0') {
+    var amountSpent = results.gasUsed.mul(testData.transaction.gasPrice);
     t.equal(amountSpent.toString(), balance, 'correct gas');
-  }else{
+  } else {
     t.equal(results, undefined);
   }
 };
@@ -263,7 +316,7 @@ exports.makeRunCodeData = function(exec, account, block) {
   return {
     account: account,
     origin: format(exec.origin, false, true),
-    code:  format(exec.code), // slice off 0x
+    code: format(exec.code), // slice off 0x
     value: new BN(format(exec.value)),
     address: format(exec.address, false, true),
     caller: format(exec.caller, false, true),
@@ -287,7 +340,7 @@ exports.setupPreConditions = function(state, testData, done) {
     var acctData = testData.pre[key];
     var account = new Account();
 
-    account.nonce =  format(acctData.nonce);
+    account.nonce = format(acctData.nonce);
     account.balance = format(acctData.balance);
 
     var codeBuf = new Buffer(acctData.code.slice(2), 'hex');
@@ -307,16 +360,16 @@ exports.setupPreConditions = function(state, testData, done) {
         }, cb2);
       },
       function(cb2) {
-         account.storeCode(state, codeBuf, cb2);
+        account.storeCode(state, codeBuf, cb2);
       },
       function(cb2) {
         account.stateRoot = storageTrie.root;
 
-        if(testData.exec && key === testData.exec.address){
+        if (testData.exec && key === testData.exec.address) {
           testData.root = storageTrie.root;
         }
 
-        state.put(new Buffer(key, 'hex'), account.serialize(), function(){
+        state.put(new Buffer(key, 'hex'), account.serialize(), function() {
           cb2();
         });
       }

@@ -87,56 +87,7 @@ module.exports = function runStateTest(testData, options, cb) {
         t.equal(bloom.bitvector.toString('hex'), block.header.bloom.toString('hex'));
       }
 
-      var hashedAccounts = {};
-      var keyMap = {};
-
-      for (key in testData.post) {
-        var hash = utils.sha3(new Buffer(key, 'hex')).toString('hex');
-        hashedAccounts[hash] = testData.post[key];
-        keyMap[hash] = key;
-      }
-
-      var q = async.queue(function(task, cb2) {
-        testUtil.verifyAccountPostConditions(state, task.account, task.testData, t, function() {
-          cb2();
-        });
-      }, 1);
-
-
-      var keysOfPost = Object.keys(testData.post);
-      var stream = state.createReadStream();
-
-      stream.on('data', function(data) {
-        var acnt = new Account(rlp.decode(data.value));
-        var key = data.key.toString('hex');
-        var testData = hashedAccounts[key];
-        delete keyMap[key];
-
-        if (testData) {
-          q.push({
-            account: acnt,
-            testData: testData
-          });
-        } else {
-          t.fail('invalid account in the trie: ' + key);
-        }
-      });
-
-      stream.on('end', function() {
-
-        function onEnd() {
-          for (hash in keyMap) {
-            t.fail('Missing account!: ' + keyMap[hash]);
-          }
-          done();
-        };
-
-        if (q.length()) {
-          q.drain = onEnd;
-        } else {
-          onEnd();
-        }
-      });
+      testUtil.verifyPostConditions(state, testData, t, done)
     }
   ], cb);
 };

@@ -16,9 +16,12 @@ if (argv.r) {
   });
 } else if (argv.v) {
   runTests('vm', argv);
-} else if (argv.a) {
+} else if(argv.b){
+  runTests('blockchain', argv)
+}else if (argv.a) {
   runAll();
 }
+
 
 //randomized tests
 //returns 1 if the tests fails
@@ -136,6 +139,7 @@ function runTests(type, argv, cb) {
     var file = tests[fileName];
     async.eachSeries(Object.keys(file), function(testName, done2) {
       var test = file[testName];
+      console.log(test);
       tape('[' + fileName + '] ' + testName, function(t) {
         if(skip.indexOf(testName) === -1){
           runner(test, {
