@@ -8,6 +8,7 @@ const utils = require('ethereumjs-util');
 const Account = require('../lib/account.js');
 const Transaction = require('ethereumjs-tx');
 const Block = require('../lib/block.js');
+const Header = require('../lib/blockHeader.js');
 
 exports.dumpState = function(state, cb) {
   var rs = state.createReadStream();
@@ -286,22 +287,28 @@ exports.toCodeHash = function(hexCode) {
   return new Buffer(hash.digest('hex'), 'hex');
 };
 
+exports.makeBlockHeader = function(data){
+  var header = new Header()
+  header.timestamp = format(data.currentTimestamp)
+  header.gasLimit = format(data.currentGasLimit)
+  header.parentHash = data.previousHash
+  header.coinbase = utils.pad(format(data.currentCoinbase, false, true), 20)
+  header.difficulty = format(data.currentDifficulty)
+  header.number = format(data.currentNumber)
+  return header
+}
+
 /**
  * makeBlockFromEnv - helper to create a block from the env object in tests repo
  * @param {Object} env object from tests repo
  * @return {Object}  the block
  */
 exports.makeBlockFromEnv = function(env) {
-  var block = new Block();
-  block.header.timestamp = format(env.currentTimestamp);
-  block.header.gasLimit = format(env.currentGasLimit);
-  block.header.parentHash = env.previousHash;
-  block.header.coinbase = utils.pad(format(env.currentCoinbase, false, true), 20);
-  block.header.difficulty = format(env.currentDifficulty);
-  block.header.number = format(env.currentNumber);
+  var block = new Block()
+  block.header = exports.makeBlockHeader(env)
 
-  return block;
-};
+  return block
+}
 
 
 /**

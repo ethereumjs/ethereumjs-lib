@@ -139,7 +139,6 @@ function runTests(type, argv, cb) {
     var file = tests[fileName];
     async.eachSeries(Object.keys(file), function(testName, done2) {
       var test = file[testName];
-      console.log(test);
       tape('[' + fileName + '] ' + testName, function(t) {
         if(skip.indexOf(testName) === -1){
           runner(test, {
