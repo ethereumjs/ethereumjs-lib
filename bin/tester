@@ -131,7 +131,8 @@ function runTests(type, argv, cb) {
     'Call50000bytesContract50_2',
     'Callcode50000', //slow
     'Return50000', //slow
-    'Return50000_2' //slow
+    'Return50000_2', //slow
+    'uncleBlockAtBlock3AfterBlock3'
   ];
 
   //run all of the tests
