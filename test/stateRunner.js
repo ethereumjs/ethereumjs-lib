@@ -87,7 +87,7 @@ module.exports = function runStateTest(testData, options, cb) {
         t.equal(bloom.bitvector.toString('hex'), block.header.bloom.toString('hex'));
       }
 
-      testUtil.verifyPostConditions(state, testData, t, done)
+      testUtil.verifyPostConditions(state, testData.post, t, done)
     }
   ], cb);
 };

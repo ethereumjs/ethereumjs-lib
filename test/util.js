@@ -91,9 +91,9 @@ exports.verifyPostConditions = function(state, testData, t, cb) {
   var hashedAccounts = {};
   var keyMap = {};
 
-  for (key in testData.post) {
+  for (key in testData) {
     var hash = utils.sha3(new Buffer(key, 'hex')).toString('hex');
-    hashedAccounts[hash] = testData.post[key];
+    hashedAccounts[hash] = testData[key];
     keyMap[hash] = key;
   }
 
@@ -104,7 +104,7 @@ exports.verifyPostConditions = function(state, testData, t, cb) {
   }, 1);
 
 
-  var keysOfPost = Object.keys(testData.post);
+  var keysOfPost = Object.keys(testData);
   var stream = state.createReadStream();
 
   stream.on('data', function(data) {
