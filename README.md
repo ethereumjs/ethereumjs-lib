@@ -59,9 +59,8 @@ If you would like to contribute, but don't know what to work on, check
 the issues list or ask on the forms or on IRC.
 
 * [issues](http://github.com/ethereum/ethereumjs-lib/issues)
-* [task tracker](https://waffle.io/ethereum/ethereumjs-lib)
 * [forum](https://forum.ethereum.org/categories/node-ethereum)
-* #ethereum-dev on irc.freenode.net
+* #ethereumjs on irc.freenode.net
 
 # BUGS
 
@@ -69,8 +68,6 @@ When you find issues, please report them:
 
 * [web](http://github.com/ethereum/ethereumjs-tools/issues)
 * [email](mailto:mb@ethdev.com)
-
-You can also look for null_radix in #ethereum-dev on irc://irc.freenode.net. 
 
 # LISCENCE
 GPL3
