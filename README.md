@@ -14,7 +14,7 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions as descri
  - [VM](./docs/VM.md) - The Ethereum vitural machine and state processing functions
  - [Block Chain](./docs/blockchain.md) - Blockchain managment
  - [Block](./docs/block.md) - Block Schema definition and validation
- - [Transaction](./docs/transaction.md) - Transaction Schema definition and validation
+ - [Transaction](https://github.com/ethereum/ethereumjs-tx) - Transaction Schema definition and validation
  - [Bloom](./docs/bloom.md) - Bloom Filter
  - [Account](./docs/account.md) - Account Schema definition and validation
  - [utils](./docs/utils.md) - Miscellaneous helper functions
