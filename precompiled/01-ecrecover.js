@@ -47,11 +47,8 @@ data = Buffer.concat([opts.data, buf]);
 
  publicKey = ecrecover(msgHash, v, r, s);
 
-if (!publicKey) {
-  results.exception = 1; // 1 since there is no VM error
+if (!publicKey)
   return results;
-}
 
-results.exception = 1;
 results.returnValue = utils.pad(utils.pubToAddress(publicKey), 32);
 return results;
