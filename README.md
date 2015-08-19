@@ -1,49 +1,21 @@
 SYNOPSIS [![Build Status](https://travis-ci.org/ethereum/ethereumjs-lib.svg?branch=master)](https://travis-ci.org/ethereum/ethereumjs-lib)
 ===========
 
-A Javascript library of core [Ethereum](http://Ethereum.org) functions as described in the [Yellow Paper](https://github.com/ethereum/yellowpaper). 
+A Javascript library of core [Ethereum](http://Ethereum.org) functions as described in the [Yellow Paper](https://github.com/ethereum/yellowpaper). This is a simple meta-module that provides the following modules.
 
-# EXAMPLES
- - [Exploring the state trie](https://wanderer.github.io/ethereum/nodejs/code/2014/05/21/using-ethereums-tries-with-node/)
- - [Creating contracts and verifying transaction](https://wanderer.github.io/ethereum/2014/06/14/creating-and-verifying-transaction-with-node/)
- - [How to run contracts and create stack traces](https://wanderer.github.io/ethereum/nodejs/code/2014/08/12/running-contracts-with-vm/)
-
-# API
-`ethereumjs-lib` provides the following.
-
- - [VM](./docs/VM.md) - The Ethereum vitural machine and state processing functions
- - [Block Chain](./docs/blockchain.md) - Blockchain managment
- - [Block](./docs/block.md) - Block Schema definition and validation
+ - [VM](https://github.com/ethereum/ethereumjs-vm) - The Ethereum vitural machine and state processing functions
+ - [Block Chain](https://github.com/ethereum/ethereumjs-blockchain) - Blockchain managment
+ - [Block](https://github.com/ethereum/ethereumjs-block) - Block Schema definition and validation
  - [Transaction](https://github.com/ethereum/ethereumjs-tx) - Transaction Schema definition and validation
- - [Bloom](./docs/bloom.md) - Bloom Filter
- - [Account](./docs/account.md) - Account Schema definition and validation
- - [utils](./docs/utils.md) - Miscellaneous helper functions
+ - [Account](https://github.com/ethereum/ethereumjs-account) - Account Schema definition and validation
+ - [utils](https://github.com/ethereum/ethereumjs-util) - Miscellaneous helper functions
  - [rlp](https://github.com/wanderer/rlp) - Recusive Length Perfix serialization
  - [Trie](https://github.com/wanderer/merkle-patricia-tree) - Modified Merkle Patricia Tree
-
-# TESTING
-`npm test`
+ - [devp2p](https://github.com/ethereum/node-devp2p)
+ - [devp2p-dpt](https://github.com/ethereum/node-devp2p-dpt)
 
 Most of the tests are in described in the [test repo](https://github.com/ethereum/tests)
 To run the test run `npm test`. You can also run the tests directly by running `./bin/tester -a`   
-
-The `tester` can take the following options  
-`-a` runs all the tests   
-`-s` runs all the state tests   
-`-v` runs all the VM tests   
-`-r` runs a VM tests given a string which defines the test     
-`-b` runs a the BlockChain tests  
-`--vmtrace <filename>` dumps a json VM trace to a file for VM and State tests  
-
-In addition you can select specific VM and State tests with the following options       
-`--file` run only one file in the [test repo](https://github.com/ethereum/tests)  
-`--test` needs to be used with the `--file` option. Specifies a test from a file to run.  
-
-
-
-######example usage
-run a the CallRecursiveContract test from the stInitCodeTest file  
-`./bin/tester -s --file stInitCodeTest --test CallRecursiveContract --vmtrace "trace.json"`
 
 # BROWSER
 `ethereumjs-lib` can be used with [`browserify`](http://browserify.org/). 
@@ -60,7 +32,7 @@ the issues list or ask on the forms or on IRC.
 
 * [issues](http://github.com/ethereum/ethereumjs-lib/issues)
 * [forum](https://forum.ethereum.org/categories/node-ethereum)
-* #ethereumjs on irc.freenode.net
+* [scrollback](https://scrollback.io/ethereumjs/all) or #ethereumjs on irc.freenode.net
 
 # BUGS
 
@@ -70,4 +42,4 @@ When you find issues, please report them:
 * [email](mailto:mb@ethdev.com)
 
 # LISCENCE
-GPL3
+MLP-2.0
