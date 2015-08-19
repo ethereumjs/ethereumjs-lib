@@ -4,22 +4,19 @@ SYNOPSIS [![Build Status](https://travis-ci.org/ethereum/ethereumjs-lib.svg?bran
 A Javascript library of core [Ethereum](http://Ethereum.org) functions as described in the [Yellow Paper](https://github.com/ethereum/yellowpaper). This is a simple meta-module that provides the following modules.
 
  - [VM](https://github.com/ethereum/ethereumjs-vm) - The Ethereum vitural machine and state processing functions
- - [Block Chain](https://github.com/ethereum/ethereumjs-blockchain) - Blockchain managment
+ - [Blockchain](https://github.com/ethereum/ethereumjs-blockchain) - Blockchain managment
  - [Block](https://github.com/ethereum/ethereumjs-block) - Block Schema definition and validation
  - [Transaction](https://github.com/ethereum/ethereumjs-tx) - Transaction Schema definition and validation
  - [Account](https://github.com/ethereum/ethereumjs-account) - Account Schema definition and validation
- - [utils](https://github.com/ethereum/ethereumjs-util) - Miscellaneous helper functions
  - [rlp](https://github.com/wanderer/rlp) - Recusive Length Perfix serialization
  - [Trie](https://github.com/wanderer/merkle-patricia-tree) - Modified Merkle Patricia Tree
- - [devp2p](https://github.com/ethereum/node-devp2p)
- - [devp2p-dpt](https://github.com/ethereum/node-devp2p-dpt)
-
-Most of the tests are in described in the [test repo](https://github.com/ethereum/tests)
-To run the test run `npm test`. You can also run the tests directly by running `./bin/tester -a`   
+ - [Ethash](https://github.com/ethereum/ethashjs) - Ethereum's Proof of Work algorithm
+ - [utils](https://github.com/ethereum/ethereumjs-util) - Miscellaneous helper functions
+ - [devp2p](https://github.com/ethereum/node-devp2p) - The networking protocol
+ - [devp2p-dpt](https://github.com/ethereum/node-devp2p-dpt) - The disputed peer table
 
 # BROWSER
-`ethereumjs-lib` can be used with [`browserify`](http://browserify.org/). 
-For browser testing install testling `npm install testling -g` and run `testling -u`
+`ethereumjs-lib` can be used with [`browserify`](http://browserify.org/). With the exception of the networking modules 
 
 # CONTRIBUTIONS
 
