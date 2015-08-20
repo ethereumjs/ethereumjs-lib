@@ -1,11 +1,12 @@
-exports.utils = require('ethereumjs-util')
+exports.util = require('ethereumjs-util')
 exports.VM = require('ethereumjs-vm')
 exports.Block = require('ethereumjs-block')
 exports.Blockchain = require('ethereumjs-blockchain')
 exports.Tx = require('ethereumjs-tx')
 exports.Account = require('ethereumjs-account')
-exports.rlp = utils.rlp
+exports.rlp = exports.util.rlp
+exports.BN = exports.util.BN
 exports.Trie = require('merkle-patricia-tree')
-// exports.opcodes = require('./lib/vm/opcodes.js')
-// exports.bloom = require('./lib/bloom.js')
-exports.Ethash = require('ethash')
+exports.Ethash = require('ethashjs')
+exports.p2p = require('devp2p')
+exports.dpt = require('devp2p-dpt')
