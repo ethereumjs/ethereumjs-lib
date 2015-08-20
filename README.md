@@ -8,7 +8,7 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions as descri
  - [Block](https://github.com/ethereum/ethereumjs-block) - Block Schema definition and validation
  - [Transaction](https://github.com/ethereum/ethereumjs-tx) - Transaction Schema definition and validation
  - [Account](https://github.com/ethereum/ethereumjs-account) - Account Schema definition and validation
- - [rlp](https://github.com/wanderer/rlp) - Recusive Length Perfix serialization
+ - [rlp](https://github.com/wanderer/rlp) - Recusive Length Prefix serialization
  - [Trie](https://github.com/wanderer/merkle-patricia-tree) - Modified Merkle Patricia Tree
  - [Ethash](https://github.com/ethereum/ethashjs) - Ethereum's Proof of Work algorithm
  - [utils](https://github.com/ethereum/ethereumjs-util) - Miscellaneous helper functions
@@ -16,7 +16,7 @@ A Javascript library of core [Ethereum](http://Ethereum.org) functions as descri
  - [devp2p-dpt](https://github.com/ethereum/node-devp2p-dpt) - The disputed peer table
 
 # BROWSER
-`ethereumjs-lib` can be used with [`browserify`](http://browserify.org/). With the exception of the networking modules 
+`ethereumjs-lib` can be used with [`browserify`](http://browserify.org/). With the exception of the networking modules. 
 
 # CONTRIBUTIONS
 
@@ -38,5 +38,5 @@ When you find issues, please report them:
 * [web](http://github.com/ethereum/ethereumjs-tools/issues)
 * [email](mailto:mb@ethdev.com)
 
-# LISCENCE
+# LICENSE
 MLP-2.0
