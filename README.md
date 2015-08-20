@@ -39,4 +39,4 @@ When you find issues, please report them:
 * [email](mailto:mb@ethdev.com)
 
 # LICENSE
-MLP-2.0
+[MPL-2.0](https://tldrlegal.com/license/mozilla-public-license-2.0-(mpl-2))
