@@ -1,4 +1,4 @@
-SYNOPSIS 
+SYNOPSIS  [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/ethereumjs-lib?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 ===========
 
 A Javascript library of core [Ethereum](http://Ethereum.org) functions as described in the [Yellow Paper](https://github.com/ethereum/yellowpaper). This is a simple meta-module that provides the following modules.
@@ -29,7 +29,7 @@ the issues list or ask on the forms or on IRC.
 
 * [issues](http://github.com/ethereum/ethereumjs-lib/issues)
 * [forum](https://forum.ethereum.org/categories/node-ethereum)
-* [scrollback](https://scrollback.io/ethereumjs/all) or #ethereumjs on irc.freenode.net
+* [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/ethereumjs-lib?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) or #ethereumjs on irc.freenode.net
 
 # BUGS
 
