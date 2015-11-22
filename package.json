@@ -1,6 +1,6 @@
 {
   "name": "ethereumjs-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NodeJS and browser JS library for Ethereum",
   "main": "./index.js",
   "license": "MPL-2.0",
@@ -15,16 +15,16 @@
     "library"
   ],
   "dependencies": {
-    "devp2p": "0.0.2",
-    "devp2p-dpt": "0.0.2",
-    "ethashjs": "0.0.3",
-    "ethereumjs-account": "0.0.3",
-    "ethereumjs-block": "0.0.7",
-    "ethereumjs-blockchain": "0.0.1",
-    "ethereumjs-tx": "^0.6.0",
-    "ethereumjs-util": "^1.3.7",
-    "ethereumjs-vm": "^0.1.5",
-    "merkle-patricia-tree": "^1.1.2"
+    "devp2p": "0.0.4",
+    "devp2p-dpt": "0.0.4",
+    "ethashjs": "0.0.4",
+    "ethereumjs-account": "1.0.4",
+    "ethereumjs-block": "1.0.2",
+    "ethereumjs-blockchain": "1.3.1",
+    "ethereumjs-tx": "^0.6.9",
+    "ethereumjs-util": "^2.2.0",
+    "ethereumjs-vm": "^1.0.2",
+    "merkle-patricia-tree": "^2.1.0"
   },
   "author": {
     "name": "Ethereum",
