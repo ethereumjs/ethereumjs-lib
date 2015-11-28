@@ -1,6 +1,6 @@
 {
   "name": "ethereumjs-lib",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "NodeJS and browser JS library for Ethereum",
   "main": "./index.js",
   "license": "MPL-2.0",
