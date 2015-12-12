@@ -31,7 +31,7 @@ the issues list or ask on the forms or on IRC.
 
 * [issues](http://github.com/ethereum/ethereumjs-lib/issues)
 * [forum](https://forum.ethereum.org/categories/node-ethereum)
-* [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/ethereumjs-lib?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) or #ethereumjs on irc.freenode.net
+
 
 # BUGS
 
