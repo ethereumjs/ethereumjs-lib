@@ -37,7 +37,7 @@ network.on('message.blocks', function(){
 });
 
 network.on('message.getChain', function(){
-    console.log('get chian');
+    console.log('get chain');
 });
 
 network.on('message.notInChain', function(){
