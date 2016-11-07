@@ -1,4 +1,3 @@
-
 # SYNOPSIS
 [![NPM Package](https://img.shields.io/npm/v/ethereumjs-lib.svg?style=flat-square)](https://www.npmjs.org/package/ethereumjs-util)
 [![Gitter](https://img.shields.io/gitter/room/ethereum/ethereumjs-lib.svg?style=flat-square)](https://gitter.im/ethereum/ethereumjs-lib) or #ethereumjs on freenode  
@@ -40,7 +39,6 @@ the issues list or ask on the forms or on IRC.
 When you find issues, please report them:
 
 * [web](http://github.com/ethereum/ethereumjs-tools/issues)
-* [email](mailto:mb@ethdev.com)
 
 # LICENSE
 [MPL-2.0](https://tldrlegal.com/license/mozilla-public-license-2.0-(mpl-2))
