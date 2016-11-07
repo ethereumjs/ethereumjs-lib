@@ -1,20 +1,9 @@
-SYNOPSIS  
-===========
 
 # SYNOPSIS
 [![NPM Package](https://img.shields.io/npm/v/ethereumjs-lib.svg?style=flat-square)](https://www.npmjs.org/package/ethereumjs-util)
 [![Gitter](https://img.shields.io/gitter/room/ethereum/ethereumjs-lib.svg?style=flat-square)](https://gitter.im/ethereum/ethereumjs-lib) or #ethereumjs on freenode  
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)  
-
-A collection of utility functions for ethereum. It can be used in node.js or can be in the browser with browserify.
-
-# API
-[./docs/](./docs/index.md)
-
-# LICENSE
-MPL-2.0
-
 
 A Javascript library of core [Ethereum](http://Ethereum.org) functions as described in the [Yellow Paper](https://github.com/ethereum/yellowpaper). This is a simple meta-module that provides the following modules. Most JS modules are tracked in [ethereumjs](https://github.com/ethereumjs)
 
