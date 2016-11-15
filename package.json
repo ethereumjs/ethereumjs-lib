@@ -23,7 +23,7 @@
     "ethereumjs-blockchain": "*",
     "ethereumjs-tx": "1.1.3",
     "ethereumjs-util": "5.0.0",
-    "ethereumjs-vm": "*",
+    "ethereumjs-vm": "2.0.2",
     "merkle-patricia-tree": "*"
   },
   "author": {
