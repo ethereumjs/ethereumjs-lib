@@ -5,7 +5,7 @@
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)  
 
 
-_This library is outdated_.  Please refer to the following EthereumJS modules:
+**This library is outdated**.  Please refer to the following EthereumJS modules:
 
  - [VM](https://github.com/ethereumjs/ethereumjs-vm) - The Ethereum virtual machine and state processing functions
  - [Blockchain](https://github.com/ethereumjs/ethereumjs-blockchain) - Blockchain managment
