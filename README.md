@@ -8,7 +8,7 @@
 **This library is outdated**.  Please refer to the following EthereumJS modules:
 
  - [VM](https://github.com/ethereumjs/ethereumjs-vm) - The Ethereum virtual machine and state processing functions
- - [Blockchain](https://github.com/ethereumjs/ethereumjs-blockchain) - Blockchain managment
+ - [Blockchain](https://github.com/ethereumjs/ethereumjs-blockchain) - Blockchain management
  - [Block](https://github.com/ethereumjs/ethereumjs-block) - Block Schema definition and validation
  - [Transaction](https://github.com/ethereumjs/ethereumjs-tx) - Transaction Schema definition and validation
  - [Account](https://github.com/ethereumjs/ethereumjs-account) - Account Schema definition and validation
